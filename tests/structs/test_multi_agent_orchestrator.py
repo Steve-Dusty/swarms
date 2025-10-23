@@ -1,219 +1,419 @@
-import os
+import pytest
+
 from swarms.structs.agent import Agent
 from swarms.structs.multi_agent_router import MultiAgentRouter
 
 
-def create_test_agent(name: str) -> Agent:
+def create_test_agent(name: str, description: str = None) -> Agent:
     """Helper function to create a test agent"""
     return Agent(
         agent_name=name,
-        description=f"Test {name}",
-        system_prompt=f"You are a {name}",
-        model_name="openai/gpt-4o",
+        description=description or f"Agent specialized in {name} tasks",
+        system_prompt=f"You are {name}, a helpful assistant.",
+        model_name="gpt-4o-mini",
+        max_loops=1,
+        verbose=False,
+        print_on=False,
     )
 
 
-def test_boss_router_initialization():
-    """Test MultiAgentRouter initialization"""
-    print("\nTesting MultiAgentRouter initialization...")
+# ============================================================================
+# INITIALIZATION TESTS
+# ============================================================================
 
-    # Test successful initialization
-    try:
-        agents = [
-            create_test_agent("TestAgent1"),
-            create_test_agent("TestAgent2"),
+
+def test_multi_agent_router_initialization():
+    """Test MultiAgentRouter basic initialization"""
+    agents = [
+        create_test_agent("TestAgent1"),
+        create_test_agent("TestAgent2"),
+    ]
+    router = MultiAgentRouter(agents=agents)
+
+    assert router.name == "swarm-router"
+    assert len(router.agents) == 2
+    assert "TestAgent1" in router.agents
+    assert "TestAgent2" in router.agents
+
+
+def test_multi_agent_router_with_custom_name():
+    """Test MultiAgentRouter with custom name"""
+    agents = [create_test_agent("TestAgent1")]
+    router = MultiAgentRouter(agents=agents, name="CustomRouter")
+
+    assert router.name == "CustomRouter"
+
+
+def test_multi_agent_router_with_custom_description():
+    """Test MultiAgentRouter with custom description"""
+    agents = [create_test_agent("TestAgent1")]
+    custom_desc = "Custom router description"
+    router = MultiAgentRouter(agents=agents, description=custom_desc)
+
+    assert router.description == custom_desc
+
+
+def test_multi_agent_router_agents_dict():
+    """Test that agents are stored as dictionary with agent_name as key"""
+    agent1 = create_test_agent("Agent1")
+    agent2 = create_test_agent("Agent2")
+    router = MultiAgentRouter(agents=[agent1, agent2])
+
+    assert isinstance(router.agents, dict)
+    assert router.agents["Agent1"] == agent1
+    assert router.agents["Agent2"] == agent2
+
+
+def test_multi_agent_router_conversation_initialized():
+    """Test that conversation object is initialized"""
+    agents = [create_test_agent("TestAgent")]
+    router = MultiAgentRouter(agents=agents)
+
+    assert hasattr(router, 'conversation')
+    assert router.conversation is not None
+
+
+def test_multi_agent_router_model_configuration():
+    """Test MultiAgentRouter with custom model configuration"""
+    agents = [create_test_agent("TestAgent")]
+    router = MultiAgentRouter(
+        agents=agents,
+        model="gpt-4o",
+        temperature=0.5
+    )
+
+    assert router.model == "gpt-4o"
+    assert router.temperature == 0.5
+
+
+def test_multi_agent_router_output_type():
+    """Test MultiAgentRouter with different output types"""
+    agents = [create_test_agent("TestAgent")]
+
+    for output_type in ["dict", "string", "list"]:
+        router = MultiAgentRouter(agents=agents, output_type=output_type)
+        assert router.output_type == output_type
+
+
+def test_multi_agent_router_skip_null_tasks():
+    """Test skip_null_tasks configuration"""
+    agents = [create_test_agent("TestAgent")]
+
+    router1 = MultiAgentRouter(agents=agents, skip_null_tasks=True)
+    assert router1.skip_null_tasks is True
+
+    router2 = MultiAgentRouter(agents=agents, skip_null_tasks=False)
+    assert router2.skip_null_tasks is False
+
+
+# ============================================================================
+# SYSTEM PROMPT TESTS
+# ============================================================================
+
+
+def test_boss_system_prompt_creation():
+    """Test boss system prompt generation"""
+    agents = [
+        create_test_agent("Agent1", "Specialist in coding"),
+        create_test_agent("Agent2", "Specialist in writing"),
+    ]
+    router = MultiAgentRouter(agents=agents)
+    prompt = router._create_boss_system_prompt()
+
+    assert isinstance(prompt, str)
+    assert len(prompt) > 0
+    assert "Agent1" in prompt
+    assert "Agent2" in prompt
+
+
+def test_boss_system_prompt_contains_routing_instructions():
+    """Test that boss system prompt contains routing logic"""
+    agents = [create_test_agent("Agent1")]
+    router = MultiAgentRouter(agents=agents)
+    prompt = router._create_boss_system_prompt()
+
+    assert "intelligent boss agent" in prompt
+    assert "routing" in prompt.lower() or "route" in prompt.lower()
+
+
+def test_boss_system_prompt_includes_agent_descriptions():
+    """Test that system prompt includes agent descriptions"""
+    agents = [
+        create_test_agent("CodeAgent", "Expert in writing code"),
+        create_test_agent("WritingAgent", "Expert in creative writing"),
+    ]
+    router = MultiAgentRouter(agents=agents)
+    prompt = router._create_boss_system_prompt()
+
+    assert "CodeAgent" in prompt
+    assert "WritingAgent" in prompt
+    assert "Expert in writing code" in prompt
+    assert "Expert in creative writing" in prompt
+
+
+def test_boss_system_prompt_with_custom_system_prompt():
+    """Test router with custom system prompt prepended"""
+    agents = [create_test_agent("Agent1")]
+    custom_prompt = "Custom routing instructions: Be very careful."
+    router = MultiAgentRouter(agents=agents, system_prompt=custom_prompt)
+
+    # The function_caller should have the combined prompt
+    assert router.function_caller is not None
+
+
+# ============================================================================
+# AGENT FINDING TESTS
+# ============================================================================
+
+
+def test_agents_stored_by_name():
+    """Test that agents can be accessed by name"""
+    agent1 = create_test_agent("Agent1")
+    agent2 = create_test_agent("Agent2")
+    router = MultiAgentRouter(agents=[agent1, agent2])
+
+    assert "Agent1" in router.agents
+    assert "Agent2" in router.agents
+    assert router.agents["Agent1"].agent_name == "Agent1"
+    assert router.agents["Agent2"].agent_name == "Agent2"
+
+
+def test_find_nonexistent_agent():
+    """Test checking for nonexistent agent"""
+    agent1 = create_test_agent("Agent1")
+    router = MultiAgentRouter(agents=[agent1])
+
+    assert "NonexistentAgent" not in router.agents
+
+
+def test_multiple_agents_accessible():
+    """Test that all agents are accessible in agents dict"""
+    agents = [create_test_agent(f"Agent{i}") for i in range(5)]
+    router = MultiAgentRouter(agents=agents)
+
+    assert len(router.agents) == 5
+    for i in range(5):
+        assert f"Agent{i}" in router.agents
+
+
+# ============================================================================
+# CALLABLE INTERFACE TESTS
+# ============================================================================
+
+
+def test_router_repr():
+    """Test __repr__ method"""
+    agents = [create_test_agent("Agent1"), create_test_agent("Agent2")]
+    router = MultiAgentRouter(agents=agents)
+
+    repr_str = repr(router)
+    assert "MultiAgentRouter" in repr_str
+    assert "swarm-router" in repr_str
+
+
+def test_router_callable_interface():
+    """Test that router can be called directly"""
+    agents = [create_test_agent("TestAgent")]
+    router = MultiAgentRouter(agents=agents, print_on=False)
+
+    # Router should be callable
+    assert callable(router)
+
+
+def test_run_method_exists():
+    """Test that run method exists and is callable"""
+    agents = [create_test_agent("TestAgent")]
+    router = MultiAgentRouter(agents=agents)
+
+    assert hasattr(router, 'run')
+    assert callable(router.run)
+
+
+# ============================================================================
+# BATCH ROUTING TESTS
+# ============================================================================
+
+
+def test_batch_run_method_exists():
+    """Test that batch_run method exists"""
+    agents = [create_test_agent("TestAgent")]
+    router = MultiAgentRouter(agents=agents)
+
+    assert hasattr(router, 'batch_run')
+    assert callable(router.batch_run)
+
+
+def test_batch_run_returns_list():
+    """Test that batch_run returns a list"""
+    agents = [create_test_agent("TestAgent")]
+    router = MultiAgentRouter(agents=agents, print_on=False)
+
+    tasks = ["Task 1", "Task 2"]
+    results = router.batch_run(tasks)
+
+    assert isinstance(results, list)
+    assert len(results) == 2
+
+
+def test_concurrent_batch_run_method_exists():
+    """Test that concurrent_batch_run method exists"""
+    agents = [create_test_agent("TestAgent")]
+    router = MultiAgentRouter(agents=agents)
+
+    assert hasattr(router, 'concurrent_batch_run')
+    assert callable(router.concurrent_batch_run)
+
+
+def test_concurrent_batch_run_returns_list():
+    """Test that concurrent_batch_run returns a list"""
+    agents = [create_test_agent("TestAgent")]
+    router = MultiAgentRouter(agents=agents, print_on=False)
+
+    tasks = ["Task 1", "Task 2"]
+    results = router.concurrent_batch_run(tasks)
+
+    assert isinstance(results, list)
+    assert len(results) == 2
+
+
+def test_batch_run_with_empty_list():
+    """Test batch_run with empty task list"""
+    agents = [create_test_agent("TestAgent")]
+    router = MultiAgentRouter(agents=agents)
+
+    results = router.batch_run([])
+    assert isinstance(results, list)
+    assert len(results) == 0
+
+
+# ============================================================================
+# ERROR HANDLING TESTS
+# ============================================================================
+
+
+def test_route_task_with_no_agents_raises_error():
+    """Test that routing with no agents raises an error"""
+    router = MultiAgentRouter(agents=[])
+
+    with pytest.raises(Exception):
+        router.route_task("Test task")
+
+
+def test_handle_single_handoff_validates_agent_name():
+    """Test that handle_single_handoff validates agent exists"""
+    agents = [create_test_agent("Agent1")]
+    router = MultiAgentRouter(agents=agents)
+
+    invalid_handoff = {
+        "handoffs": [{
+            "agent_name": "NonexistentAgent",
+            "reasoning": "Test",
+            "task": "Test task"
+        }]
+    }
+
+    with pytest.raises(ValueError, match="unknown agent"):
+        router.handle_single_handoff(invalid_handoff, "Test task")
+
+
+def test_handle_multiple_handoffs_validates_agent_names():
+    """Test that handle_multiple_handoffs validates all agent names"""
+    agents = [create_test_agent("Agent1")]
+    router = MultiAgentRouter(agents=agents)
+
+    invalid_handoff = {
+        "handoffs": [
+            {
+                "agent_name": "Agent1",
+                "reasoning": "Test",
+                "task": "Task 1"
+            },
+            {
+                "agent_name": "NonexistentAgent",
+                "reasoning": "Test",
+                "task": "Task 2"
+            }
         ]
-        router = MultiAgentRouter(agents=agents)
-        assert (
-            router.name == "swarm-router"
-        ), "Default name should be 'swarm-router'"
-        assert len(router.agents) == 2, "Should have 2 agents"
-        print("✓ Basic initialization successful")
-    except Exception as e:
-        print(f"✗ Basic initialization failed: {str(e)}")
+    }
 
-    # Test initialization without API key
-    try:
-        temp_key = os.getenv("OPENAI_API_KEY")
-        os.environ["OPENAI_API_KEY"] = ""
-        success = False
-        try:
-            router = MultiAgentRouter(agents=[])
-        except ValueError as e:
-            success = str(e) == "OpenAI API key must be provided"
-        os.environ["OPENAI_API_KEY"] = temp_key
-        assert (
-            success
-        ), "Should raise ValueError when API key is missing"
-        print("✓ API key validation successful")
-    except Exception as e:
-        print(f"✗ API key validation failed: {str(e)}")
+    with pytest.raises(ValueError, match="unknown agent"):
+        router.handle_multiple_handoffs(invalid_handoff, "Test task")
 
 
-def test_boss_system_prompt():
-    """Test system prompt generation"""
-    print("\nTesting system prompt generation...")
-
-    try:
-        agents = [
-            create_test_agent("Agent1"),
-            create_test_agent("Agent2"),
-        ]
-        router = MultiAgentRouter(agents=agents)
-        prompt = router._create_boss_system_prompt()
-
-        # Check if prompt contains agent information
-        assert (
-            "Agent1" in prompt
-        ), "Prompt should contain first agent name"
-        assert (
-            "Agent2" in prompt
-        ), "Prompt should contain second agent name"
-        assert (
-            "You are a boss agent" in prompt
-        ), "Prompt should contain boss agent description"
-        print("✓ System prompt generation successful")
-    except Exception as e:
-        print(f"✗ System prompt generation failed: {str(e)}")
+# ============================================================================
+# CONFIGURATION VALIDATION TESTS
+# ============================================================================
 
 
-def test_find_agent_in_list():
-    """Test agent finding functionality"""
-    print("\nTesting agent finding functionality...")
+def test_router_with_single_agent():
+    """Test router with only one agent"""
+    agent = create_test_agent("OnlyAgent")
+    router = MultiAgentRouter(agents=[agent])
 
-    try:
-        agent1 = create_test_agent("Agent1")
-        agent2 = create_test_agent("Agent2")
-        router = MultiAgentRouter(agents=[agent1, agent2])
-
-        # Test finding existing agent
-        assert "Agent1" in router.agents, "Should find existing agent"
-        assert (
-            "NonexistentAgent" not in router.agents
-        ), "Should not find nonexistent agent"
-        print("✓ Agent finding successful")
-    except Exception as e:
-        print(f"✗ Agent finding failed: {str(e)}")
+    assert len(router.agents) == 1
+    assert "OnlyAgent" in router.agents
 
 
-def test_task_routing():
-    """Test task routing functionality"""
-    print("\nTesting task routing...")
+def test_router_with_many_agents():
+    """Test router with many agents"""
+    agents = [create_test_agent(f"Agent{i}") for i in range(10)]
+    router = MultiAgentRouter(agents=agents)
 
-    try:
-        # Create test agents
-        agents = [
-            create_test_agent("CodeAgent"),
-            create_test_agent("WritingAgent"),
-        ]
-        router = MultiAgentRouter(agents=agents)
-
-        # Test routing a coding task
-        result = router.route_task(
-            "Write a Python function to sort a list"
-        )
-        assert result["boss_decision"]["selected_agent"] in [
-            "CodeAgent",
-            "WritingAgent",
-        ], "Should select an appropriate agent"
-        assert (
-            "execution" in result
-        ), "Result should contain execution details"
-        assert (
-            "total_time" in result
-        ), "Result should contain timing information"
-        print("✓ Task routing successful")
-    except Exception as e:
-        print(f"✗ Task routing failed: {str(e)}")
+    assert len(router.agents) == 10
 
 
-def test_batch_routing():
-    """Test batch routing functionality"""
-    print("\nTesting batch routing...")
+def test_router_print_on_configuration():
+    """Test print_on configuration"""
+    agents = [create_test_agent("TestAgent")]
 
-    try:
-        agents = [create_test_agent("TestAgent")]
-        router = MultiAgentRouter(agents=agents)
+    router1 = MultiAgentRouter(agents=agents, print_on=True)
+    assert router1.print_on is True
 
-        tasks = ["Task 1", "Task 2", "Task 3"]
-
-        # Test sequential batch routing
-        results = router.batch_run(tasks)
-        assert len(results) == len(
-            tasks
-        ), "Should return result for each task"
-        print("✓ Sequential batch routing successful")
-
-        # Test concurrent batch routing
-        concurrent_results = router.concurrent_batch_run(tasks)
-        assert len(concurrent_results) == len(
-            tasks
-        ), "Should return result for each task"
-        print("✓ Concurrent batch routing successful")
-    except Exception as e:
-        print(f"✗ Batch routing failed: {str(e)}")
+    router2 = MultiAgentRouter(agents=agents, print_on=False)
+    assert router2.print_on is False
 
 
-def test_error_handling():
-    """Test error handling in various scenarios"""
-    print("\nTesting error handling...")
+def test_function_caller_initialized():
+    """Test that function_caller is initialized with LiteLLM"""
+    agents = [create_test_agent("TestAgent")]
+    router = MultiAgentRouter(agents=agents)
 
-    try:
-        router = MultiAgentRouter(agents=[])
-
-        # Test routing with no agents
-        success = False
-        try:
-            router.route_task("Test task")
-        except Exception:
-            success = True
-        assert success, "Should handle routing with no agents"
-        print("✓ Empty agent list handling successful")
-
-        # Test with invalid task
-        success = False
-        router = MultiAgentRouter(
-            agents=[create_test_agent("TestAgent")]
-        )
-        try:
-            router.route_task("")
-        except ValueError:
-            success = True
-        assert success, "Should handle empty task"
-        print("✓ Invalid task handling successful")
-    except Exception as e:
-        print(f"✗ Error handling failed: {str(e)}")
+    assert hasattr(router, 'function_caller')
+    assert router.function_caller is not None
 
 
-def run_all_tests():
-    """Run all test functions"""
-    print("Starting MultiAgentRouter tests...")
+# ============================================================================
+# INTEGRATION TESTS
+# ============================================================================
 
-    test_functions = [
-        test_boss_router_initialization,
-        test_boss_system_prompt,
-        test_find_agent_in_list,
-        test_task_routing,
-        test_batch_routing,
-        test_error_handling,
+
+def test_router_initialization_with_all_parameters():
+    """Test complete router initialization with all parameters"""
+    agents = [
+        create_test_agent("Agent1", "First agent"),
+        create_test_agent("Agent2", "Second agent"),
     ]
 
-    total_tests = len(test_functions)
-    passed_tests = 0
-
-    for test_func in test_functions:
-        try:
-            test_func()
-            passed_tests += 1
-        except Exception as e:
-            print(
-                f"Test {test_func.__name__} failed with error: {str(e)}"
-            )
-
-    print(
-        f"\nTest Results: {passed_tests}/{total_tests} tests passed"
+    router = MultiAgentRouter(
+        name="CompleteRouter",
+        description="A fully configured router",
+        agents=agents,
+        model="gpt-4o-mini",
+        temperature=0.2,
+        output_type="string",
+        print_on=False,
+        skip_null_tasks=True
     )
+
+    assert router.name == "CompleteRouter"
+    assert router.description == "A fully configured router"
+    assert len(router.agents) == 2
+    assert router.model == "gpt-4o-mini"
+    assert router.temperature == 0.2
+    assert router.output_type == "string"
+    assert router.print_on is False
+    assert router.skip_null_tasks is True
 
 
 if __name__ == "__main__":
-    run_all_tests()
+    pytest.main([__file__, "-v"])

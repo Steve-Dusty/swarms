@@ -1,10 +1,5 @@
-import json
-import os
-from datetime import datetime
-from typing import Any, Callable, Dict, List
-
-from dotenv import load_dotenv
-from loguru import logger
+import pytest
+from typing import List, Callable
 
 from swarms.structs import (
     Agent,
@@ -23,865 +18,506 @@ from swarms.structs import (
 from swarms.structs.hiearchical_swarm import HierarchicalSwarm
 from swarms.structs.tree_swarm import ForestSwarm, Tree, TreeAgent
 
-load_dotenv()
-
-
-def generate_timestamp() -> str:
-    """Generate a timestamp string for filenames"""
-    return datetime.now().strftime("%Y%m%d_%H%M%S")
-
-
-def write_markdown_report(
-    results: List[Dict[str, Any]], filename: str
-):
-    """Write test results to a markdown file"""
-    if not os.path.exists("test_runs"):
-        os.makedirs("test_runs")
-
-    with open(f"test_runs/{filename}.md", "w") as f:
-        f.write("# Swarms Comprehensive Test Report\n\n")
-        f.write(
-            f"Test Run: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
-        )
-
-        total = len(results)
-        passed = sum(1 for r in results if r["status"] == "passed")
-        failed = total - passed
-
-        f.write("## Summary\n\n")
-        f.write(f"- **Total Tests:** {total}\n")
-        f.write(f"- **Passed:** {passed}\n")
-        f.write(f"- **Failed:** {failed}\n")
-        f.write(f"- **Success Rate:** {(passed/total)*100:.2f}%\n\n")
-
-        f.write("## Detailed Results\n\n")
-        for result in results:
-            f.write(f"### {result['test_name']}\n\n")
-            f.write(f"**Status:** {result['status'].upper()}\n\n")
-            if result.get("response"):
-                f.write("Response:\n```json\n")
-                response_str = result["response"]
-                try:
-                    response_json = (
-                        json.loads(response_str)
-                        if isinstance(response_str, str)
-                        else response_str
-                    )
-                    f.write(json.dumps(response_json, indent=2))
-                except (json.JSONDecodeError, TypeError):
-                    f.write(str(response_str))
-                f.write("\n```\n\n")
-
-            if result.get("error"):
-                f.write(
-                    f"**Error:**\n```\n{result['error']}\n```\n\n"
-                )
-            f.write("---\n\n")
+# ============================================================================
+# Helper Functions
+# ============================================================================
 
 
 def create_test_agent(
     name: str,
     system_prompt: str = None,
-    model_name: str = "gpt-4.1",
+    model_name: str = "gpt-4o-mini",
     tools: List[Callable] = None,
     **kwargs,
 ) -> Agent:
-    """Create a properly configured test agent with error handling"""
-    try:
-        return Agent(
-            agent_name=name,
-            system_prompt=system_prompt
-            or f"You are {name}, a helpful AI assistant.",
-            model_name=model_name,  # Use mini model for faster/cheaper testing
-            max_loops=1,
-            max_tokens=200,
-            tools=tools,
-            **kwargs,
-        )
-    except Exception as e:
-        logger.error(f"Failed to create agent {name}: {e}")
-        raise
+    """Create a properly configured test agent."""
+    return Agent(
+        agent_name=name,
+        system_prompt=system_prompt or f"You are {name}, a helpful AI assistant.",
+        model_name=model_name,
+        max_loops=1,
+        max_tokens=200,
+        verbose=False,
+        print_on=False,
+        tools=tools or [],
+        **kwargs,
+    )
 
 
-# --- Basic Agent Tests ---
+def create_test_agents(count: int, prefix: str = "Agent") -> List[Agent]:
+    """Create multiple test agents."""
+    return [
+        create_test_agent(f"{prefix}-{i+1}") for i in range(count)
+    ]
+
+# ============================================================================
+# Basic Agent Tests
+# ============================================================================
 
 
 def test_basic_agent_functionality():
-    """Test basic agent creation and execution"""
-    agent = create_test_agent("BasicAgent")
-    response = agent.run("Say hello and explain what you are.")
-
-    assert isinstance(response, str) and len(response) > 0
-    return {
-        "test_name": "test_basic_agent_functionality",
-        "status": "passed",
-        "response": "Agent created and responded successfully",
-    }
+    """Test basic agent creation and execution."""
+    agent = create_test_agent("TestAgent")
+    
+    assert agent.agent_name == "TestAgent"
+    assert agent.model_name == "gpt-4o-mini"
+    assert agent.max_loops == 1
+    
+    result = agent.run("What is 2+2?")
+    assert result is not None
+    assert isinstance(result, str)
 
 
 def test_agent_with_custom_prompt():
-    """Test agent with custom system prompt"""
-    custom_prompt = "You are a mathematician who only responds with numbers and mathematical expressions."
+    """Test agent with custom system prompt."""
+    custom_prompt = "You are a math expert. Always show your work."
     agent = create_test_agent(
-        "MathAgent", system_prompt=custom_prompt
+        "MathExpert",
+        system_prompt=custom_prompt,
     )
-    response = agent.run("What is 2+2?")
-
-    assert isinstance(response, str) and len(response) > 0
-    return {
-        "test_name": "test_agent_with_custom_prompt",
-        "status": "passed",
-        "response": response[:100],
-    }
+    
+    assert agent.system_prompt == custom_prompt
+    
+    result = agent.run("Calculate 15 * 7")
+    assert result is not None
+    assert isinstance(result, str)
 
 
 def test_tool_execution_with_agent():
-    """Test agent's ability to use tools"""
-
+    """Test agent with tool execution capabilities."""
     def simple_calculator(a: int, b: int) -> int:
-        """Add two numbers together"""
+        """Add two numbers."""
         return a + b
-
-    def get_weather(location: str) -> str:
-        """Get weather for a location"""
-        return f"The weather in {location} is sunny and 75°F"
-
+    
     agent = create_test_agent(
         "ToolAgent",
-        system_prompt="You are a helpful assistant that can use tools to help users.",
-        tools=[simple_calculator, get_weather],
+        tools=[simple_calculator],
     )
-    response = agent.run(
-        "What's 5 + 7 and what's the weather like in New York?"
-    )
-
-    assert isinstance(response, str) and len(response) > 0
-    return {
-        "test_name": "test_tool_execution_with_agent",
-        "status": "passed",
-        "response": "Tool execution completed",
-    }
-
-
-# --- Multi-Modal Tests ---
+    
+    result = agent.run("Use the calculator to add 5 and 3")
+    assert result is not None
 
 
 def test_multimodal_execution():
-    """Test agent's ability to process images"""
-    agent = create_test_agent(
-        "VisionAgent", model_name="gpt-4.1", multi_modal=True
-    )
+    """Test agent with multimodal capabilities."""
+    agent = create_test_agent("MultimodalAgent")
+    
+    # Test with text only
+    result = agent.run("Describe the concept of AI")
+    assert result is not None
+    
+    # Test with None image (no actual image processing)
+    result = agent.run("Describe this image", img=None)
+    assert result is not None
 
-    try:
-        # Check if test images exist, if not skip the test
-        if os.path.exists("tests/test_data/image1.jpg"):
-            response = agent.run(
-                "Describe this image.",
-                img="tests/test_data/image1.jpg",
-            )
-            assert isinstance(response, str) and len(response) > 0
-        else:
-            logger.warning(
-                "Test image not found, skipping multimodal test"
-            )
-            response = "Test skipped - no test image available"
-
-        return {
-            "test_name": "test_multimodal_execution",
-            "status": "passed",
-            "response": "Multimodal response received",
-        }
-    except Exception as e:
-        logger.warning(f"Multimodal test failed: {e}")
-        return {
-            "test_name": "test_multimodal_execution",
-            "status": "passed",
-            "response": "Multimodal test skipped due to missing dependencies",
-        }
-
-
-# --- Workflow Tests ---
+# ============================================================================
+# Workflow Tests
+# ============================================================================
 
 
 def test_sequential_workflow():
-    """Test SequentialWorkflow with multiple agents"""
-    agents = [
-        create_test_agent(
-            "ResearchAgent",
-            "You are a research specialist who gathers information.",
-        ),
-        create_test_agent(
-            "AnalysisAgent",
-            "You are an analyst who analyzes information and provides insights.",
-        ),
-        create_test_agent(
-            "WriterAgent",
-            "You are a writer who creates clear, concise summaries.",
-        ),
-    ]
+    """Test SequentialWorkflow with multiple agents."""
+    agents = create_test_agents(3, "Sequential")
+    
     workflow = SequentialWorkflow(
-        name="research-analysis-workflow", agents=agents, max_loops=1
+        name="Test-Sequential-Workflow",
+        description="Test sequential workflow execution",
+        agents=agents,
+        max_loops=1,
     )
-
-    try:
-        response = workflow.run(
-            "Research and analyze the benefits of renewable energy, then write a brief summary."
-        )
-        logger.info(
-            f"SequentialWorkflow response type: {type(response)}"
-        )
-
-        # SequentialWorkflow returns conversation history
-        assert response is not None
-        return {
-            "test_name": "test_sequential_workflow",
-            "status": "passed",
-            "response": "Sequential workflow completed",
-        }
-    except Exception as e:
-        logger.error(
-            f"SequentialWorkflow test failed with exception: {e}"
-        )
-        return {
-            "test_name": "test_sequential_workflow",
-            "status": "failed",
-            "error": str(e),
-        }
+    
+    result = workflow.run("Process this task sequentially")
+    assert result is not None
 
 
 def test_concurrent_workflow():
-    """Test ConcurrentWorkflow with multiple agents"""
-    agents = [
-        create_test_agent(
-            "TechAnalyst",
-            "You are a technology analyst who focuses on tech trends.",
-        ),
-        create_test_agent(
-            "MarketAnalyst",
-            "You are a market analyst who focuses on market conditions.",
-        ),
-    ]
+    """Test ConcurrentWorkflow with multiple agents."""
+    agents = create_test_agents(3, "Concurrent")
+    
     workflow = ConcurrentWorkflow(
-        name="concurrent-analysis", agents=agents, max_loops=1
+        name="Test-Concurrent-Workflow", 
+        description="Test concurrent workflow execution",
+        agents=agents,
+        max_loops=1,
     )
-
-    try:
-        response = workflow.run(
-            "Analyze the current state of AI technology and its market impact."
-        )
-        logger.info(
-            f"ConcurrentWorkflow response type: {type(response)}"
-        )
-
-        assert response is not None
-        return {
-            "test_name": "test_concurrent_workflow",
-            "status": "passed",
-            "response": "Concurrent workflow completed",
-        }
-    except Exception as e:
-        logger.error(
-            f"ConcurrentWorkflow test failed with exception: {e}"
-        )
-        return {
-            "test_name": "test_concurrent_workflow",
-            "status": "failed",
-            "error": str(e),
-        }
-
-
-# --- Advanced Swarm Tests ---
+    
+    result = workflow.run("Process this task concurrently")
+    assert result is not None
+    assert isinstance(result, list)
 
 
 def test_agent_rearrange():
-    """Test AgentRearrange dynamic workflow"""
-    agents = [
-        create_test_agent(
-            "Researcher",
-            "You are a researcher who gathers information.",
-        ),
-        create_test_agent(
-            "Analyst", "You are an analyst who analyzes information."
-        ),
-        create_test_agent(
-            "Writer", "You are a writer who creates final reports."
-        ),
-    ]
-
-    flow = "Researcher -> Analyst -> Writer"
-    swarm = AgentRearrange(agents=agents, flow=flow, max_loops=1)
-
-    response = swarm.run(
-        "Research renewable energy, analyze the benefits, and write a summary."
+    """Test AgentRearrange functionality."""
+    agents = create_test_agents(2, "Rearrange")
+    
+    rearrange = AgentRearrange(
+        name="Test-Agent-Rearrange",
+        description="Test agent rearrangement",
+        agents=agents,
+        flow=f"{agents[0].agent_name} -> {agents[1].agent_name}",
+        max_loops=1,
     )
+    
+    result = rearrange.run("Test rearrangement flow")
+    assert result is not None
 
-    assert response is not None
-    return {
-        "test_name": "test_agent_rearrange",
-        "status": "passed",
-        "response": "AgentRearrange completed",
-    }
+# ============================================================================
+# Swarm Structure Tests
+# ============================================================================
 
 
 def test_mixture_of_agents():
-    """Test MixtureOfAgents collaboration"""
-    agents = [
-        create_test_agent(
-            "TechExpert", "You are a technology expert."
-        ),
-        create_test_agent(
-            "BusinessAnalyst", "You are a business analyst."
-        ),
-        create_test_agent(
-            "Strategist", "You are a strategic planner."
-        ),
-    ]
-
-    swarm = MixtureOfAgents(agents=agents, max_loops=1)
-    response = swarm.run(
-        "Analyze the impact of AI on modern businesses."
+    """Test MixtureOfAgents functionality."""
+    agents = create_test_agents(3, "MOA")
+    aggregator = create_test_agent("Aggregator")
+    
+    moa = MixtureOfAgents(
+        name="Test-MOA",
+        description="Test mixture of agents",
+        agents=agents,
+        aggregator_agent=aggregator,
+        layers=2,
+        max_loops=1,
     )
-
-    assert response is not None
-    return {
-        "test_name": "test_mixture_of_agents",
-        "status": "passed",
-        "response": "MixtureOfAgents completed",
-    }
+    
+    result = moa.run("Test mixture of agents")
+    assert result is not None
 
 
 def test_spreadsheet_swarm():
-    """Test SpreadSheetSwarm for data processing"""
-    agents = [
-        create_test_agent(
-            "DataProcessor1",
-            "You process and analyze numerical data.",
-        ),
-        create_test_agent(
-            "DataProcessor2",
-            "You perform calculations and provide insights.",
-        ),
-    ]
-
+    """Test SpreadSheetSwarm functionality."""
+    agent = create_test_agent("SpreadsheetAgent")
+    
     swarm = SpreadSheetSwarm(
-        name="data-processing-swarm",
-        description="A swarm for processing data",
-        agents=agents,
+        name="Test-Spreadsheet-Swarm",
+        description="Test spreadsheet swarm",
+        agents=[agent],
         max_loops=1,
         autosave=False,
     )
-
-    response = swarm.run(
-        "Calculate the sum of 25 + 75 and provide analysis."
-    )
-
-    assert response is not None
-    return {
-        "test_name": "test_spreadsheet_swarm",
-        "status": "passed",
-        "response": "SpreadSheetSwarm completed",
-    }
+    
+    result = swarm.run("Test spreadsheet operations")
+    assert result is not None
 
 
 def test_hierarchical_swarm():
-    """Test HierarchicalSwarm structure"""
-    try:
-        from swarms.structs.hiearchical_swarm import SwarmSpec
-        from swarms.utils.litellm_wrapper import LiteLLM
-
-        # Create worker agents
-        workers = [
-            create_test_agent(
-                "Worker1",
-                "You are Worker1 who handles research tasks and data gathering.",
-            ),
-            create_test_agent(
-                "Worker2",
-                "You are Worker2 who handles analysis tasks and reporting.",
-            ),
-        ]
-
-        # Create director agent with explicit knowledge of available agents
-        director = LiteLLM(
-            model_name="gpt-4.1",
-            response_format=SwarmSpec,
-            system_prompt=(
-                "As the Director of this Hierarchical Agent Swarm, you coordinate tasks among agents. "
-                "You must ONLY assign tasks to the following available agents:\n"
-                "- Worker1: Handles research tasks and data gathering\n"
-                "- Worker2: Handles analysis tasks and reporting\n\n"
-                "Rules:\n"
-                "1. ONLY use the agent names 'Worker1' and 'Worker2' - do not create new agent names\n"
-                "2. Assign tasks that match each agent's capabilities\n"
-                "3. Keep tasks simple and clear\n"
-                "4. Provide actionable task descriptions"
-            ),
-            temperature=0.1,
-            max_tokens=1000,
-        )
-
-        swarm = HierarchicalSwarm(
-            description="A test hierarchical swarm for task delegation",
-            director=director,
-            agents=workers,
-            max_loops=1,
-        )
-
-        response = swarm.run(
-            "Research current team meeting best practices and analyze them to create recommendations."
-        )
-
-        assert response is not None
-        return {
-            "test_name": "test_hierarchical_swarm",
-            "status": "passed",
-            "response": "HierarchicalSwarm completed",
-        }
-    except ImportError as e:
-        logger.warning(
-            f"HierarchicalSwarm test skipped due to missing dependencies: {e}"
-        )
-        return {
-            "test_name": "test_hierarchical_swarm",
-            "status": "passed",
-            "response": "Test skipped due to missing dependencies",
-        }
+    """Test HierarchicalSwarm functionality."""
+    agents = create_test_agents(4, "Hierarchical")
+    
+    swarm = HierarchicalSwarm(
+        name="Test-Hierarchical-Swarm",
+        description="Test hierarchical swarm structure",
+        agents=agents,
+        max_loops=1,
+        verbose=False,
+    )
+    
+    result = swarm.run("Test hierarchical processing")
+    assert result is not None
 
 
 def test_majority_voting():
-    """Test MajorityVoting consensus mechanism"""
-    agents = [
-        create_test_agent(
-            "Judge1",
-            "You are a judge who evaluates options carefully.",
-        ),
-        create_test_agent(
-            "Judge2",
-            "You are a judge who provides thorough analysis.",
-        ),
-        create_test_agent(
-            "Judge3",
-            "You are a judge who considers all perspectives.",
-        ),
-    ]
-
-    swarm = MajorityVoting(agents=agents)
-    response = swarm.run(
-        "Should companies invest more in renewable energy? Provide YES or NO with reasoning."
+    """Test MajorityVoting functionality."""
+    agents = create_test_agents(3, "Voting")
+    
+    voting = MajorityVoting(
+        name="Test-Majority-Voting",
+        description="Test majority voting system",
+        agents=agents,
+        max_loops=1,
+        verbose=False,
     )
-
-    assert response is not None
-    return {
-        "test_name": "test_majority_voting",
-        "status": "passed",
-        "response": "MajorityVoting completed",
-    }
+    
+    result = voting.run("What is the capital of France?")
+    assert result is not None
 
 
 def test_round_robin_swarm():
-    """Test RoundRobinSwarm task distribution"""
-    agents = [
-        create_test_agent("Agent1", "You handle counting tasks."),
-        create_test_agent(
-            "Agent2", "You handle color-related tasks."
-        ),
-        create_test_agent(
-            "Agent3", "You handle animal-related tasks."
-        ),
-    ]
+    """Test RoundRobinSwarm functionality."""
+    agents = create_test_agents(3, "RoundRobin")
+    
+    swarm = RoundRobinSwarm(
+        name="Test-Round-Robin-Swarm",
+        description="Test round robin swarm",
+        agents=agents,
+        max_loops=1,
+        verbose=False,
+    )
+    
+    result = swarm.run("Test round robin processing")
+    assert result is not None
 
-    swarm = RoundRobinSwarm(agents=agents)
-    tasks = [
-        "Count from 1 to 5",
-        "Name 3 primary colors",
-        "List 3 common pets",
-    ]
-
-    response = swarm.run(tasks)
-
-    assert response is not None
-    return {
-        "test_name": "test_round_robin_swarm",
-        "status": "passed",
-        "response": "RoundRobinSwarm completed",
-    }
+# ============================================================================
+# Router Tests
+# ============================================================================
 
 
 def test_swarm_router():
-    """Test SwarmRouter dynamic routing"""
-    agents = [
-        create_test_agent(
-            "DataAnalyst",
-            "You specialize in data analysis and statistics.",
-        ),
-        create_test_agent(
-            "ReportWriter",
-            "You specialize in writing clear, professional reports.",
-        ),
-    ]
-
+    """Test SwarmRouter functionality."""
+    agents = create_test_agents(2, "Router")
+    
     router = SwarmRouter(
-        name="analysis-router",
-        description="Routes analysis and reporting tasks to appropriate agents",
+        name="Test-Swarm-Router",
+        description="Test swarm router",
         agents=agents,
         swarm_type="SequentialWorkflow",
         max_loops=1,
+        verbose=False,
     )
-
-    response = router.run(
-        "Analyze customer satisfaction data and write a summary report."
-    )
-
-    assert response is not None
-    return {
-        "test_name": "test_swarm_router",
-        "status": "passed",
-        "response": "SwarmRouter completed",
-    }
-
-
-def test_groupchat():
-    """Test GroupChat functionality"""
-    agents = [
-        create_test_agent(
-            "Moderator",
-            "You are a discussion moderator who guides conversations.",
-        ),
-        create_test_agent(
-            "Expert1",
-            "You are a subject matter expert who provides insights.",
-        ),
-        create_test_agent(
-            "Expert2",
-            "You are another expert who offers different perspectives.",
-        ),
-    ]
-
-    groupchat = GroupChat(agents=agents, messages=[], max_round=2)
-
-    # GroupChat requires a different interface than other swarms
-    response = groupchat.run(
-        "Discuss the benefits and challenges of remote work."
-    )
-
-    assert response is not None
-    return {
-        "test_name": "test_groupchat",
-        "status": "passed",
-        "response": "GroupChat completed",
-    }
+    
+    result = router.run("Test routing functionality")
+    assert result is not None
 
 
 def test_multi_agent_router():
-    """Test MultiAgentRouter functionality"""
-    agents = [
-        create_test_agent(
-            "TechAgent", "You handle technology-related queries."
-        ),
-        create_test_agent(
-            "BusinessAgent", "You handle business-related queries."
-        ),
-        create_test_agent(
-            "GeneralAgent", "You handle general queries."
-        ),
-    ]
-
-    router = MultiAgentRouter(agents=agents)
-    response = router.run(
-        "What are the latest trends in business technology?"
+    """Test MultiAgentRouter functionality."""
+    agents = create_test_agents(3, "MultiRouter")
+    
+    router = MultiAgentRouter(
+        name="Test-Multi-Agent-Router",
+        description="Test multi-agent router",
+        agents=agents,
+        max_loops=1,
     )
+    
+    result = router.run("Test multi-agent routing")
+    assert result is not None
 
-    assert response is not None
-    return {
-        "test_name": "test_multi_agent_router",
-        "status": "passed",
-        "response": "MultiAgentRouter completed",
-    }
+# ============================================================================
+# Communication Tests
+# ============================================================================
+
+
+def test_groupchat():
+    """Test GroupChat functionality."""
+    agents = create_test_agents(3, "GroupChat")
+    
+    groupchat = GroupChat(
+        name="Test-Group-Chat",
+        description="Test group chat functionality",
+        agents=agents,
+        max_loops=1,
+        selector_agent=agents[0],
+    )
+    
+    result = groupchat.run("Test group discussion")
+    assert result is not None
 
 
 def test_interactive_groupchat():
-    """Test InteractiveGroupChat functionality"""
-    agents = [
-        create_test_agent(
-            "Facilitator", "You facilitate group discussions."
-        ),
-        create_test_agent(
-            "Participant1",
-            "You are an active discussion participant.",
-        ),
-        create_test_agent(
-            "Participant2",
-            "You provide thoughtful contributions to discussions.",
-        ),
-    ]
-
+    """Test InteractiveGroupChat functionality."""
+    agents = create_test_agents(2, "Interactive")
+    
     interactive_chat = InteractiveGroupChat(
-        agents=agents, max_loops=2
+        name="Test-Interactive-Chat",
+        description="Test interactive group chat",
+        agents=agents,
+        max_loops=1,
     )
+    
+    # Test basic initialization
+    assert interactive_chat.name == "Test-Interactive-Chat"
+    assert len(interactive_chat.agents) == 2
 
-    response = interactive_chat.run(
-        "Let's discuss the future of artificial intelligence."
-    )
-
-    assert response is not None
-    return {
-        "test_name": "test_interactive_groupchat",
-        "status": "passed",
-        "response": "InteractiveGroupChat completed",
-    }
+# ============================================================================
+# Tree Structure Tests
+# ============================================================================
 
 
 def test_forest_swarm():
-    """Test ForestSwarm tree-based structure"""
-    try:
-        # Create agents for different trees
-        tree1_agents = [
-            TreeAgent(
-                system_prompt="You analyze market trends",
-                agent_name="Market-Analyst",
-            ),
-            TreeAgent(
-                system_prompt="You provide financial insights",
-                agent_name="Financial-Advisor",
-            ),
-        ]
-
-        tree2_agents = [
-            TreeAgent(
-                system_prompt="You assess investment risks",
-                agent_name="Risk-Assessor",
-            ),
-            TreeAgent(
-                system_prompt="You create investment strategies",
-                agent_name="Strategy-Planner",
-            ),
-        ]
-
-        # Create trees
-        tree1 = Tree(tree_name="Analysis-Tree", agents=tree1_agents)
-        tree2 = Tree(tree_name="Strategy-Tree", agents=tree2_agents)
-
-        # Create ForestSwarm
-        forest = ForestSwarm(trees=[tree1, tree2])
-
-        response = forest.run(
-            "Analyze the current market and develop an investment strategy."
+    """Test ForestSwarm functionality."""
+    # Create tree agents
+    tree_agents = []
+    for i in range(3):
+        agent = create_test_agent(f"TreeAgent-{i+1}")
+        tree_agent = TreeAgent(
+            system_prompt=f"You are tree agent {i+1}",
+            agent=agent,
         )
+        tree_agents.append(tree_agent)
+    
+    # Create trees
+    trees = []
+    for i in range(2):
+        tree = Tree(
+            tree_name=f"Tree-{i+1}",
+            agents=tree_agents,
+        )
+        trees.append(tree)
+    
+    # Create forest
+    forest = ForestSwarm(
+        trees=trees,
+        verbose=False,
+    )
+    
+    result = forest.run("Test forest processing")
+    assert result is not None
 
-        assert response is not None
-        return {
-            "test_name": "test_forest_swarm",
-            "status": "passed",
-            "response": "ForestSwarm completed",
-        }
-    except Exception as e:
-        logger.error(f"ForestSwarm test failed: {e}")
-        return {
-            "test_name": "test_forest_swarm",
-            "status": "failed",
-            "error": str(e),
-        }
-
-
-# --- Performance & Features Tests ---
+# ============================================================================
+# Advanced Feature Tests
+# ============================================================================
 
 
 def test_streaming_mode():
-    """Test streaming response generation"""
-    agent = create_test_agent("StreamingAgent", streaming_on=True)
-    response = agent.run(
-        "Tell me a very short story about technology."
-    )
-
-    assert response is not None
-    return {
-        "test_name": "test_streaming_mode",
-        "status": "passed",
-        "response": "Streaming mode tested",
-    }
+    """Test agent streaming capabilities."""
+    agent = create_test_agent("StreamingAgent")
+    
+    # Test basic streaming (agent handles streaming internally)
+    result = agent.run("Generate a short story")
+    assert result is not None
+    assert isinstance(result, str)
 
 
 def test_agent_memory_persistence():
-    """Test agent memory functionality"""
-    agent = create_test_agent(
-        "MemoryAgent",
-        system_prompt="You remember information from previous conversations.",
-        return_history=True,
-    )
-
+    """Test agent memory and conversation persistence."""
+    agent = create_test_agent("MemoryAgent")
+    
     # First interaction
-    response1 = agent.run("My name is Alice. Please remember this.")
-    # Second interaction
-    response2 = agent.run("What is my name?")
-
-    assert response1 is not None and response2 is not None
-    return {
-        "test_name": "test_agent_memory_persistence",
-        "status": "passed",
-        "response": "Memory persistence tested",
-    }
+    result1 = agent.run("My name is Alice")
+    assert result1 is not None
+    
+    # Second interaction (memory may or may not persist depending on agent config)
+    result2 = agent.run("What is my name?")
+    assert result2 is not None
 
 
 def test_error_handling():
-    """Test agent error handling with various inputs"""
+    """Test error handling across different components."""
     agent = create_test_agent("ErrorTestAgent")
+    
+    # Test with empty task
+    with pytest.raises((ValueError, TypeError)):
+        agent.run("")
+    
+    # Test with None task
+    with pytest.raises((ValueError, TypeError)):
+        agent.run(None)
+    
+    # Test invalid workflow configuration
+    with pytest.raises((ValueError, TypeError)):
+        SequentialWorkflow(agents=None)
 
-    try:
-        # Test with empty task
-        response = agent.run("")
-        assert response is not None or response == ""
-
-        # Test with very simple task
-        response = agent.run("Hi")
-        assert response is not None
-
-        return {
-            "test_name": "test_error_handling",
-            "status": "passed",
-            "response": "Error handling tests passed",
-        }
-    except Exception as e:
-        return {
-            "test_name": "test_error_handling",
-            "status": "failed",
-            "error": str(e),
-        }
-
-
-# --- Integration Tests ---
+# ============================================================================
+# Integration Tests
+# ============================================================================
 
 
 def test_complex_workflow_integration():
-    """Test complex multi-agent workflow integration"""
-    try:
-        # Create specialized agents
-        researcher = create_test_agent(
-            "Researcher",
-            "You research topics thoroughly and gather information.",
-        )
-        analyst = create_test_agent(
-            "Analyst",
-            "You analyze research data and provide insights.",
-        )
-        writer = create_test_agent(
-            "Writer", "You write clear, comprehensive summaries."
-        )
-
-        # Test SequentialWorkflow
-        sequential = SequentialWorkflow(
-            name="research-workflow",
-            agents=[researcher, analyst, writer],
-            max_loops=1,
-        )
-
-        seq_response = sequential.run(
-            "Research AI trends, analyze them, and write a summary."
-        )
-
-        # Test ConcurrentWorkflow
-        concurrent = ConcurrentWorkflow(
-            name="parallel-analysis",
-            agents=[researcher, analyst],
-            max_loops=1,
-        )
-
-        conc_response = concurrent.run(
-            "What are the benefits and challenges of AI?"
-        )
-
-        assert seq_response is not None and conc_response is not None
-        return {
-            "test_name": "test_complex_workflow_integration",
-            "status": "passed",
-            "response": "Complex workflow integration completed",
-        }
-    except Exception as e:
-        logger.error(f"Complex workflow integration test failed: {e}")
-        return {
-            "test_name": "test_complex_workflow_integration",
-            "status": "failed",
-            "error": str(e),
-        }
-
-
-# --- Test Orchestrator ---
-
-
-def run_all_tests():
-    """Run all tests and generate a comprehensive report"""
-    logger.info("Starting Enhanced Swarms Comprehensive Test Suite")
-
-    tests_to_run = [
-        # Basic Tests
-        test_basic_agent_functionality,
-        test_agent_with_custom_prompt,
-        test_tool_execution_with_agent,
-        # Multi-Modal Tests
-        test_multimodal_execution,
-        # Workflow Tests
-        test_sequential_workflow,
-        test_concurrent_workflow,
-        # Advanced Swarm Tests
-        test_agent_rearrange,
-        test_mixture_of_agents,
-        test_spreadsheet_swarm,
-        test_hierarchical_swarm,
-        test_majority_voting,
-        test_round_robin_swarm,
-        test_swarm_router,
-        # test_groupchat,               ! there are still some issues in group chat
-        test_multi_agent_router,
-        # test_interactive_groupchat,
-        # test_forest_swarm,
-        # Performance & Features
-        test_streaming_mode,
-        test_agent_memory_persistence,
-        test_error_handling,
-        # Integration Tests
-        test_complex_workflow_integration,
-    ]
-
-    results = []
-    for test_func in tests_to_run:
-        test_name = test_func.__name__
-        try:
-            logger.info(f"Running test: {test_name}...")
-            result = test_func()
-            results.append(result)
-            logger.info(f"Test {test_name} PASSED.")
-        except Exception as e:
-            logger.error(f"Test {test_name} FAILED: {e}")
-            error_details = {
-                "test_name": test_name,
-                "status": "failed",
-                "error": str(e),
-                "response": "Test execution failed",
-            }
-            results.append(error_details)
-            # create_github_issue(error_details)  # Uncomment to enable GitHub issue creation
-
-    timestamp = generate_timestamp()
-    write_markdown_report(
-        results, f"comprehensive_test_report_{timestamp}"
+    """Test complex multi-component workflow integration."""
+    # Create specialized agents
+    research_agent = create_test_agent(
+        "Research-Agent",
+        system_prompt="You specialize in research and data gathering.",
     )
-
-    # Summary
-    total_tests = len(results)
-    passed_tests = sum(1 for r in results if r["status"] == "passed")
-    failed_tests = total_tests - passed_tests
-
-    logger.info(
-        f"Test Summary: {passed_tests}/{total_tests} passed ({(passed_tests/total_tests)*100:.1f}%)"
+    
+    analysis_agent = create_test_agent(
+        "Analysis-Agent", 
+        system_prompt="You specialize in data analysis and insights.",
     )
+    
+    summary_agent = create_test_agent(
+        "Summary-Agent",
+        system_prompt="You specialize in creating executive summaries.",
+    )
+    
+    # Create sequential workflow
+    workflow = SequentialWorkflow(
+        name="Complex-Integration-Workflow",
+        description="Multi-stage research and analysis workflow",
+        agents=[research_agent, analysis_agent, summary_agent],
+        max_loops=1,
+    )
+    
+    # Execute complex task
+    result = workflow.run(
+        "Research the benefits of renewable energy, analyze the data, and provide an executive summary"
+    )
+    
+    assert result is not None
+    assert isinstance(result, str)
+    
+    # Test with mixture of agents for comparison
+    moa = MixtureOfAgents(
+        name="Integration-MOA",
+        description="Mixture of agents for comparison",
+        agents=[research_agent, analysis_agent],
+        aggregator_agent=summary_agent,
+        layers=2,
+        max_loops=1,
+    )
+    
+    moa_result = moa.run("Compare renewable vs fossil fuel energy sources")
+    assert moa_result is not None
 
-    if failed_tests > 0:
-        logger.error(
-            f"{failed_tests} tests failed. Check the report and logs."
-        )
-        exit(1)
-    else:
-        logger.success("All tests passed successfully!")
+
+def test_multi_swarm_coordination():
+    """Test coordination between multiple swarm types."""
+    agents = create_test_agents(4, "Coordination")
+    
+    # Create different swarm types
+    sequential = SequentialWorkflow(
+        name="Sequential-Coordinator",
+        agents=agents[:2],
+        max_loops=1,
+    )
+    
+    concurrent = ConcurrentWorkflow(
+        name="Concurrent-Coordinator", 
+        agents=agents[2:],
+        max_loops=1,
+    )
+    
+    # Test both swarms on related tasks
+    seq_result = sequential.run("Analyze market trends step by step")
+    conc_result = concurrent.run("Analyze market trends from multiple perspectives")
+    
+    assert seq_result is not None
+    assert conc_result is not None
+    assert isinstance(conc_result, list)
+
+
+def test_agent_specialization():
+    """Test agents with different specializations working together."""
+    # Create specialized agents
+    math_agent = create_test_agent(
+        "Math-Specialist",
+        system_prompt="You are a mathematics expert. Solve problems step by step.",
+    )
+    
+    writing_agent = create_test_agent(
+        "Writing-Specialist", 
+        system_prompt="You are a writing expert. Create clear, engaging content.",
+    )
+    
+    code_agent = create_test_agent(
+        "Code-Specialist",
+        system_prompt="You are a programming expert. Write clean, efficient code.",
+    )
+    
+    # Test individual specializations
+    math_result = math_agent.run("Calculate the area of a circle with radius 5")
+    writing_result = writing_agent.run("Write a brief explanation of photosynthesis")
+    code_result = code_agent.run("Write a Python function to calculate fibonacci numbers")
+    
+    assert math_result is not None
+    assert writing_result is not None
+    assert code_result is not None
+    
+    # Test collaboration
+    workflow = SequentialWorkflow(
+        name="Specialist-Collaboration",
+        agents=[math_agent, writing_agent, code_agent],
+        max_loops=1,
+    )
+    
+    collab_result = workflow.run(
+        "Create a tutorial that explains the math behind fibonacci numbers, "
+        "writes it clearly, and provides code examples"
+    )
+    
+    assert collab_result is not None
 
 
 if __name__ == "__main__":
-    run_all_tests()
+    pytest.main([__file__, "-v"])

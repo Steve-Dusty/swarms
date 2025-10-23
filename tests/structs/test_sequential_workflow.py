@@ -23,13 +23,17 @@ def test_sequential_workflow_initialization_with_agents():
     agent1 = Agent(
         agent_name="Agent-1",
         agent_description="First test agent",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
     agent2 = Agent(
         agent_name="Agent-2",
         agent_description="Second test agent",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
@@ -56,19 +60,25 @@ def test_sequential_workflow_multi_agent_execution():
     agent1 = Agent(
         agent_name="Research-Agent",
         agent_description="Agent for research tasks",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
     agent2 = Agent(
         agent_name="Analysis-Agent",
         agent_description="Agent for analyzing research results",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
     agent3 = Agent(
         agent_name="Summary-Agent",
         agent_description="Agent for summarizing findings",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
@@ -92,13 +102,17 @@ def test_sequential_workflow_batched_execution():
     agent1 = Agent(
         agent_name="Data-Collector",
         agent_description="Agent for collecting data",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
     agent2 = Agent(
         agent_name="Data-Processor",
         agent_description="Agent for processing collected data",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
@@ -127,13 +141,17 @@ async def test_sequential_workflow_async_execution():
     agent1 = Agent(
         agent_name="Async-Research-Agent",
         agent_description="Agent for async research tasks",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
     agent2 = Agent(
         agent_name="Async-Analysis-Agent",
         agent_description="Agent for async analysis",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
@@ -154,19 +172,25 @@ async def test_sequential_workflow_concurrent_execution():
     agent1 = Agent(
         agent_name="Concurrent-Research-Agent",
         agent_description="Agent for concurrent research",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
     agent2 = Agent(
         agent_name="Concurrent-Analysis-Agent",
         agent_description="Agent for concurrent analysis",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
     agent3 = Agent(
         agent_name="Concurrent-Summary-Agent",
         agent_description="Agent for concurrent summarization",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
@@ -194,19 +218,25 @@ def test_sequential_workflow_with_multi_agent_collaboration():
     agent1 = Agent(
         agent_name="Market-Research-Agent",
         agent_description="Agent for market research",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
     agent2 = Agent(
         agent_name="Competitive-Analysis-Agent",
         agent_description="Agent for competitive analysis",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
     agent3 = Agent(
         agent_name="Strategy-Development-Agent",
         agent_description="Agent for developing business strategies",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
@@ -248,7 +278,9 @@ def test_sequential_workflow_error_handling():
         agent1 = Agent(
             agent_name="Test-Agent",
             agent_description="Test agent",
-            model_name="gpt-4o",
+            model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
             max_loops=1,
         )
         SequentialWorkflow(agents=[agent1], max_loops=0)
@@ -259,19 +291,25 @@ def test_sequential_workflow_agent_names_extraction():
     agent1 = Agent(
         agent_name="Alpha-Agent",
         agent_description="First agent",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
     agent2 = Agent(
         agent_name="Beta-Agent",
         agent_description="Second agent",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
     agent3 = Agent(
         agent_name="Gamma-Agent",
         agent_description="Third agent",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
@@ -291,13 +329,17 @@ def test_sequential_workflow_team_awareness():
     agent1 = Agent(
         agent_name="Team-Member-1",
         agent_description="First team member",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
     agent2 = Agent(
         agent_name="Team-Member-2",
         agent_description="Second team member",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
@@ -312,3 +354,7 @@ def test_sequential_workflow_team_awareness():
     # Test that workflow initializes successfully with team awareness
     assert workflow.team_awareness is True
     assert len(workflow.agents) == 2
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])

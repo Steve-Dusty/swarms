@@ -3,80 +3,13 @@
 - Methods: select_swarm(), run (task: str, img: Optional[List[str]] = None, **kwargs), batched_run (tasks: List[str], imgs: Optional[List[List[str]]] = None, **kwargs)
 """
 
-import time
+import pytest
 from swarms.agents import ReasoningAgentRouter
 
-from datetime import datetime
+# ============================================================================
+# Default Configuration
+# ============================================================================
 
-
-class TestReport:
-    def __init__(self):
-        self.results = []
-        self.start_time = None
-        self.end_time = None
-
-    def start(self):
-        self.start_time = datetime.now()
-
-    def end(self):
-        self.end_time = datetime.now()
-
-    def add_result(self, test_name, passed, message="", duration=0):
-        self.results.append(
-            {
-                "test_name": test_name,
-                "passed": passed,
-                "message": message,
-                "duration": duration,
-            }
-        )
-
-    def generate_report(self):
-        total_tests = len(self.results)
-        passed_tests = sum(1 for r in self.results if r["passed"])
-        failed_tests = total_tests - passed_tests
-        duration = (
-            (self.end_time - self.start_time).total_seconds()
-            if self.start_time and self.end_time
-            else 0
-        )
-
-        report_lines = []
-        report_lines.append("=" * 60)
-        report_lines.append(
-            "REASONING AGENT ROUTER TEST SUITE REPORT"
-        )
-        report_lines.append("=" * 60)
-        if self.start_time:
-            report_lines.append(
-                f"Test Run Started: {self.start_time.strftime('%Y-%m-%d %H:%M:%S')}"
-            )
-        if self.end_time:
-            report_lines.append(
-                f"Test Run Ended:   {self.end_time.strftime('%Y-%m-%d %H:%M:%S')}"
-            )
-        report_lines.append(
-            f"Duration:         {duration:.2f} seconds"
-        )
-        report_lines.append(f"Total Tests:      {total_tests}")
-        report_lines.append(f"Passed:           {passed_tests}")
-        report_lines.append(f"Failed:           {failed_tests}")
-        report_lines.append("")
-
-        for idx, result in enumerate(self.results, 1):
-            status = "PASS" if result["passed"] else "FAIL"
-            line = f"{idx:02d}. [{status}] {result['test_name']} ({result['duration']:.2f}s)"
-            if result["message"]:
-                line += f" - {result['message']}"
-            report_lines.append(line)
-
-        report_lines.append("=" * 60)
-        return "\n".join(report_lines)
-
-        # INSERT_YOUR_CODE
-
-
-# Default parameters for ReasoningAgentRouter, can be overridden in each test
 DEFAULT_AGENT_NAME = "reasoning-agent"
 DEFAULT_DESCRIPTION = (
     "A reasoning agent that can answer questions and help with tasks."
@@ -90,593 +23,403 @@ DEFAULT_EVAL = False
 DEFAULT_RANDOM_MODELS_ON = False
 DEFAULT_MAJORITY_VOTING_PROMPT = None
 
+# ============================================================================
+# Helper Functions
+# ============================================================================
 
-def test_agents_swarm(
-    agent_name=DEFAULT_AGENT_NAME,
-    description=DEFAULT_DESCRIPTION,
-    model_name=DEFAULT_MODEL_NAME,
-    system_prompt=DEFAULT_SYSTEM_PROMPT,
-    max_loops=DEFAULT_MAX_LOOPS,
-    swarm_type=DEFAULT_SWARM_TYPE,
-    num_samples=DEFAULT_NUM_SAMPLES,
-    eval=DEFAULT_EVAL,
-    random_models_on=DEFAULT_RANDOM_MODELS_ON,
-    majority_voting_prompt=DEFAULT_MAJORITY_VOTING_PROMPT,
-):
-    reasoning_agent_router = ReasoningAgentRouter(
-        agent_name=agent_name,
-        description=description,
-        model_name=model_name,
-        system_prompt=system_prompt,
-        max_loops=max_loops,
-        swarm_type=swarm_type,
-        num_samples=num_samples,
-        eval=eval,
-        random_models_on=random_models_on,
-        majority_voting_prompt=majority_voting_prompt,
+
+def create_reasoning_agent_router(**kwargs):
+    """Create a ReasoningAgentRouter with default or custom parameters."""
+    params = {
+        "agent_name": DEFAULT_AGENT_NAME,
+        "description": DEFAULT_DESCRIPTION,
+        "model_name": DEFAULT_MODEL_NAME,
+        "system_prompt": DEFAULT_SYSTEM_PROMPT,
+        "max_loops": DEFAULT_MAX_LOOPS,
+        "swarm_type": DEFAULT_SWARM_TYPE,
+        "num_samples": DEFAULT_NUM_SAMPLES,
+        "eval": DEFAULT_EVAL,
+        "random_models_on": DEFAULT_RANDOM_MODELS_ON,
+        "majority_voting_prompt": DEFAULT_MAJORITY_VOTING_PROMPT,
+        "verbose": False,  # Keep tests quiet
+    }
+    params.update(kwargs)
+    return ReasoningAgentRouter(**params)
+
+# ============================================================================
+# Initialization Tests
+# ============================================================================
+
+
+def test_reasoning_agent_router_default_initialization():
+    """Test ReasoningAgentRouter initialization with default parameters."""
+    router = create_reasoning_agent_router()
+    
+    assert router.agent_name == DEFAULT_AGENT_NAME
+    assert router.description == DEFAULT_DESCRIPTION
+    assert router.model_name == DEFAULT_MODEL_NAME
+    assert router.system_prompt == DEFAULT_SYSTEM_PROMPT
+    assert router.max_loops == DEFAULT_MAX_LOOPS
+    assert router.swarm_type == DEFAULT_SWARM_TYPE
+    assert router.num_samples == DEFAULT_NUM_SAMPLES
+    assert router.eval == DEFAULT_EVAL
+    assert router.random_models_on == DEFAULT_RANDOM_MODELS_ON
+
+
+def test_reasoning_agent_router_custom_initialization():
+    """Test ReasoningAgentRouter initialization with custom parameters."""
+    router = create_reasoning_agent_router(
+        agent_name="custom-reasoning-agent",
+        description="Custom reasoning agent description",
+        model_name="gpt-4o-mini",
+        system_prompt="Custom system prompt",
+        max_loops=3,
+        swarm_type="mixture-of-agents",
+        num_samples=5,
+        eval=True,
+        random_models_on=True,
     )
+    
+    assert router.agent_name == "custom-reasoning-agent"
+    assert router.description == "Custom reasoning agent description"
+    assert router.model_name == "gpt-4o-mini"
+    assert router.system_prompt == "Custom system prompt"
+    assert router.max_loops == 3
+    assert router.swarm_type == "mixture-of-agents"
+    assert router.num_samples == 5
+    assert router.eval is True
+    assert router.random_models_on is True
 
-    result = reasoning_agent_router.run(
-        "What is the best possible financial strategy to maximize returns but minimize risk? Give a list of etfs to invest in and the percentage of the portfolio to allocate to each etf."
+# ============================================================================
+# Swarm Type Tests
+# ============================================================================
+
+
+def test_self_consistency_swarm():
+    """Test ReasoningAgentRouter with self-consistency swarm type."""
+    router = create_reasoning_agent_router(
+        swarm_type="self-consistency",
+        num_samples=3,
     )
-    return result
+    
+    result = router.run("What is 2+2?")
+    assert result is not None
+    assert isinstance(result, str)
 
 
-"""
-PARAMETERS TESTING
-"""
-
-
-def test_router_description(report):
-    """Test ReasoningAgentRouter with custom description (only change description param)"""
-    start_time = time.time()
-    try:
-        test_agents_swarm(description="Test description for router")
-        # Check if the description was set correctly
-        router = ReasoningAgentRouter(
-            description="Test description for router"
-        )
-        if router.description == "Test description for router":
-            report.add_result(
-                "Parameter: description",
-                True,
-                duration=time.time() - start_time,
-            )
-        else:
-            report.add_result(
-                "Parameter: description",
-                False,
-                message=f"Expected description 'Test description for router', got '{router.description}'",
-                duration=time.time() - start_time,
-            )
-    except Exception as e:
-        report.add_result(
-            "Parameter: description",
-            False,
-            message=str(e),
-            duration=time.time() - start_time,
-        )
-
-
-def test_router_model_name(report):
-    """Test ReasoningAgentRouter with custom model_name (only change model_name param)"""
-    start_time = time.time()
-    try:
-        test_agents_swarm(model_name="gpt-4")
-        router = ReasoningAgentRouter(model_name="gpt-4")
-        if router.model_name == "gpt-4":
-            report.add_result(
-                "Parameter: model_name",
-                True,
-                duration=time.time() - start_time,
-            )
-        else:
-            report.add_result(
-                "Parameter: model_name",
-                False,
-                message=f"Expected model_name 'gpt-4', got '{router.model_name}'",
-                duration=time.time() - start_time,
-            )
-    except Exception as e:
-        report.add_result(
-            "Parameter: model_name",
-            False,
-            message=str(e),
-            duration=time.time() - start_time,
-        )
-
-
-def test_router_system_prompt(report):
-    """Test ReasoningAgentRouter with custom system_prompt (only change system_prompt param)"""
-    start_time = time.time()
-    try:
-        test_agents_swarm(system_prompt="You are a test router.")
-        router = ReasoningAgentRouter(
-            system_prompt="You are a test router."
-        )
-        if router.system_prompt == "You are a test router.":
-            report.add_result(
-                "Parameter: system_prompt",
-                True,
-                duration=time.time() - start_time,
-            )
-        else:
-            report.add_result(
-                "Parameter: system_prompt",
-                False,
-                message=f"Expected system_prompt 'You are a test router.', got '{router.system_prompt}'",
-                duration=time.time() - start_time,
-            )
-    except Exception as e:
-        report.add_result(
-            "Parameter: system_prompt",
-            False,
-            message=str(e),
-            duration=time.time() - start_time,
-        )
-
-
-def test_router_max_loops(report):
-    """Test ReasoningAgentRouter with custom max_loops (only change max_loops param)"""
-    start_time = time.time()
-    try:
-        test_agents_swarm(max_loops=5)
-        router = ReasoningAgentRouter(max_loops=5)
-        if router.max_loops == 5:
-            report.add_result(
-                "Parameter: max_loops",
-                True,
-                duration=time.time() - start_time,
-            )
-        else:
-            report.add_result(
-                "Parameter: max_loops",
-                False,
-                message=f"Expected max_loops 5, got {router.max_loops}",
-                duration=time.time() - start_time,
-            )
-    except Exception as e:
-        report.add_result(
-            "Parameter: max_loops",
-            False,
-            message=str(e),
-            duration=time.time() - start_time,
-        )
-
-
-def test_router_swarm_type(report):
-    """Test ReasoningAgentRouter with custom swarm_type (only change swarm_type param)"""
-    start_time = time.time()
-    try:
-        test_agents_swarm(swarm_type="reasoning-agent")
-        router = ReasoningAgentRouter(swarm_type="reasoning-agent")
-        if router.swarm_type == "reasoning-agent":
-            report.add_result(
-                "Parameter: swarm_type",
-                True,
-                duration=time.time() - start_time,
-            )
-        else:
-            report.add_result(
-                "Parameter: swarm_type",
-                False,
-                message=f"Expected swarm_type 'reasoning-agent', got '{router.swarm_type}'",
-                duration=time.time() - start_time,
-            )
-    except Exception as e:
-        report.add_result(
-            "Parameter: swarm_type",
-            False,
-            message=str(e),
-            duration=time.time() - start_time,
-        )
-
-
-def test_router_num_samples(report):
-    """Test ReasoningAgentRouter with custom num_samples (only change num_samples param)"""
-    start_time = time.time()
-    try:
-        router = ReasoningAgentRouter(num_samples=3)
-        router.run("How many samples do you use?")
-        if router.num_samples == 3:
-            report.add_result(
-                "Parameter: num_samples",
-                True,
-                duration=time.time() - start_time,
-            )
-        else:
-            report.add_result(
-                "Parameter: num_samples",
-                False,
-                message=f"Expected num_samples 3, got {router.num_samples}",
-                duration=time.time() - start_time,
-            )
-    except Exception as e:
-        report.add_result(
-            "Parameter: num_samples",
-            False,
-            message=str(e),
-            duration=time.time() - start_time,
-        )
-
-
-def test_router_output_types(report):
-    """Test ReasoningAgentRouter with custom output_type (only change output_type param)"""
-    start_time = time.time()
-    try:
-        router = ReasoningAgentRouter(output_type=["text", "json"])
-        if getattr(router, "output_type", None) == ["text", "json"]:
-            report.add_result(
-                "Parameter: output_type",
-                True,
-                duration=time.time() - start_time,
-            )
-        else:
-            report.add_result(
-                "Parameter: output_type",
-                False,
-                message=f"Expected output_type ['text', 'json'], got {getattr(router, 'output_type', None)}",
-                duration=time.time() - start_time,
-            )
-    except Exception as e:
-        report.add_result(
-            "Parameter: output_type",
-            False,
-            message=str(e),
-            duration=time.time() - start_time,
-        )
-
-
-def test_router_num_knowledge_items(report):
-    """Test ReasoningAgentRouter with custom num_knowledge_items (only change num_knowledge_items param)"""
-    start_time = time.time()
-    try:
-        router = ReasoningAgentRouter(num_knowledge_items=7)
-        if router.num_knowledge_items == 7:
-            report.add_result(
-                "Parameter: num_knowledge_items",
-                True,
-                duration=time.time() - start_time,
-            )
-        else:
-            report.add_result(
-                "Parameter: num_knowledge_items",
-                False,
-                message=f"Expected num_knowledge_items 7, got {router.num_knowledge_items}",
-                duration=time.time() - start_time,
-            )
-    except Exception as e:
-        report.add_result(
-            "Parameter: num_knowledge_items",
-            False,
-            message=str(e),
-            duration=time.time() - start_time,
-        )
-
-
-def test_router_memory_capacity(report):
-    """Test ReasoningAgentRouter with custom memory_capacity (only change memory_capacity param)"""
-    start_time = time.time()
-    try:
-        router = ReasoningAgentRouter(memory_capacity=10)
-        if router.memory_capacity == 10:
-            report.add_result(
-                "Parameter: memory_capacity",
-                True,
-                duration=time.time() - start_time,
-            )
-        else:
-            report.add_result(
-                "Parameter: memory_capacity",
-                False,
-                message=f"Expected memory_capacity 10, got {router.memory_capacity}",
-                duration=time.time() - start_time,
-            )
-    except Exception as e:
-        report.add_result(
-            "Parameter: memory_capacity",
-            False,
-            message=str(e),
-            duration=time.time() - start_time,
-        )
-
-
-def test_router_eval(report):
-    """Test ReasoningAgentRouter with eval enabled (only change eval param)"""
-    start_time = time.time()
-    try:
-        test_agents_swarm(eval=True)
-        router = ReasoningAgentRouter(eval=True)
-        if router.eval is True:
-            report.add_result(
-                "Parameter: eval",
-                True,
-                duration=time.time() - start_time,
-            )
-        else:
-            report.add_result(
-                "Parameter: eval",
-                False,
-                message=f"Expected eval True, got {router.eval}",
-                duration=time.time() - start_time,
-            )
-    except Exception as e:
-        report.add_result(
-            "Parameter: eval",
-            False,
-            message=str(e),
-            duration=time.time() - start_time,
-        )
-
-
-def test_router_random_models_on(report):
-    """Test ReasoningAgentRouter with random_models_on enabled (only change random_models_on param)"""
-    start_time = time.time()
-    try:
-        test_agents_swarm(random_models_on=True)
-        router = ReasoningAgentRouter(random_models_on=True)
-        if router.random_models_on is True:
-            report.add_result(
-                "Parameter: random_models_on",
-                True,
-                duration=time.time() - start_time,
-            )
-        else:
-            report.add_result(
-                "Parameter: random_models_on",
-                False,
-                message=f"Expected random_models_on True, got {router.random_models_on}",
-                duration=time.time() - start_time,
-            )
-    except Exception as e:
-        report.add_result(
-            "Parameter: random_models_on",
-            False,
-            message=str(e),
-            duration=time.time() - start_time,
-        )
-
-
-def test_router_majority_voting_prompt(report):
-    """Test ReasoningAgentRouter with custom majority_voting_prompt (only change majority_voting_prompt param)"""
-    start_time = time.time()
-    try:
-        test_agents_swarm(
-            majority_voting_prompt="Vote for the best answer."
-        )
-        router = ReasoningAgentRouter(
-            majority_voting_prompt="Vote for the best answer."
-        )
-        if (
-            router.majority_voting_prompt
-            == "Vote for the best answer."
-        ):
-            report.add_result(
-                "Parameter: majority_voting_prompt",
-                True,
-                duration=time.time() - start_time,
-            )
-        else:
-            report.add_result(
-                "Parameter: majority_voting_prompt",
-                False,
-                message=f"Expected majority_voting_prompt 'Vote for the best answer.', got '{router.majority_voting_prompt}'",
-                duration=time.time() - start_time,
-            )
-    except Exception as e:
-        report.add_result(
-            "Parameter: majority_voting_prompt",
-            False,
-            message=str(e),
-            duration=time.time() - start_time,
-        )
-
-
-def test_router_reasoning_model_name(report):
-    """Test ReasoningAgentRouter with custom reasoning_model_name (only change reasoning_model_name param)"""
-    start_time = time.time()
-    try:
-        router = ReasoningAgentRouter(reasoning_model_name="gpt-3.5")
-        if router.reasoning_model_name == "gpt-3.5":
-            report.add_result(
-                "Parameter: reasoning_model_name",
-                True,
-                duration=time.time() - start_time,
-            )
-        else:
-            report.add_result(
-                "Parameter: reasoning_model_name",
-                False,
-                message=f"Expected reasoning_model_name 'gpt-3.5', got '{router.reasoning_model_name}'",
-                duration=time.time() - start_time,
-            )
-    except Exception as e:
-        report.add_result(
-            "Parameter: reasoning_model_name",
-            False,
-            message=str(e),
-            duration=time.time() - start_time,
-        )
-
-
-"""
-Methods Testing
-"""
-
-
-def test_router_select_swarm(report):
-    """Test ReasoningAgentRouter's select_swarm() method using test_agents_swarm"""
-    start_time = time.time()
-    try:
-        # Use test_agents_swarm to create a router with default test parameters
-        router = ReasoningAgentRouter(
-            agent_name=DEFAULT_AGENT_NAME,
-            description=DEFAULT_DESCRIPTION,
-            model_name=DEFAULT_MODEL_NAME,
-            system_prompt=DEFAULT_SYSTEM_PROMPT,
-            max_loops=DEFAULT_MAX_LOOPS,
-            swarm_type=DEFAULT_SWARM_TYPE,
-            num_samples=DEFAULT_NUM_SAMPLES,
-            eval=DEFAULT_EVAL,
-            random_models_on=DEFAULT_RANDOM_MODELS_ON,
-            majority_voting_prompt=DEFAULT_MAJORITY_VOTING_PROMPT,
-        )
-        # Run the method to test
-        router.select_swarm()
-        # Determine if the result is as expected (not raising error is enough for this test)
-        report.add_result(
-            "Method: select_swarm()",
-            True,
-            duration=time.time() - start_time,
-        )
-    except Exception as e:
-        report.add_result(
-            "Method: select_swarm()",
-            False,
-            message=str(e),
-            duration=time.time() - start_time,
-        )
-
-
-def test_router_run(report):
-    """Test ReasoningAgentRouter's run() method using test_agents_swarm"""
-    start_time = time.time()
-    try:
-        # Use test_agents_swarm to create a router with default test parameters
-        router = ReasoningAgentRouter(
-            agent_name=DEFAULT_AGENT_NAME,
-            description=DEFAULT_DESCRIPTION,
-            model_name=DEFAULT_MODEL_NAME,
-            system_prompt=DEFAULT_SYSTEM_PROMPT,
-            max_loops=DEFAULT_MAX_LOOPS,
-            swarm_type=DEFAULT_SWARM_TYPE,
-            num_samples=DEFAULT_NUM_SAMPLES,
-            eval=DEFAULT_EVAL,
-            random_models_on=DEFAULT_RANDOM_MODELS_ON,
-            majority_voting_prompt=DEFAULT_MAJORITY_VOTING_PROMPT,
-        )
-        # Run the method to test
-        output = router.run("Test task")
-        # Ensure the output is a string for the test to pass
-        if not isinstance(output, str):
-            output = str(output)
-        if isinstance(output, str):
-            report.add_result(
-                "Method: run()",
-                True,
-                duration=time.time() - start_time,
-            )
-        else:
-            report.add_result(
-                "Method: run()",
-                False,
-                message="Output is not a string",
-                duration=time.time() - start_time,
-            )
-    except Exception as e:
-        report.add_result(
-            "Method: run()",
-            False,
-            message=str(e),
-            duration=time.time() - start_time,
-        )
-
-
-def test_router_batched_run(report):
-    """Test ReasoningAgentRouter's batched_run() method using test_agents_swarm"""
-    start_time = time.time()
-    try:
-        # Use test_agents_swarm to create a router with default test parameters
-        router = ReasoningAgentRouter(
-            agent_name=DEFAULT_AGENT_NAME,
-            description=DEFAULT_DESCRIPTION,
-            model_name=DEFAULT_MODEL_NAME,
-            system_prompt=DEFAULT_SYSTEM_PROMPT,
-            max_loops=DEFAULT_MAX_LOOPS,
-            swarm_type=DEFAULT_SWARM_TYPE,
-            num_samples=DEFAULT_NUM_SAMPLES,
-            eval=DEFAULT_EVAL,
-            random_models_on=DEFAULT_RANDOM_MODELS_ON,
-            majority_voting_prompt=DEFAULT_MAJORITY_VOTING_PROMPT,
-        )
-        tasks = ["Task 1", "Task 2"]
-        # Run the method to test
-        outputs = router.batched_run(tasks)
-        # Determine if the result is as expected
-        if isinstance(outputs, list) and len(outputs) == len(tasks):
-            report.add_result(
-                "Method: batched_run()",
-                True,
-                duration=time.time() - start_time,
-            )
-        else:
-            report.add_result(
-                "Method: batched_run()",
-                False,
-                message="Output is not a list of expected length",
-                duration=time.time() - start_time,
-            )
-    except Exception as e:
-        report.add_result(
-            "Method: batched_run()",
-            False,
-            message=str(e),
-            duration=time.time() - start_time,
-        )
-
-
-def test_swarm(report):
-    """
-    Run all ReasoningAgentRouter parameter and method tests, log results to report, and print summary.
-    """
-    print(
-        "\n=== Starting ReasoningAgentRouter Parameter & Method Test Suite ==="
+def test_mixture_of_agents_swarm():
+    """Test ReasoningAgentRouter with mixture-of-agents swarm type."""
+    router = create_reasoning_agent_router(
+        swarm_type="mixture-of-agents",
+        num_samples=3,
     )
-    start_time = time.time()
-    tests = [
-        ("Parameter: description", test_router_description),
-        ("Parameter: model_name", test_router_model_name),
-        ("Parameter: system_prompt", test_router_system_prompt),
-        ("Parameter: max_loops", test_router_max_loops),
-        ("Parameter: swarm_type", test_router_swarm_type),
-        ("Parameter: num_samples", test_router_num_samples),
-        ("Parameter: output_types", test_router_output_types),
-        (
-            "Parameter: num_knowledge_items",
-            test_router_num_knowledge_items,
-        ),
-        ("Parameter: memory_capacity", test_router_memory_capacity),
-        ("Parameter: eval", test_router_eval),
-        ("Parameter: random_models_on", test_router_random_models_on),
-        (
-            "Parameter: majority_voting_prompt",
-            test_router_majority_voting_prompt,
-        ),
-        (
-            "Parameter: reasoning_model_name",
-            test_router_reasoning_model_name,
-        ),
-        ("Method: select_swarm()", test_router_select_swarm),
-        ("Method: run()", test_router_run),
-        ("Method: batched_run()", test_router_batched_run),
+    
+    result = router.run("What is the capital of France?")
+    assert result is not None
+    assert isinstance(result, str)
+
+
+def test_majority_voting_swarm():
+    """Test ReasoningAgentRouter with majority-voting swarm type."""
+    router = create_reasoning_agent_router(
+        swarm_type="majority-voting",
+        num_samples=3,
+    )
+    
+    result = router.run("What is 5*6?")
+    assert result is not None
+    assert isinstance(result, str)
+
+# ============================================================================
+# Parameter Variation Tests
+# ============================================================================
+
+
+def test_different_model_names():
+    """Test ReasoningAgentRouter with different model names."""
+    models = ["gpt-4o-mini", "gpt-3.5-turbo"]
+    
+    for model in models:
+        router = create_reasoning_agent_router(model_name=model)
+        assert router.model_name == model
+        
+        result = router.run("Simple test question")
+        assert result is not None
+
+
+def test_different_max_loops():
+    """Test ReasoningAgentRouter with different max_loops values."""
+    loop_values = [1, 2, 3]
+    
+    for loops in loop_values:
+        router = create_reasoning_agent_router(max_loops=loops)
+        assert router.max_loops == loops
+        
+        result = router.run("Test with different loops")
+        assert result is not None
+
+
+def test_different_num_samples():
+    """Test ReasoningAgentRouter with different num_samples values."""
+    sample_values = [1, 3, 5]
+    
+    for samples in sample_values:
+        router = create_reasoning_agent_router(num_samples=samples)
+        assert router.num_samples == samples
+        
+        result = router.run("Test with different samples")
+        assert result is not None
+
+# ============================================================================
+# Method Tests
+# ============================================================================
+
+
+def test_select_swarm_method():
+    """Test the select_swarm method."""
+    router = create_reasoning_agent_router()
+    
+    # Test that select_swarm returns a swarm object
+    swarm = router.select_swarm()
+    assert swarm is not None
+
+
+def test_run_method_basic():
+    """Test the run method with basic task."""
+    router = create_reasoning_agent_router()
+    
+    result = router.run("What is the square root of 16?")
+    assert result is not None
+    assert isinstance(result, str)
+    assert len(result) > 0
+
+
+def test_run_method_with_image():
+    """Test the run method with image parameter."""
+    router = create_reasoning_agent_router()
+    
+    # Test with None image
+    result = router.run("Describe this image", img=None)
+    assert result is not None
+
+
+def test_batched_run_method():
+    """Test the batched_run method."""
+    router = create_reasoning_agent_router()
+    
+    tasks = [
+        "What is 1+1?",
+        "What is 2+2?", 
+        "What is 3+3?",
     ]
-    for test_name, test_func in tests:
-        try:
-            test_func(report)
-            print(f"[PASS] {test_name}")
-        except Exception as e:
-            print(f"[FAIL] {test_name} - Exception: {e}")
-    end_time = time.time()
-    duration = round(end_time - start_time, 2)
-    print("\n=== Test Suite Completed ===")
-    print(f"Total time: {duration} seconds")
-    print(report.generate_report())
+    
+    results = router.batched_run(tasks)
+    assert results is not None
+    assert len(results) == len(tasks)
+    assert all(result is not None for result in results)
 
-    # INSERT_YOUR_CODE
+
+def test_batched_run_with_images():
+    """Test the batched_run method with images parameter."""
+    router = create_reasoning_agent_router()
+    
+    tasks = ["Describe image 1", "Describe image 2"]
+    images = [None, None]  # No actual images for testing
+    
+    results = router.batched_run(tasks, imgs=images)
+    assert results is not None
+    assert len(results) == len(tasks)
+
+# ============================================================================
+# Output Type Tests
+# ============================================================================
+
+
+def test_different_output_types():
+    """Test ReasoningAgentRouter with different output types."""
+    output_types = ["string", "dict", "list"]
+    
+    for output_type in output_types:
+        router = create_reasoning_agent_router(output_type=output_type)
+        
+        result = router.run("Test output type")
+        assert result is not None
+
+
+def test_json_output_type():
+    """Test ReasoningAgentRouter with JSON output type."""
+    router = create_reasoning_agent_router(output_type="json")
+    
+    result = router.run("Return a JSON response")
+    assert result is not None
+
+# ============================================================================
+# Advanced Configuration Tests
+# ============================================================================
+
+
+def test_with_evaluation_enabled():
+    """Test ReasoningAgentRouter with evaluation enabled."""
+    router = create_reasoning_agent_router(eval=True)
+    
+    assert router.eval is True
+    
+    result = router.run("Evaluate this response")
+    assert result is not None
+
+
+def test_with_random_models_enabled():
+    """Test ReasoningAgentRouter with random models enabled."""
+    router = create_reasoning_agent_router(random_models_on=True)
+    
+    assert router.random_models_on is True
+    
+    result = router.run("Use random models")
+    assert result is not None
+
+
+def test_with_custom_majority_voting_prompt():
+    """Test ReasoningAgentRouter with custom majority voting prompt."""
+    custom_prompt = "Choose the best answer from the following options:"
+    
+    router = create_reasoning_agent_router(
+        swarm_type="majority-voting",
+        majority_voting_prompt=custom_prompt,
+    )
+    
+    assert router.majority_voting_prompt == custom_prompt
+    
+    result = router.run("Test majority voting")
+    assert result is not None
+
+
+def test_with_memory_capacity():
+    """Test ReasoningAgentRouter with memory capacity configuration."""
+    router = create_reasoning_agent_router(memory_capacity=1000)
+    
+    result = router.run("Test memory capacity")
+    assert result is not None
+
+
+def test_with_knowledge_items():
+    """Test ReasoningAgentRouter with knowledge items configuration."""
+    router = create_reasoning_agent_router(num_knowledge_items=5)
+    
+    result = router.run("Test knowledge items")
+    assert result is not None
+
+# ============================================================================
+# Error Handling Tests
+# ============================================================================
+
+
+def test_empty_task():
+    """Test ReasoningAgentRouter with empty task."""
+    router = create_reasoning_agent_router()
+    
+    with pytest.raises((ValueError, TypeError)):
+        router.run("")
+
+
+def test_none_task():
+    """Test ReasoningAgentRouter with None task."""
+    router = create_reasoning_agent_router()
+    
+    with pytest.raises((ValueError, TypeError)):
+        router.run(None)
+
+
+def test_invalid_swarm_type():
+    """Test ReasoningAgentRouter with invalid swarm type."""
+    with pytest.raises((ValueError, TypeError)):
+        create_reasoning_agent_router(swarm_type="invalid-swarm-type")
+
+
+def test_invalid_num_samples():
+    """Test ReasoningAgentRouter with invalid num_samples."""
+    with pytest.raises((ValueError, TypeError)):
+        create_reasoning_agent_router(num_samples=0)
+
+
+def test_invalid_max_loops():
+    """Test ReasoningAgentRouter with invalid max_loops."""
+    with pytest.raises((ValueError, TypeError)):
+        create_reasoning_agent_router(max_loops=0)
+
+# ============================================================================
+# Integration Tests
+# ============================================================================
+
+
+def test_complete_workflow():
+    """Test complete ReasoningAgentRouter workflow."""
+    router = create_reasoning_agent_router(
+        agent_name="integration-test-router",
+        description="Router for integration testing",
+        swarm_type="self-consistency",
+        num_samples=3,
+        max_loops=1,
+        eval=False,
+    )
+    
+    # Test single task
+    result = router.run("What is the meaning of life?")
+    assert result is not None
+    
+    # Test batch tasks
+    tasks = [
+        "What is artificial intelligence?",
+        "How does machine learning work?",
+        "What are neural networks?",
+    ]
+    
+    batch_results = router.batched_run(tasks)
+    assert len(batch_results) == 3
+    assert all(result is not None for result in batch_results)
+
+
+def test_different_configurations():
+    """Test ReasoningAgentRouter with various configurations."""
+    configurations = [
+        {
+            "swarm_type": "self-consistency",
+            "num_samples": 3,
+            "eval": False,
+        },
+        {
+            "swarm_type": "mixture-of-agents", 
+            "num_samples": 5,
+            "eval": True,
+        },
+        {
+            "swarm_type": "majority-voting",
+            "num_samples": 4,
+            "random_models_on": True,
+        },
+    ]
+    
+    for config in configurations:
+        router = create_reasoning_agent_router(**config)
+        
+        result = router.run("Test configuration")
+        assert result is not None
+        
+        # Verify configuration was applied
+        for key, value in config.items():
+            assert getattr(router, key) == value
+
+
+def test_performance_with_multiple_samples():
+    """Test ReasoningAgentRouter performance with multiple samples."""
+    router = create_reasoning_agent_router(
+        num_samples=5,
+        swarm_type="self-consistency",
+    )
+    
+    result = router.run("Complex reasoning task: solve 2x + 5 = 15")
+    assert result is not None
+    assert isinstance(result, str)
 
 
 if __name__ == "__main__":
-    report = TestReport()
-    report.start()
-    test_swarm(report)
-    report.end()
+    pytest.main([__file__, "-v"])

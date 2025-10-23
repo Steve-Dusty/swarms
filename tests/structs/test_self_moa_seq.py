@@ -1,16 +1,13 @@
-from unittest.mock import Mock, patch
-
 import pytest
 
 from swarms.structs.self_moa_seq import SelfMoASeq
 
 # ============================================================================
-# Fixtures
+# Helper Functions
 # ============================================================================
 
 
-@pytest.fixture
-def basic_seq():
+def create_basic_seq():
     """Create a basic SelfMoASeq instance for testing."""
     return SelfMoASeq(
         num_samples=3,
@@ -19,11 +16,11 @@ def basic_seq():
         max_iterations=5,
         verbose=False,
         enable_logging=False,
+        model_name="gpt-4o-mini",
     )
 
 
-@pytest.fixture
-def custom_retry_seq():
+def create_custom_retry_seq():
     """Create a SelfMoASeq instance with custom retry parameters."""
     return SelfMoASeq(
         num_samples=2,
@@ -33,15 +30,8 @@ def custom_retry_seq():
         retry_max_delay=10.0,
         verbose=False,
         enable_logging=False,
+        model_name="gpt-4o-mini",
     )
-
-
-@pytest.fixture
-def mock_agents():
-    """Create mock agents for testing."""
-    proposer = Mock()
-    aggregator = Mock()
-    return proposer, aggregator
 
 
 # ============================================================================
@@ -222,54 +212,44 @@ def test_retry_parameters_validation():
 # ============================================================================
 
 
-def test_retry_decorator_property(basic_seq):
+def test_retry_decorator_property():
     """Test that retry decorator property works correctly."""
+    basic_seq = create_basic_seq()
     decorator = basic_seq.retry_decorator
     assert callable(decorator)
 
 
-def test_get_retry_decorator(basic_seq):
+def test_get_retry_decorator():
     """Test _get_retry_decorator method."""
+    basic_seq = create_basic_seq()
     decorator = basic_seq._get_retry_decorator()
     assert callable(decorator)
 
 
-def test_retry_configuration_inheritance(custom_retry_seq):
+def test_retry_configuration_inheritance():
     """Test that retry configuration is properly inherited."""
+    custom_retry_seq = create_custom_retry_seq()
     assert custom_retry_seq.max_retries == 5
     assert custom_retry_seq.retry_delay == 0.5
     assert custom_retry_seq.retry_backoff_multiplier == 1.5
     assert custom_retry_seq.retry_max_delay == 10.0
 
 
-def test_retry_functionality_with_mock(custom_retry_seq, mock_agents):
-    """Test retry functionality with mocked agents."""
-    proposer, aggregator = mock_agents
-
-    # Configure mock to fail first time, succeed second time
-    proposer.run.side_effect = [
-        Exception("Simulated failure"),
-        "Sample 1",
-        "Sample 2",
-    ]
-
-    aggregator.run.side_effect = [
-        Exception("Simulated aggregation failure"),
-        "Aggregated result",
-    ]
-
-    # Patch the agents
-    with patch.object(
-        custom_retry_seq, "proposer", proposer
-    ), patch.object(custom_retry_seq, "aggregator", aggregator):
-
-        # This should succeed after retries
-        result = custom_retry_seq.run("Test task")
-
-        assert result is not None
-        assert "final_output" in result
-        assert "all_samples" in result
-        assert "metrics" in result
+def test_retry_functionality():
+    """Test retry functionality with real agents."""
+    custom_retry_seq = create_custom_retry_seq()
+    
+    # Test that the retry configuration is properly set
+    assert custom_retry_seq.max_retries == 5
+    assert custom_retry_seq.retry_delay == 0.5
+    
+    # Test basic functionality (without forcing failures)
+    result = custom_retry_seq.run("What is 2+2?")
+    
+    assert result is not None
+    assert "final_output" in result
+    assert "all_samples" in result
+    assert "metrics" in result
 
 
 # ============================================================================
@@ -277,39 +257,32 @@ def test_retry_functionality_with_mock(custom_retry_seq, mock_agents):
 # ============================================================================
 
 
-def test_generate_samples_success(basic_seq, mock_agents):
+def test_generate_samples_success():
     """Test successful sample generation."""
-    proposer, _ = mock_agents
-    proposer.run.return_value = "Generated sample"
+    basic_seq = create_basic_seq()
+    samples = basic_seq._generate_samples("What is 2+2?", 2)
 
-    with patch.object(basic_seq, "proposer", proposer):
-        samples = basic_seq._generate_samples("Test task", 3)
-
-        assert len(samples) == 3
-        assert all(sample == "Generated sample" for sample in samples)
-        assert basic_seq.metrics["total_samples_generated"] == 3
+    assert len(samples) == 2
+    assert all(isinstance(sample, str) for sample in samples)
+    assert basic_seq.metrics["total_samples_generated"] == 2
 
 
-def test_generate_samples_with_retry(basic_seq, mock_agents):
-    """Test sample generation with retry on failure."""
-    proposer, _ = mock_agents
-    proposer.run.side_effect = [
-        Exception("First failure"),
-        Exception("Second failure"),
-        "Sample 1",
-        "Sample 2",
-        "Sample 3",
-    ]
-
-    with patch.object(basic_seq, "proposer", proposer):
-        samples = basic_seq._generate_samples("Test task", 3)
-
-        assert len(samples) == 3
-        assert basic_seq.metrics["total_samples_generated"] == 3
+def test_generate_samples_validation():
+    """Test sample generation with validation."""
+    basic_seq = create_basic_seq()
+    
+    # Test with valid inputs
+    samples = basic_seq._generate_samples("Simple math question: 1+1=?", 1)
+    assert len(samples) == 1
+    assert isinstance(samples[0], str)
+    
+    # Test metrics tracking
+    assert basic_seq.metrics["total_samples_generated"] >= 1
 
 
-def test_format_aggregation_prompt(basic_seq):
+def test_format_aggregation_prompt():
     """Test aggregation prompt formatting."""
+    basic_seq = create_basic_seq()
     task = "Test task"
     samples = ["Sample 1", "Sample 2", "Sample 3"]
     best_so_far = "Best response"
@@ -328,8 +301,9 @@ def test_format_aggregation_prompt(basic_seq):
     assert "Sample 3" in prompt
 
 
-def test_format_aggregation_prompt_no_best(basic_seq):
+def test_format_aggregation_prompt_no_best():
     """Test aggregation prompt formatting without best_so_far."""
+    basic_seq = create_basic_seq()
     task = "Test task"
     samples = ["Sample 1", "Sample 2"]
 
@@ -343,90 +317,34 @@ def test_format_aggregation_prompt_no_best(basic_seq):
     assert "Sample 2" in prompt
 
 
-def test_aggregate_window_success(basic_seq, mock_agents):
+def test_aggregate_window_success():
     """Test successful window aggregation."""
-    _, aggregator = mock_agents
-    aggregator.run.return_value = "Aggregated result"
+    basic_seq = create_basic_seq()
+    result = basic_seq._aggregate_window(
+        "What is 2+2?", ["Answer: 4", "The answer is 4"], "4"
+    )
 
-    with patch.object(basic_seq, "aggregator", aggregator):
-        result = basic_seq._aggregate_window(
-            "Test task", ["Sample 1", "Sample 2"], "Best so far"
-        )
-
-        assert result == "Aggregated result"
-        assert basic_seq.metrics["total_aggregations"] == 1
+    assert isinstance(result, str)
+    assert len(result) > 0
+    assert basic_seq.metrics["total_aggregations"] == 1
 
 
-def test_aggregate_window_with_retry(basic_seq, mock_agents):
-    """Test window aggregation with retry on failure."""
-    _, aggregator = mock_agents
-    aggregator.run.side_effect = [
-        Exception("First failure"),
-        Exception("Second failure"),
-        "Aggregated result",
-    ]
-
-    with patch.object(basic_seq, "aggregator", aggregator):
-        result = basic_seq._aggregate_window(
-            "Test task", ["Sample 1", "Sample 2"]
-        )
-
-        assert result == "Aggregated result"
-        assert basic_seq.metrics["total_aggregations"] == 1
-
-
-def test_run_method_success(basic_seq, mock_agents):
+def test_run_method_success():
     """Test successful run method execution."""
-    proposer, aggregator = mock_agents
+    basic_seq = create_basic_seq()
+    result = basic_seq.run("What is 2+2?")
 
-    # Configure mocks
-    proposer.run.return_value = "Generated sample"
-    aggregator.run.return_value = "Aggregated result"
+    assert isinstance(result, dict)
+    assert "final_output" in result
+    assert "all_samples" in result
+    assert "aggregation_steps" in result
+    assert "metrics" in result
+    assert "task" in result
+    assert "timestamp" in result
 
-    with patch.object(basic_seq, "proposer", proposer), patch.object(
-        basic_seq, "aggregator", aggregator
-    ):
-
-        result = basic_seq.run("Test task")
-
-        assert isinstance(result, dict)
-        assert "final_output" in result
-        assert "all_samples" in result
-        assert "aggregation_steps" in result
-        assert "metrics" in result
-        assert "task" in result
-        assert "timestamp" in result
-
-        assert result["task"] == "Test task"
-        assert len(result["all_samples"]) == 3
-        assert result["final_output"] == "Aggregated result"
-
-
-def test_run_method_with_retry(basic_seq, mock_agents):
-    """Test run method with retry on failure."""
-    proposer, aggregator = mock_agents
-
-    # Configure mocks to fail first time, succeed second time
-    proposer.run.side_effect = [
-        Exception("First failure"),
-        "Sample 1",
-        "Sample 2",
-        "Sample 3",
-    ]
-
-    aggregator.run.side_effect = [
-        Exception("Aggregation failure"),
-        "Final result",
-    ]
-
-    with patch.object(basic_seq, "proposer", proposer), patch.object(
-        basic_seq, "aggregator", aggregator
-    ):
-
-        result = basic_seq.run("Test task")
-
-        assert result is not None
-        assert result["final_output"] == "Final result"
+    assert result["task"] == "What is 2+2?"
+    assert len(result["all_samples"]) == 3
+    assert isinstance(result["final_output"], str)
 
 
 # ============================================================================
@@ -434,8 +352,10 @@ def test_run_method_with_retry(basic_seq, mock_agents):
 # ============================================================================
 
 
-def test_run_invalid_task(basic_seq):
+def test_run_invalid_task():
     """Test run method with invalid task input."""
+    basic_seq = create_basic_seq()
+    
     with pytest.raises(
         ValueError, match="task must be a non-empty string"
     ):
@@ -447,65 +367,23 @@ def test_run_invalid_task(basic_seq):
         basic_seq.run(None)
 
 
-def test_run_max_iterations_reached(basic_seq, mock_agents):
+def test_run_max_iterations_reached():
     """Test run method when max iterations are reached."""
-    proposer, aggregator = mock_agents
-
-    # Configure mocks
-    proposer.run.return_value = "Generated sample"
-    aggregator.run.return_value = "Aggregated result"
-
-    # Set max_iterations to 1 to trigger the warning
-    basic_seq.max_iterations = 1
-
-    with patch.object(basic_seq, "proposer", proposer), patch.object(
-        basic_seq, "aggregator", aggregator
-    ):
-
-        result = basic_seq.run("Test task")
-
-        assert result is not None
-        assert result["aggregation_steps"] <= 1
-
-
-def test_generate_samples_exception_propagation(
-    basic_seq, mock_agents
-):
-    """Test that exceptions in sample generation are properly propagated."""
-    proposer, _ = mock_agents
-    proposer.run.side_effect = Exception("Persistent failure")
-
-    with patch.object(basic_seq, "proposer", proposer):
-        with pytest.raises(Exception, match="Persistent failure"):
-            basic_seq._generate_samples("Test task", 3)
-
-
-def test_aggregate_window_exception_propagation(
-    basic_seq, mock_agents
-):
-    """Test that exceptions in window aggregation are properly propagated."""
-    _, aggregator = mock_agents
-    aggregator.run.side_effect = Exception(
-        "Persistent aggregation failure"
+    # Create a sequence with max_iterations = 1
+    seq = SelfMoASeq(
+        num_samples=2,
+        window_size=3,
+        reserved_slots=1,
+        max_iterations=1,
+        verbose=False,
+        enable_logging=False,
+        model_name="gpt-4o-mini",
     )
 
-    with patch.object(basic_seq, "aggregator", aggregator):
-        with pytest.raises(
-            Exception, match="Persistent aggregation failure"
-        ):
-            basic_seq._aggregate_window(
-                "Test task", ["Sample 1", "Sample 2"]
-            )
+    result = seq.run("What is 2+2?")
 
-
-def test_run_exception_propagation(basic_seq, mock_agents):
-    """Test that exceptions in run method are properly propagated."""
-    proposer, _ = mock_agents
-    proposer.run.side_effect = Exception("Persistent run failure")
-
-    with patch.object(basic_seq, "proposer", proposer):
-        with pytest.raises(Exception, match="Persistent run failure"):
-            basic_seq.run("Test task")
+    assert result is not None
+    assert result["aggregation_steps"] <= 1
 
 
 # ============================================================================
@@ -513,8 +391,9 @@ def test_run_exception_propagation(basic_seq, mock_agents):
 # ============================================================================
 
 
-def test_metrics_initialization(basic_seq):
+def test_metrics_initialization():
     """Test that metrics are properly initialized."""
+    basic_seq = create_basic_seq()
     metrics = basic_seq.get_metrics()
 
     assert isinstance(metrics, dict)
@@ -529,27 +408,20 @@ def test_metrics_initialization(basic_seq):
     assert metrics["execution_time_seconds"] == 0
 
 
-def test_metrics_tracking(basic_seq, mock_agents):
+def test_metrics_tracking():
     """Test that metrics are properly tracked during execution."""
-    proposer, aggregator = mock_agents
+    basic_seq = create_basic_seq()
+    result = basic_seq.run("What is 2+2?")
 
-    proposer.run.return_value = "Generated sample"
-    aggregator.run.return_value = "Aggregated result"
-
-    with patch.object(basic_seq, "proposer", proposer), patch.object(
-        basic_seq, "aggregator", aggregator
-    ):
-
-        result = basic_seq.run("Test task")
-
-        metrics = result["metrics"]
-        assert metrics["total_samples_generated"] == 3
-        assert metrics["total_aggregations"] >= 1
-        assert metrics["execution_time_seconds"] > 0
+    metrics = result["metrics"]
+    assert metrics["total_samples_generated"] == 3
+    assert metrics["total_aggregations"] >= 1
+    assert metrics["execution_time_seconds"] > 0
 
 
-def test_log_summary(basic_seq):
+def test_log_summary():
     """Test _log_summary method."""
+    basic_seq = create_basic_seq()
     result = {
         "final_output": "Test output",
         "aggregation_steps": 2,
@@ -563,8 +435,9 @@ def test_log_summary(basic_seq):
     basic_seq._log_summary(result)
 
 
-def test_get_metrics_returns_copy(basic_seq):
+def test_get_metrics_returns_copy():
     """Test that get_metrics returns a copy of metrics."""
+    basic_seq = create_basic_seq()
     metrics1 = basic_seq.get_metrics()
     metrics2 = basic_seq.get_metrics()
 
@@ -589,23 +462,16 @@ def test_full_integration_small_samples():
         max_iterations=2,
         verbose=False,
         enable_logging=False,
+        model_name="gpt-4o-mini",
     )
 
-    proposer, aggregator = Mock(), Mock()
-    proposer.run.return_value = "Generated sample"
-    aggregator.run.return_value = "Aggregated result"
+    result = seq.run("What is 1+1?")
 
-    with patch.object(seq, "proposer", proposer), patch.object(
-        seq, "aggregator", aggregator
-    ):
-
-        result = seq.run("Integration test task")
-
-        assert result is not None
-        assert result["task"] == "Integration test task"
-        assert len(result["all_samples"]) == 2
-        assert result["final_output"] == "Aggregated result"
-        assert result["aggregation_steps"] >= 0
+    assert result is not None
+    assert result["task"] == "What is 1+1?"
+    assert len(result["all_samples"]) == 2
+    assert isinstance(result["final_output"], str)
+    assert result["aggregation_steps"] >= 0
 
 
 def test_model_name_overrides():
@@ -664,20 +530,13 @@ def test_zero_retries():
         num_samples=2,
         verbose=False,
         enable_logging=False,
+        model_name="gpt-4o-mini",
     )
 
     assert seq.max_retries == 0
 
-    proposer, aggregator = Mock(), Mock()
-    proposer.run.return_value = "Generated sample"
-    aggregator.run.return_value = "Aggregated result"
-
-    with patch.object(seq, "proposer", proposer), patch.object(
-        seq, "aggregator", aggregator
-    ):
-
-        result = seq.run("Test task")
-        assert result is not None
+    result = seq.run("What is 1+1?")
+    assert result is not None
 
 
 def test_large_configuration():

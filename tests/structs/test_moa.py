@@ -1,3 +1,4 @@
+import pytest
 from swarms.structs.mixture_of_agents import MixtureOfAgents
 from swarms.structs.agent import Agent
 
@@ -8,21 +9,27 @@ def test_mixture_of_agents_basic_initialization():
     research_agent = Agent(
         agent_name="Research-Specialist",
         agent_description="Specialist in research and data collection",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
     analysis_agent = Agent(
         agent_name="Analysis-Expert",
         agent_description="Expert in data analysis and insights",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
     strategy_agent = Agent(
         agent_name="Strategy-Consultant",
         agent_description="Strategy and planning consultant",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
@@ -30,7 +37,9 @@ def test_mixture_of_agents_basic_initialization():
     aggregator = Agent(
         agent_name="Aggregator-Agent",
         agent_description="Agent that aggregates responses from other agents",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
@@ -62,28 +71,36 @@ def test_mixture_of_agents_execution():
     market_analyst = Agent(
         agent_name="Market-Analyst",
         agent_description="Market analysis and trend specialist",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
     technical_expert = Agent(
         agent_name="Technical-Expert",
         agent_description="Technical feasibility and implementation specialist",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
     financial_analyst = Agent(
         agent_name="Financial-Analyst",
         agent_description="Financial modeling and ROI specialist",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
     risk_assessor = Agent(
         agent_name="Risk-Assessor",
         agent_description="Risk assessment and mitigation specialist",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
@@ -91,7 +108,9 @@ def test_mixture_of_agents_execution():
     aggregator = Agent(
         agent_name="Executive-Summary-Agent",
         agent_description="Executive summary and recommendation specialist",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
@@ -123,21 +142,27 @@ def test_mixture_of_agents_multiple_layers():
     data_collector = Agent(
         agent_name="Data-Collector",
         agent_description="Data collection and research specialist",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
     pattern_analyzer = Agent(
         agent_name="Pattern-Analyzer",
         agent_description="Pattern recognition and analysis specialist",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
     insight_generator = Agent(
         agent_name="Insight-Generator",
         agent_description="Insight generation and interpretation specialist",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
@@ -145,7 +170,9 @@ def test_mixture_of_agents_multiple_layers():
     final_aggregator = Agent(
         agent_name="Final-Aggregator",
         agent_description="Final aggregation and conclusion specialist",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
@@ -181,7 +208,9 @@ def test_mixture_of_agents_error_handling():
     analyst = Agent(
         agent_name="Test-Analyst",
         agent_description="Test analyst",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
@@ -202,35 +231,45 @@ def test_mixture_of_agents_real_world_scenario():
     marketing_director = Agent(
         agent_name="Marketing-Director",
         agent_description="Senior marketing director with market expertise",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
     product_manager = Agent(
         agent_name="Product-Manager",
         agent_description="Product strategy and development manager",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
     engineering_lead = Agent(
         agent_name="Engineering-Lead",
         agent_description="Senior engineering and technical architecture lead",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
     sales_executive = Agent(
         agent_name="Sales-Executive",
         agent_description="Enterprise sales and customer relationship executive",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
     legal_counsel = Agent(
         agent_name="Legal-Counsel",
         agent_description="Legal compliance and regulatory counsel",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
@@ -238,7 +277,9 @@ def test_mixture_of_agents_real_world_scenario():
     executive_aggregator = Agent(
         agent_name="Executive-Decision-Maker",
         agent_description="Executive decision maker and strategic aggregator",
-        model_name="gpt-4o",
+        model_name="gpt-4o-mini",
+        verbose=False,
+        print_on=False,
         max_loops=1,
     )
 
@@ -266,3 +307,7 @@ def test_mixture_of_agents_real_world_scenario():
     )
 
     assert result is not None
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])
