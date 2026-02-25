@@ -381,17 +381,21 @@ class LLMCouncil:
 
         return members
 
-    def run(self, query: str):
+    def run(self, task: str = None, query: str = None):
         """
         Execute the full LLM Council workflow.
 
         Args:
-            query: The user's query to process
+            task: The user's task/query to process (preferred parameter name)
+            query: Alias for task (kept for backwards compatibility)
 
         Returns:
             Formatted output based on output_type, containing conversation history
             with all council member responses, evaluations, and final synthesis.
         """
+        query = task or query
+        if query is None:
+            raise ValueError("Either 'task' or 'query' must be provided")
         if self.verbose:
             print(f"\n{'='*80}")
             print("🏛️  LLM COUNCIL SESSION")

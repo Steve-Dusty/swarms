@@ -495,6 +495,7 @@ class SwarmRouter:
         return LLMCouncil(
             name=self.name,
             description=self.description,
+            council_members=self.agents if self.agents else None,
             output_type=self.output_type,
             verbose=self.verbose,
             chairman_model=self.chairman_model,
