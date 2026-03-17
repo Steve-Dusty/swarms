@@ -277,6 +277,7 @@ nav:
           - SequentialWorkflow: "swarms/structs/sequential_workflow.md"
           - ConcurrentWorkflow: "swarms/structs/concurrentworkflow.md"
           - HierarchicalSwarm: "swarms/structs/hierarchical_swarm.md"
+          - PlannerWorkerSwarm: "swarms/structs/planner_worker_swarm.md"
           - GraphWorkflow: "swarms/structs/graph_workflow.md"
           
 
@@ -408,6 +409,7 @@ nav:
 
       - Hierarchical & Orchestration:
         - HierarchicalSwarm: "swarms/examples/hierarchical_swarm_example.md"
+        - PlannerWorkerSwarm: "swarms/examples/planner_worker_swarm_example.md"
         - Hybrid Hierarchical-Cluster Swarm: "swarms/examples/hhcs_examples.md"
         - AutoSwarmBuilder: "swarms/examples/auto_swarm_builder_example.md"
         - SwarmRouter: "swarms/examples/swarm_router.md"
