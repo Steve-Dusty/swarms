@@ -16,13 +16,10 @@ This page provides a comprehensive overview of all available multi-agent archite
     | SpreadSheetSwarm | Data processing | Collaborative data processing and analysis | [Docs](spreadsheet_swarm.md) |
     | ForestSwarm | Hierarchical decision making | Tree-like structure for complex decision processes | [Docs](forest_swarm.md) |
     | SwarmRouter | Task routing | Routes tasks to appropriate agents based on requirements | [Docs](swarm_router.md) |
-    | TaskQueueSwarm | Task management | Manages and prioritizes tasks in a queue | [Docs](taskqueue_swarm.md) |
     | SwarmRearrange | Dynamic swarm optimization | Optimizes swarm configurations for specific tasks | [Docs](swarm_rearrange.md) |
     | MultiAgentRouter | Advanced task routing | Routes tasks to specialized agents based on capabilities | [Docs](multi_agent_router.md) |
     | AgentRouter | Embedding-based routing | Routes tasks to agents using semantic similarity on embeddings | [Docs](agent_router.md) |
-    | MatrixSwarm | Parallel processing | Matrix-based organization for parallel task execution | [Docs](matrix_swarm.md) |
     | ModelRouter | Model selection | Routes tasks to appropriate AI models | [Docs](model_router.md) |
-    | Deep Research Swarm | Research automation | Conducts comprehensive research across multiple domains | [Docs](deep_research_swarm.md) |
     | Swarm Matcher | Agent matching | Matches tasks with appropriate agent combinations | [Docs](swarm_matcher.md) |
 
 === "Workflow Architectures"
@@ -52,13 +49,13 @@ When selecting a multi-agent architecture, consider the following factors:
     Simple tasks may only need basic architectures like RoundRobin, while complex tasks might require Hierarchical or Graph-based approaches.
 
 !!! tip "Parallelization Needs"
-    If tasks can be executed in parallel, consider ConcurrentWorkflow or MatrixSwarm.
+    If tasks can be executed in parallel, consider ConcurrentWorkflow or SpreadSheetSwarm.
 
 !!! tip "Decision Making Requirements"
     For consensus-based decisions, MajorityVoting is ideal.
 
 !!! tip "Resource Optimization"
-    If you need to optimize agent usage, consider SwarmRouter or TaskQueueSwarm.
+    If you need to optimize agent usage, consider SwarmRouter or MultiAgentRouter.
 
 !!! tip "Dynamic Adaptation"
     For tasks requiring dynamic adaptation, consider SwarmRearrange or Auto Swarm Builder.
