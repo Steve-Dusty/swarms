@@ -109,11 +109,9 @@ extra:
       - title: "Templates & Applications"
         url: "https://docs.swarms.world/en/latest/examples/templates/"
       - title: "Financial Analysis Swarms"
-        url: "https://docs.swarms.world/en/latest/swarms/examples/swarms_api_finance/"
+        url: "https://docs.swarms.world/en/latest/examples/gold_etf_research/"
       - title: "Medical Diagnosis Systems"
-        url: "https://docs.swarms.world/en/latest/swarms/examples/swarms_api_medical/"
-      - title: "DAO Governance"
-        url: "https://docs.swarms.world/en/latest/swarms/examples/swarms_dao/"
+        url: "https://docs.swarms.world/en/latest/examples/aop_medical/"
       - title: "All Examples Repository"
         url: "https://github.com/kyegomez/swarms/tree/master/examples"
 
