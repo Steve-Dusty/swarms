@@ -510,7 +510,7 @@ Specialized architecture for conducting comprehensive research tasks across mult
 - Comprehensive data investigation
 
 
-**[Learn More](https://docs.swarms.world/en/latest/swarms/structs/deep_research_swarm/)**
+**[Learn More](https://github.com/kyegomez/swarms/tree/master/examples/multi_agent/deep_research_examples)**
 
 ```mermaid
 graph TD
