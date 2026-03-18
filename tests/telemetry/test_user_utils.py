@@ -37,7 +37,9 @@ def test_get_machine_id_edge_case():
     for _ in range(100):
         machine_id = get_machine_id()
         machine_ids.add(machine_id)
-    assert len(machine_ids) == 1  # Ensure machine ID is stable across calls
+    assert (
+        len(machine_ids) == 1
+    )  # Ensure machine ID is stable across calls
 
 
 def test_all():
