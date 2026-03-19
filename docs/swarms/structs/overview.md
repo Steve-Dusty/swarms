@@ -33,6 +33,7 @@ This page provides a comprehensive overview of all available multi-agent archite
     | Architecture | Use Case | Key Functionality | Documentation |
     |-------------|----------|-------------------|---------------|
     | HierarchicalSwarm | Hierarchical task orchestration | Director agent coordinates specialized worker agents | [Docs](hierarchical_swarm.md) |
+    | PlannerWorkerSwarm | Parallel task execution with planning | Planner decomposes goals, workers execute concurrently, judge evaluates | [Docs](planner_worker_swarm.md) |
     | Hybrid Hierarchical-Cluster Swarm | Complex organization | Combines hierarchical and cluster-based organization | [Docs](hhcs.md) |
     | Auto Swarm Builder | Automated swarm creation | Automatically creates and configures swarms | [Docs](auto_swarm_builder.md) |
 
