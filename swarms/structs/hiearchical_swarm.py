@@ -673,6 +673,7 @@ class HierarchicalSwarm:
         director_model_name (str): Model name for the main director agent.
         add_collaboration_prompt (bool): Whether to add collaboration prompts to agents.
         director_feedback_on (bool): Whether director feedback is enabled.
+        parallel_execution (bool): Whether to execute agent tasks in parallel (default: True).
     """
 
     def __init__(
@@ -696,7 +697,7 @@ class HierarchicalSwarm:
         planning_enabled: bool = True,
         autosave: bool = True,
         verbose: bool = False,
-        parallel_execution: bool = False,
+        parallel_execution: bool = True,
         agent_as_judge: bool = False,
         judge_agent_model_name: str = "gpt-4o-mini",
         *args,
@@ -721,6 +722,7 @@ class HierarchicalSwarm:
             director_feedback_on (bool): Whether director feedback is enabled.
             autosave (bool): Whether to enable autosaving of conversation history.
             verbose (bool): Whether to enable verbose logging.
+            parallel_execution (bool): Whether to execute agent tasks in parallel (default: True).
             *args: Additional positional arguments.
             **kwargs: Additional keyword arguments.
 
@@ -731,6 +733,12 @@ class HierarchicalSwarm:
         self.description = description
         self.director = director
         self.agents = agents
+        # O(1) agent lookup via dict - keyed by agent_name
+        self.agent_map = {
+            agent.agent_name: agent
+            for agent in (agents or [])
+            if hasattr(agent, "agent_name")
+        }
         self.max_loops = max_loops
         self.output_type = output_type
         self.feedback_director_model_name = (
@@ -1487,15 +1495,8 @@ class HierarchicalSwarm:
             Exception: If agent execution fails.
         """
         try:
-            # Find agent by name
-            agent = None
-            for a in self.agents:
-                if (
-                    hasattr(a, "agent_name")
-                    and a.agent_name == agent_name
-                ):
-                    agent = a
-                    break
+            # Find agent by name - O(1) lookup via dict
+            agent = self.agent_map.get(agent_name)
 
             if agent is None:
                 available_agents = [
