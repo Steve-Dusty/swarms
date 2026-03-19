@@ -488,6 +488,111 @@ def test_complete_workflow():
     print("✓ test_complete_workflow passed")
 
 
+# ============================================================================
+# Error Handling Tests
+# ============================================================================
+
+
+def _make_rearrange(agents, flow, **kwargs):
+    return AgentRearrange(agents=agents, flow=flow, max_loops=1, **kwargs)
+
+
+def test_missing_agent_raises():
+    """run() must raise when flow references a removed agent."""
+    agents = create_sample_agents()
+    r = _make_rearrange(agents, "ResearchAgent -> WriterAgent")
+    del r.agents["WriterAgent"]
+
+    with pytest.raises(ValueError, match="not registered"):
+        r.run("test")
+
+
+def test_broken_conversation_raises():
+    """run() must raise when conversation is corrupted."""
+    agents = create_sample_agents()
+    r = _make_rearrange(agents, "ResearchAgent -> WriterAgent")
+    r.conversation.conversation_history = None
+
+    with pytest.raises((TypeError, AttributeError)):
+        r.run("test")
+
+
+def test_agent_error_raises():
+    """run() must raise when an agent's run() raises unexpectedly."""
+    agents = create_sample_agents()
+    r = _make_rearrange(agents, "ResearchAgent -> WriterAgent")
+
+    def bad_run(*args, **kwargs):
+        raise TypeError("unexpected error in agent")
+
+    r.agents["WriterAgent"].run = bad_run
+
+    with pytest.raises(TypeError, match="unexpected error in agent"):
+        r.run("test")
+
+
+def test_callable_propagates():
+    """__call__ must raise, not return the exception object."""
+    agents = create_sample_agents()
+    r = _make_rearrange(agents, "ResearchAgent -> WriterAgent")
+    del r.agents["WriterAgent"]
+
+    with pytest.raises(ValueError, match="not registered"):
+        r("test")
+
+
+def test_batch_run_propagates():
+    """batch_run must raise, not return None."""
+    agents = create_sample_agents()
+    r = _make_rearrange(agents, "ResearchAgent -> WriterAgent")
+    del r.agents["WriterAgent"]
+
+    with pytest.raises(ValueError, match="not registered"):
+        r.batch_run(["test1", "test2"])
+
+
+def test_error_logged_once():
+    """_catch_error should fire exactly once per failure."""
+    agents = create_sample_agents()
+    r = _make_rearrange(agents, "ResearchAgent -> WriterAgent")
+    del r.agents["WriterAgent"]
+
+    call_count = 0
+    original_catch = r._catch_error
+
+    def counting_catch(e):
+        nonlocal call_count
+        call_count += 1
+        original_catch(e)
+
+    r._catch_error = counting_catch
+
+    with pytest.raises(ValueError):
+        r.run("test")
+
+    assert call_count == 1, f"_catch_error called {call_count} times, expected 1"
+
+
+def test_successful_run_returns_result():
+    """A successful run must return a non-None result."""
+    agents = create_sample_agents()
+    r = _make_rearrange(agents, "ResearchAgent -> WriterAgent")
+
+    result = r.run("What is 2+2?")
+    assert result is not None
+    assert isinstance(result, str)
+    assert len(result) > 0
+
+
+def test_successful_callable_returns_result():
+    """__call__ on success must return a result."""
+    agents = create_sample_agents()
+    r = _make_rearrange(agents, "ResearchAgent -> WriterAgent")
+
+    result = r("What is 2+2?")
+    assert result is not None
+
+
 def main():
     """Run all tests."""
     tests = [
@@ -512,6 +617,14 @@ def main():
         test_concurrent_run,
         test_to_dict,
         test_complete_workflow,
+        test_missing_agent_raises,
+        test_broken_conversation_raises,
+        test_agent_error_raises,
+        test_callable_propagates,
+        test_batch_run_propagates,
+        test_error_logged_once,
+        test_successful_run_returns_result,
+        test_successful_callable_returns_result,
     ]
 
     print("=" * 60)
