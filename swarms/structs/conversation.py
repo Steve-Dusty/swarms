@@ -124,6 +124,7 @@ class Conversation:
             self.name = id
 
         self.conversation_history = []
+        self._str_cache: Optional[str] = None
 
         self.setup_file_path()
         self.setup()
@@ -264,6 +265,7 @@ class Conversation:
 
         # Add message to conversation history
         self.conversation_history.append(message)
+        self._str_cache = None
 
         # Handle token counting in a separate thread if enabled
         if self.token_count is True:
@@ -413,6 +415,7 @@ class Conversation:
     def delete(self, index: str):
         """Delete a message from the conversation history."""
         self.conversation_history.pop(int(index))
+        self._str_cache = None
 
     def update(self, index: str, role, content):
         """Update a message in the conversation history.
@@ -425,6 +428,7 @@ class Conversation:
         if 0 <= int(index) < len(self.conversation_history):
             self.conversation_history[int(index)]["role"] = role
             self.conversation_history[int(index)]["content"] = content
+            self._str_cache = None
         else:
             logger.warning(f"Invalid index: {index}")
 
@@ -533,7 +537,9 @@ class Conversation:
         Returns:
             str: The conversation history.
         """
-        return self.return_history_as_string()
+        if self._str_cache is None:
+            self._str_cache = self.return_history_as_string()
+        return self._str_cache
 
     def to_dict(self) -> Dict[Any, Any]:
         """
@@ -693,6 +699,7 @@ class Conversation:
                 self.conversation_history = data.get(
                     "conversation_history", []
                 )
+                self._str_cache = None
 
                 logger.info(
                     f"Successfully loaded conversation from {filename}"
@@ -725,6 +732,7 @@ class Conversation:
                 self.conversation_history = data.get(
                     "conversation_history", []
                 )
+                self._str_cache = None
 
                 logger.info(
                     f"Successfully loaded conversation from {filename}"
@@ -841,6 +849,7 @@ class Conversation:
 
         # Update conversation history
         self.conversation_history = truncated_history
+        self._str_cache = None
 
     def _binary_search_truncate(
         self, text, target_tokens, model_name
@@ -902,6 +911,7 @@ class Conversation:
     def clear(self):
         """Clear the conversation history."""
         self.conversation_history = []
+        self._str_cache = None
 
     def to_json(self):
         """Convert the conversation history to a JSON string.
@@ -1050,6 +1060,7 @@ class Conversation:
             messages (List[dict]): List of messages to add.
         """
         self.conversation_history.extend(messages)
+        self._str_cache = None
 
     @classmethod
     def load_conversation(
@@ -1177,6 +1188,7 @@ class Conversation:
     def clear_memory(self):
         """Clear the memory of the conversation."""
         self.conversation_history = []
+        self._str_cache = None
 
     def _dynamic_auto_chunking_worker(self):
         """
