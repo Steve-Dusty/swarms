@@ -5,14 +5,34 @@ Tests for fix of issues #1464 and #1465:
 """
 
 import pytest
-from unittest.mock import patch
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from swarms.structs.agent import Agent
 from swarms.structs.agent_rearrange import AgentRearrange
 
 
-class FakeLLM:
-    def run(self, task: str, *args, **kwargs) -> str:
-        return "fake response"
+def create_agents():
+    """Create real agents for testing."""
+    return [
+        Agent(
+            agent_name="ResearchAgent",
+            agent_description="Specializes in researching topics",
+            system_prompt="You are a research specialist. Provide concise answers.",
+            model_name="gpt-4o-mini",
+            max_loops=1,
+            verbose=True,
+        ),
+        Agent(
+            agent_name="WriterAgent",
+            agent_description="Expert in writing content",
+            system_prompt="You are a writing expert. Provide concise answers.",
+            model_name="gpt-4o-mini",
+            max_loops=1,
+            verbose=True,
+        ),
+    ]
 
 
 def make_rearrange(agents, flow, **kwargs):
@@ -26,10 +46,9 @@ def make_rearrange(agents, flow, **kwargs):
 
 def test_missing_agent_raises():
     """run() must raise when flow references a removed agent."""
-    a = Agent(agent_name="A", llm=FakeLLM(), max_loops=1)
-    b = Agent(agent_name="B", llm=FakeLLM(), max_loops=1)
-    r = make_rearrange([a, b], "A -> B")
-    del r.agents["B"]
+    agents = create_agents()
+    r = make_rearrange(agents, "ResearchAgent -> WriterAgent")
+    del r.agents["WriterAgent"]
 
     with pytest.raises(ValueError, match="not registered"):
         r.run("test")
@@ -37,9 +56,9 @@ def test_missing_agent_raises():
 
 def test_broken_conversation_raises():
     """run() must raise when conversation is corrupted."""
-    a = Agent(agent_name="A", llm=FakeLLM(), max_loops=1)
-    r = make_rearrange([a], "A -> A")
-    r.conversation.conversation_history = None  # sabotage
+    agents = create_agents()
+    r = make_rearrange(agents, "ResearchAgent -> WriterAgent")
+    r.conversation.conversation_history = None
 
     with pytest.raises((TypeError, AttributeError)):
         r.run("test")
@@ -47,23 +66,25 @@ def test_broken_conversation_raises():
 
 def test_agent_error_raises():
     """run() must raise when an agent's run() raises unexpectedly."""
-    a = Agent(agent_name="A", llm=FakeLLM(), max_loops=1)
-    r = make_rearrange([a], "A -> A")
+    agents = create_agents()
+    r = make_rearrange(agents, "ResearchAgent -> WriterAgent")
+
+    original_run = r.agents["WriterAgent"].run
 
     def bad_run(*args, **kwargs):
-        raise TypeError("unexpected error")
-    r.agents["A"].run = bad_run
+        raise TypeError("unexpected error in agent")
 
-    with pytest.raises(TypeError, match="unexpected error"):
+    r.agents["WriterAgent"].run = bad_run
+
+    with pytest.raises(TypeError, match="unexpected error in agent"):
         r.run("test")
 
 
 def test_callable_propagates():
     """__call__ must raise, not return the exception object."""
-    a = Agent(agent_name="A", llm=FakeLLM(), max_loops=1)
-    b = Agent(agent_name="B", llm=FakeLLM(), max_loops=1)
-    r = make_rearrange([a, b], "A -> B")
-    del r.agents["B"]
+    agents = create_agents()
+    r = make_rearrange(agents, "ResearchAgent -> WriterAgent")
+    del r.agents["WriterAgent"]
 
     with pytest.raises(ValueError, match="not registered"):
         r("test")
@@ -71,10 +92,9 @@ def test_callable_propagates():
 
 def test_batch_run_propagates():
     """batch_run must raise, not return None."""
-    a = Agent(agent_name="A", llm=FakeLLM(), max_loops=1)
-    b = Agent(agent_name="B", llm=FakeLLM(), max_loops=1)
-    r = make_rearrange([a, b], "A -> B")
-    del r.agents["B"]
+    agents = create_agents()
+    r = make_rearrange(agents, "ResearchAgent -> WriterAgent")
+    del r.agents["WriterAgent"]
 
     with pytest.raises(ValueError, match="not registered"):
         r.batch_run(["test1", "test2"])
@@ -87,10 +107,9 @@ def test_batch_run_propagates():
 
 def test_error_logged_once():
     """_catch_error should fire exactly once per failure."""
-    a = Agent(agent_name="A", llm=FakeLLM(), max_loops=1)
-    b = Agent(agent_name="B", llm=FakeLLM(), max_loops=1)
-    r = make_rearrange([a, b], "A -> B")
-    del r.agents["B"]
+    agents = create_agents()
+    r = make_rearrange(agents, "ResearchAgent -> WriterAgent")
+    del r.agents["WriterAgent"]
 
     call_count = 0
     original_catch = r._catch_error
@@ -109,27 +128,27 @@ def test_error_logged_once():
 
 
 # ============================================================
-# Existing behavior: successful runs still work
+# Existing behavior: successful runs still work with real LLMs
 # ============================================================
 
 
 def test_successful_run_returns_result():
-    """A successful run must still return a non-None result."""
-    a = Agent(agent_name="A", llm=FakeLLM(), max_loops=1)
-    r = make_rearrange([a], "A -> A")
+    """A successful run with real LLM must return a non-None result."""
+    agents = create_agents()
+    r = make_rearrange(agents, "ResearchAgent -> WriterAgent")
 
-    result = r.run("test task")
+    result = r.run("What is 2+2?")
     assert result is not None
     assert isinstance(result, str)
     assert len(result) > 0
 
 
 def test_successful_callable_returns_result():
-    """__call__ on success must return a result."""
-    a = Agent(agent_name="A", llm=FakeLLM(), max_loops=1)
-    r = make_rearrange([a], "A -> A")
+    """__call__ with real LLM on success must return a result."""
+    agents = create_agents()
+    r = make_rearrange(agents, "ResearchAgent -> WriterAgent")
 
-    result = r("test task")
+    result = r("What is 2+2?")
     assert result is not None
 
 
