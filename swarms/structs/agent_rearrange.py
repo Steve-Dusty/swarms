@@ -623,79 +623,75 @@ class AgentRearrange:
             based on the flow syntax. It also supports custom task injection
             and multiple execution loops as configured.
         """
-        try:
-            self.conversation.add("User", task)
+        self.conversation.add("User", task)
 
-            if not self.validate_flow():
-                logger.error("Flow validation failed")
-                return "Invalid flow configuration."
+        if not self.validate_flow():
+            logger.error("Flow validation failed")
+            return "Invalid flow configuration."
 
-            tasks = self.flow.split("->")
-            response_dict = {}
+        tasks = self.flow.split("->")
+        response_dict = {}
 
+        logger.info(
+            f"Starting task execution with {len(tasks)} steps"
+        )
+
+        # Handle custom tasks
+        if custom_tasks is not None:
+            logger.info("Processing custom tasks")
+            c_agent_name, c_task = next(
+                iter(custom_tasks.items())
+            )
+            position = tasks.index(c_agent_name)
+
+            if position > 0:
+                tasks[position - 1] += "->" + c_task
+            else:
+                tasks.insert(position, c_task)
+
+        loop_count = 0
+        while loop_count < self.max_loops:
             logger.info(
-                f"Starting task execution with {len(tasks)} steps"
+                f"Starting loop {loop_count + 1}/{self.max_loops}"
             )
 
-            # Handle custom tasks
-            if custom_tasks is not None:
-                logger.info("Processing custom tasks")
-                c_agent_name, c_task = next(
-                    iter(custom_tasks.items())
-                )
-                position = tasks.index(c_agent_name)
+            for task_idx, task in enumerate(tasks):
+                agent_names = [
+                    name.strip() for name in task.split(",")
+                ]
 
-                if position > 0:
-                    tasks[position - 1] += "->" + c_task
-                else:
-                    tasks.insert(position, c_task)
-
-            loop_count = 0
-            while loop_count < self.max_loops:
-                logger.info(
-                    f"Starting loop {loop_count + 1}/{self.max_loops}"
-                )
-
-                for task_idx, task in enumerate(tasks):
-                    agent_names = [
-                        name.strip() for name in task.split(",")
-                    ]
-
-                    if len(agent_names) > 1:
-                        # Concurrent processing - comma detected
-                        concurrent_results = (
-                            self._run_concurrent_workflow(
-                                agent_names=agent_names,
-                                img=img,
-                                *args,
-                                **kwargs,
-                            )
-                        )
-                        response_dict.update(concurrent_results)
-
-                    else:
-                        # Sequential processing
-                        agent_name = agent_names[0]
-                        result = self._run_sequential_workflow(
-                            agent_name=agent_name,
-                            tasks=tasks,
+                if len(agent_names) > 1:
+                    # Concurrent processing - comma detected
+                    concurrent_results = (
+                        self._run_concurrent_workflow(
+                            agent_names=agent_names,
                             img=img,
                             *args,
                             **kwargs,
                         )
-                        response_dict[agent_name] = result
+                    )
+                    response_dict.update(concurrent_results)
 
-                loop_count += 1
+                else:
+                    # Sequential processing
+                    agent_name = agent_names[0]
+                    result = self._run_sequential_workflow(
+                        agent_name=agent_name,
+                        tasks=tasks,
+                        img=img,
+                        *args,
+                        **kwargs,
+                    )
+                    response_dict[agent_name] = result
 
-            logger.info("Task execution completed")
+            loop_count += 1
 
-            return history_output_formatter(
-                conversation=self.conversation,
-                type=self.output_type,
-            )
+        logger.info("Task execution completed")
 
-        except Exception as e:
-            self._catch_error(e)
+        return history_output_formatter(
+            conversation=self.conversation,
+            type=self.output_type,
+        )
 
     def _catch_error(self, e: Exception):
         """
@@ -722,7 +718,7 @@ class AgentRearrange:
             f"AgentRearrange: Id: {self.id}, Name: {self.name}. An error occurred with your agent '{self.name}': Error: {e}. Traceback: {e.__traceback__}"
         )
 
-        return e
+        raise e
 
     def run(
         self,
@@ -791,11 +787,7 @@ class AgentRearrange:
             >>> rearrange_system = AgentRearrange(agents=[agent1, agent2], flow="agent1 -> agent2")
             >>> result = rearrange_system("Process this data")
         """
-        try:
-            return self.run(task=task, *args, **kwargs)
-        except Exception as e:
-            logger.error(f"An error occurred: {e}")
-            return e
+        return self.run(task=task, *args, **kwargs)
 
     def batch_run(
         self,
@@ -830,31 +822,28 @@ class AgentRearrange:
             Each batch is processed sequentially, but individual tasks within
             a batch may run concurrently depending on the flow configuration.
         """
-        try:
-            results = []
-            for i in range(0, len(tasks), batch_size):
-                batch_tasks = tasks[i : i + batch_size]
-                batch_imgs = (
-                    img[i : i + batch_size]
-                    if img
-                    else [None] * len(batch_tasks)
+        results = []
+        for i in range(0, len(tasks), batch_size):
+            batch_tasks = tasks[i : i + batch_size]
+            batch_imgs = (
+                img[i : i + batch_size]
+                if img
+                else [None] * len(batch_tasks)
+            )
+
+            # Process batch using concurrent execution
+            batch_results = [
+                self.run(
+                    task=task,
+                    img=img_path,
+                    *args,
+                    **kwargs,
                 )
+                for task, img_path in zip(batch_tasks, batch_imgs)
+            ]
+            results.extend(batch_results)
 
-                # Process batch using concurrent execution
-                batch_results = [
-                    self.run(
-                        task=task,
-                        img=img_path,
-                        *args,
-                        **kwargs,
-                    )
-                    for task, img_path in zip(batch_tasks, batch_imgs)
-                ]
-                results.extend(batch_results)
-
-            return results
-        except Exception as e:
-            self._catch_error(e)
+        return results
 
     def concurrent_run(
         self,
@@ -889,24 +878,21 @@ class AgentRearrange:
             The number of concurrent executions is limited by max_workers parameter.
             Each task runs independently through the full agent workflow.
         """
-        try:
-            with ThreadPoolExecutor(
-                max_workers=max_workers
-            ) as executor:
-                imgs = img if img else [None] * len(tasks)
-                futures = [
-                    executor.submit(
-                        self.run,
-                        task=task,
-                        img=img_path,
-                        *args,
-                        **kwargs,
-                    )
-                    for task, img_path in zip(tasks, imgs)
-                ]
-                return [future.result() for future in futures]
-        except Exception as e:
-            self._catch_error(e)
+        with ThreadPoolExecutor(
+            max_workers=max_workers
+        ) as executor:
+            imgs = img if img else [None] * len(tasks)
+            futures = [
+                executor.submit(
+                    self.run,
+                    task=task,
+                    img=img_path,
+                    *args,
+                    **kwargs,
+                )
+                for task, img_path in zip(tasks, imgs)
+            ]
+            return [future.result() for future in futures]
 
     async def run_async(
         self,
