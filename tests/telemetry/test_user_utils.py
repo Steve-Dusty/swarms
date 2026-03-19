@@ -32,12 +32,12 @@ def test_generate_user_id_edge_case():
 
 
 def test_get_machine_id_edge_case():
-    # Test get_machine_id with multiple calls
+    # Test get_machine_id with multiple calls — ID must be stable for the same hostname/environment
     machine_ids = set()
     for _ in range(100):
         machine_id = get_machine_id()
         machine_ids.add(machine_id)
-    assert len(machine_ids) == 100  # Ensure generated IDs are unique
+    assert len(machine_ids) == 1  # Ensure machine ID is stable across calls
 
 
 def test_all():
