@@ -52,7 +52,6 @@ from swarms.utils.formatter import formatter
 load_swarms_env()
 
 
-
 def run_autoswarm(task: str, model: str) -> None:
     """
     Generate and execute an autonomous swarm configuration.
