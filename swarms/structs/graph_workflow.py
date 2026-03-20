@@ -8,6 +8,7 @@ import uuid
 from enum import Enum
 from typing import (
     Any,
+    Callable,
     Dict,
     Iterator,
     List,
@@ -738,9 +739,13 @@ class GraphWorkflow:
         auto_compile: bool = True,
         verbose: bool = False,
         backend: str = "networkx",
+        on_node_complete: Optional[
+            Callable[[str, Any], None]
+        ] = None,
     ):
         self.id = id
         self.verbose = verbose
+        self.on_node_complete = on_node_complete
 
         if self.verbose:
             logger.info("Initializing GraphWorkflow")
@@ -1685,6 +1690,9 @@ class GraphWorkflow:
         self,
         task: Optional[str] = None,
         img: Optional[str] = None,
+        on_node_complete: Optional[
+            Callable[[str, Any], None]
+        ] = None,
         *args: Any,
         **kwargs: Any,
     ) -> Dict[str, Any]:
@@ -1694,12 +1702,21 @@ class GraphWorkflow:
         Args:
             task (Optional[str]): Task to execute. Uses self.task if not provided.
             img (Optional[str]): Optional image path for multimodal tasks.
+            on_node_complete (Optional[Callable[[str, Any], None]]): Callback
+                fired immediately when each agent finishes, before the layer
+                completes. Receives ``(node_id, output)``. A callback passed
+                here takes precedence over the instance-level callback set in
+                ``__init__``.
             *args: Additional positional arguments.
             **kwargs: Additional keyword arguments.
 
         Returns:
             Dict[str, Any]: Execution results from all nodes.
         """
+        # Resolve callback: run-level overrides instance-level
+        _on_node_complete = (
+            on_node_complete or self.on_node_complete
+        )
         run_start_time = time.time()
 
         if task is not None:
@@ -1876,6 +1893,15 @@ class GraphWorkflow:
                                 logger.exception(
                                     f"Error adding output to conversation for agent {agent_name}: {e}"
                                 )
+
+                            # Fire the on_node_complete callback
+                            if _on_node_complete is not None:
+                                try:
+                                    _on_node_complete(node_id, output)
+                                except Exception as e:
+                                    logger.exception(
+                                        f"Error in on_node_complete callback for {agent_name}: {e}"
+                                    )
 
                     layer_execution_time = (
                         time.time() - layer_start_time
