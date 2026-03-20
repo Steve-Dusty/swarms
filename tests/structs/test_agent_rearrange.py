@@ -494,7 +494,9 @@ def test_complete_workflow():
 
 
 def _make_rearrange(agents, flow, **kwargs):
-    return AgentRearrange(agents=agents, flow=flow, max_loops=1, **kwargs)
+    return AgentRearrange(
+        agents=agents, flow=flow, max_loops=1, **kwargs
+    )
 
 
 def test_missing_agent_raises():
@@ -570,7 +572,9 @@ def test_error_logged_once():
     with pytest.raises(ValueError):
         r.run("test")
 
-    assert call_count == 1, f"_catch_error called {call_count} times, expected 1"
+    assert (
+        call_count == 1
+    ), f"_catch_error called {call_count} times, expected 1"
 
 
 def test_successful_run_returns_result():

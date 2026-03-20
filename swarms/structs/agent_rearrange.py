@@ -639,9 +639,7 @@ class AgentRearrange:
         # Handle custom tasks
         if custom_tasks is not None:
             logger.info("Processing custom tasks")
-            c_agent_name, c_task = next(
-                iter(custom_tasks.items())
-            )
+            c_agent_name, c_task = next(iter(custom_tasks.items()))
             position = tasks.index(c_agent_name)
 
             if position > 0:
@@ -878,9 +876,7 @@ class AgentRearrange:
             The number of concurrent executions is limited by max_workers parameter.
             Each task runs independently through the full agent workflow.
         """
-        with ThreadPoolExecutor(
-            max_workers=max_workers
-        ) as executor:
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
             imgs = img if img else [None] * len(tasks)
             futures = [
                 executor.submit(

@@ -244,9 +244,7 @@ class TaskQueue:
                 1
                 for t in self._tasks.values()
                 if t.status == PlannerTaskStatus.PENDING
-                and all(
-                    dep in completed_ids for dep in t.depends_on
-                )
+                and all(dep in completed_ids for dep in t.depends_on)
             )
 
     def get_completed_count(self) -> int:
@@ -369,9 +367,7 @@ class WorkerPool:
         self.task_timeout = task_timeout
         self._stop_event = threading.Event()
 
-    def run(
-        self, timeout: Optional[float] = None
-    ) -> Dict[str, str]:
+    def run(self, timeout: Optional[float] = None) -> Dict[str, str]:
         """Run all workers until queue is drained or timeout.
 
         Returns dict of {task_id: result} for completed tasks.
@@ -408,9 +404,7 @@ class WorkerPool:
         start_time: float,
     ):
         """Main loop for a single worker agent."""
-        worker_name = getattr(
-            agent, "agent_name", str(id(agent))
-        )
+        worker_name = getattr(agent, "agent_name", str(id(agent)))
 
         while not self._stop_event.is_set():
             # Check timeout
@@ -632,19 +626,14 @@ class PlannerWorkerSwarm:
                                     function_data = content_item[
                                         "function"
                                     ]
-                                    if (
-                                        "arguments"
-                                        in function_data
-                                    ):
+                                    if "arguments" in function_data:
                                         try:
                                             args = json.loads(
                                                 function_data[
                                                     "arguments"
                                                 ]
                                             )
-                                            return model_class(
-                                                **args
-                                            )
+                                            return model_class(**args)
                                         except (
                                             json.JSONDecodeError,
                                             TypeError,
@@ -720,9 +709,7 @@ class PlannerWorkerSwarm:
             raw_output, PlannerTaskSpec
         )
 
-        self.conversation.add(
-            role=planner_name, content=spec.plan
-        )
+        self.conversation.add(role=planner_name, content=spec.plan)
 
         # Convert PlannerTaskOutput items to PlannerTask objects
         added_tasks = []
@@ -741,16 +728,12 @@ class PlannerWorkerSwarm:
                 parent_task_id=parent_task_id,
             )
             title_to_id[task_output.title] = ptask.id
-            task_pairs.append(
-                (ptask, task_output.depends_on_titles)
-            )
+            task_pairs.append((ptask, task_output.depends_on_titles))
 
         # Second pass: resolve dependency titles to IDs and add to queue
         for ptask, dep_titles in task_pairs:
             ptask.depends_on = [
-                title_to_id[t]
-                for t in dep_titles
-                if t in title_to_id
+                title_to_id[t] for t in dep_titles if t in title_to_id
             ]
             self.task_queue.add_task(ptask)
             added_tasks.append(ptask)
