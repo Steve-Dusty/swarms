@@ -548,5 +548,62 @@ def test_graph_workflow_backend_fallback():
         )
 
 
+@pytest.mark.parametrize("backend", ["networkx", "rustworkx"])
+def test_graph_workflow_max_loops_accumulates_results(backend):
+    """Test that max_loops > 1 actually executes multiple iterations and
+    accumulates results across loops (fixes #1481)."""
+    if backend == "rustworkx" and not RUSTWORKX_AVAILABLE:
+        pytest.skip("rustworkx not available")
+
+    agent1 = create_test_agent("Agent1", "Entry agent")
+    agent2 = create_test_agent("Agent2", "End agent")
+
+    workflow = GraphWorkflow(
+        name=f"MultiLoop-Test-{backend}",
+        backend=backend,
+        max_loops=3,
+    )
+    workflow.add_node(agent1)
+    workflow.add_node(agent2)
+    workflow.add_edge(agent1, agent2)
+
+    result = workflow.run("Iteratively refine analysis")
+    assert result is not None
+
+    # With max_loops > 1, result should contain per-loop keys
+    assert "Agent1_loop_1" in result
+    assert "Agent2_loop_1" in result
+    assert "Agent1_loop_2" in result
+    assert "Agent2_loop_2" in result
+    assert "Agent1_loop_3" in result
+    assert "Agent2_loop_3" in result
+
+    # Final loop results should also be accessible under plain node IDs
+    assert "Agent1" in result
+    assert "Agent2" in result
+
+
+def test_graph_workflow_single_loop_backward_compatible():
+    """Test that max_loops=1 (the default) returns results in the original
+    format — plain node-ID keys, no loop suffixes."""
+    agent1 = create_test_agent("Agent1", "Entry agent")
+    agent2 = create_test_agent("Agent2", "End agent")
+
+    workflow = GraphWorkflow(name="SingleLoop-Compat")
+    workflow.add_node(agent1)
+    workflow.add_node(agent2)
+    workflow.add_edge(agent1, agent2)
+
+    result = workflow.run("Simple task")
+    assert result is not None
+    assert "Agent1" in result
+    assert "Agent2" in result
+
+    # Should NOT have loop-suffixed keys
+    assert not any(
+        k.endswith("_loop_1") for k in result
+    ), "Single-loop results should not contain loop-suffixed keys"
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
