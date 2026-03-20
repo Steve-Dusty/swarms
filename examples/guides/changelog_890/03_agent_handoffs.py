@@ -4,14 +4,14 @@ from swarms import Agent
 research_agent = Agent(
     agent_name="ResearchAgent",
     system_prompt="You are a research specialist. Provide comprehensive, well-researched information on any topic.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 writing_agent = Agent(
     agent_name="WritingAgent",
     system_prompt="You are a professional writer. Create clear, engaging content based on provided information.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -21,7 +21,7 @@ coordinator_agent = Agent(
     system_prompt="""You are a project coordinator that delegates tasks to specialized agents.
     Use the handoff_task tool to delegate work to ResearchAgent and WritingAgent based on their expertise.
     Always provide clear reasoning for each handoff.""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     handoffs=[research_agent, writing_agent],
 )

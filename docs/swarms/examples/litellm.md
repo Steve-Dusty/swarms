@@ -9,7 +9,7 @@ from swarms import Agent
 
 # Use any LiteLLM-supported model
 agent = Agent(
-    model_name="gpt-4o-mini",  # Change this to any provider
+    model_name="gpt-5.4",  # Change this to any provider
     max_loops=1,
 )
 
@@ -23,7 +23,7 @@ Switch providers by changing `model_name`:
 ```python
 # OpenAI
 Agent(model_name="gpt-4o")
-Agent(model_name="gpt-4o-mini")
+Agent(model_name="gpt-5.4")
 Agent(model_name="gpt-3.5-turbo")
 
 # Anthropic Claude
@@ -224,7 +224,7 @@ agent = Agent(model_name="ollama/llama2", max_loops=1)
 ```python
 from swarms import Agent
 
-models = ["gpt-4o-mini", "claude-3-5-sonnet-20241022", "gemini/gemini-pro"]
+models = ["gpt-5.4", "claude-3-5-sonnet-20241022", "gemini/gemini-pro"]
 task = "Explain quantum computing in one paragraph."
 
 for model_name in models:

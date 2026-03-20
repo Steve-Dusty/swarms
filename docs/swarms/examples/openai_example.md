@@ -8,7 +8,7 @@ from swarms import Agent
 
 Agent(
     agent_name="Stock-Analysis-Agent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops="auto",
     interactive=True,
     streaming_on=True,

@@ -39,7 +39,7 @@ from swarms_tools import exa_search
 
 agent = Agent(
     name="Exa Search Agent",
-    llm="gpt-4o-mini",
+    llm="gpt-5.4",
     tools=[exa_search],
 )
 

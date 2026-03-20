@@ -547,7 +547,7 @@ agent = Agent(
     
     You communicate with clarity and authority while maintaining professionalism and ensuring all stakeholders are aligned.""",
     max_loops=1,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     output_type="final",
     interactive=False,
     tools=[run_quant_trading_agent],

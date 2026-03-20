@@ -212,7 +212,7 @@ medical_coder = Agent(
     - For ambiguous cases, provide a brief note with reasoning and flag for clarification.
     - Ensure the output format is clean, consistent, and ready for professional use.
     """,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_tokens=3000,
     max_loops=1,
     dynamic_temperature_enabled=True,

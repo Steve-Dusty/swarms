@@ -131,7 +131,7 @@ agent = Agent(
     agent_name="Crypto-Risk-Analysis-Agent",
     agent_description="Agent for analyzing risks in cryptocurrency investments",
     system_prompt=CRYPTO_RISK_ANALYSIS_PROMPT,
-    model_name="gpt-4o-mini",  # or any other supported model
+    model_name="gpt-5.4",  # or any other supported model
     max_loops=1,
 )
 

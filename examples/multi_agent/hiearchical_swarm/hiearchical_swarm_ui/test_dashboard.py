@@ -13,7 +13,7 @@ def test_dashboard():
     agent1 = Agent(
         agent_name="Test-Agent-1",
         agent_description="A test agent for dashboard verification",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
     )
@@ -21,7 +21,7 @@ def test_dashboard():
     agent2 = Agent(
         agent_name="Test-Agent-2",
         agent_description="Another test agent for dashboard verification",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
     )

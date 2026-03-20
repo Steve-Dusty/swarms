@@ -31,7 +31,7 @@ class AgentSpec(BaseModel):
         description="The initial instruction or context provided to the agent, guiding its behavior and responses during execution.",
     )
     model_name: Optional[str] = Field(
-        default="gpt-4o-mini",
+        default="gpt-5.4",
         description="The name of the AI model that the agent will utilize for processing tasks and generating outputs. For example: gpt-4o, gpt-4o-mini, openai/o3-mini",
     )
     auto_generate_prompt: Optional[bool] = Field(

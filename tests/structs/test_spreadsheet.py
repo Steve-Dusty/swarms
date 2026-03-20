@@ -42,14 +42,14 @@ def sample_csv_file(tmp_path):
             "First test agent",
             "You are a helpful assistant. Respond with exactly 'Task completed.'",
             "Say hello",
-            "gpt-4o-mini",
+            "gpt-5.4",
         ],
         [
             "agent_2",
             "Second test agent",
             "You are a code reviewer. Respond with exactly 'Review done.'",
             "Review this: print('hello')",
-            "gpt-4o-mini",
+            "gpt-5.4",
         ],
     ]
 
@@ -65,7 +65,7 @@ def test_swarm_initialization_basic(temp_workspace):
     agent = Agent(
         agent_name="test_agent_1",
         system_prompt="You are a helpful assistant",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -90,13 +90,13 @@ def test_swarm_initialization_multiple_agents(temp_workspace):
         Agent(
             agent_name="agent_1",
             system_prompt="You are agent 1",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
         ),
         Agent(
             agent_name="agent_2",
             system_prompt="You are agent 2",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
         ),
     ]
@@ -116,7 +116,7 @@ def test_swarm_initialization_custom_max_loops(temp_workspace):
     agent = Agent(
         agent_name="test_agent",
         system_prompt="Test prompt",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -134,7 +134,7 @@ def test_swarm_initialization_autosave_disabled(temp_workspace):
     agent = Agent(
         agent_name="test_agent",
         system_prompt="Test prompt",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -151,7 +151,7 @@ def test_swarm_save_file_path_generation(temp_workspace):
     agent = Agent(
         agent_name="test_agent",
         system_prompt="Test prompt",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -176,7 +176,7 @@ def test_swarm_initialization_no_max_loops_raises_error():
     agent = Agent(
         agent_name="test_agent",
         system_prompt="Test prompt",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -189,7 +189,7 @@ def test_track_output_single(temp_workspace):
     agent = Agent(
         agent_name="test_agent",
         system_prompt="Test prompt",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -213,7 +213,7 @@ def test_track_output_multiple(temp_workspace):
         Agent(
             agent_name=f"agent_{i}",
             system_prompt="Test prompt",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
         )
         for i in range(1, 4)
@@ -240,7 +240,7 @@ def test_track_output_increments_counter(temp_workspace):
     agent = Agent(
         agent_name="test_agent",
         system_prompt="Test prompt",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -262,7 +262,7 @@ def test_load_from_csv_basic(sample_csv_file, temp_workspace):
     agent = Agent(
         agent_name="placeholder",
         system_prompt="placeholder",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -291,7 +291,7 @@ def test_load_from_csv_creates_agents(
     agent = Agent(
         agent_name="placeholder",
         system_prompt="placeholder",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -314,7 +314,7 @@ def test_load_from_nonexistent_csv(temp_workspace):
     agent = Agent(
         agent_name="test_agent",
         system_prompt="Test prompt",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -334,7 +334,7 @@ def test_save_to_csv_creates_file(temp_workspace):
     agent = Agent(
         agent_name="test_agent",
         system_prompt="Test prompt",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -353,7 +353,7 @@ def test_save_to_csv_headers(temp_workspace):
     agent = Agent(
         agent_name="test_agent",
         system_prompt="Test prompt",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -381,7 +381,7 @@ def test_save_to_csv_data(temp_workspace):
     agent = Agent(
         agent_name="test_agent",
         system_prompt="Test prompt",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -411,7 +411,7 @@ def test_save_to_csv_appends(temp_workspace):
     agent = Agent(
         agent_name="test_agent",
         system_prompt="Test prompt",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -444,7 +444,7 @@ def test_export_to_json_structure(temp_workspace):
     agent = Agent(
         agent_name="test_agent",
         system_prompt="Test prompt",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -476,7 +476,7 @@ def test_export_to_json_outputs(temp_workspace):
     agent = Agent(
         agent_name="test_agent",
         system_prompt="Test prompt",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -501,7 +501,7 @@ def test_export_to_json_valid_format(temp_workspace):
     agent = Agent(
         agent_name="test_agent",
         system_prompt="Test prompt",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -519,7 +519,7 @@ def test_export_empty_swarm_to_json(temp_workspace):
     agent = Agent(
         agent_name="test_agent",
         system_prompt="Test prompt",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -540,7 +540,7 @@ def test_reliability_check_passes(temp_workspace):
     agent = Agent(
         agent_name="test_agent",
         system_prompt="Test prompt",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -557,7 +557,7 @@ def test_reliability_check_verbose(temp_workspace):
     agent = Agent(
         agent_name="test_agent",
         system_prompt="Test prompt",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 

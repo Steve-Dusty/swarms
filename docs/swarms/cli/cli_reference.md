@@ -330,8 +330,8 @@ swarms heavy-swarm [options]
 | Argument | Type | Default | Description |
 |----------|------|---------|-------------|
 | `--loops-per-agent` | `int` | `1` | Number of execution loops each agent should perform |
-| `--question-agent-model-name` | `str` | `"gpt-4o-mini"` | Model name for the question generation agent |
-| `--worker-model-name` | `str` | `"gpt-4o-mini"` | Model name for specialized worker agents |
+| `--question-agent-model-name` | `str` | `"gpt-5.4"` | Model name for the question generation agent |
+| `--worker-model-name` | `str` | `"gpt-5.4"` | Model name for specialized worker agents |
 | `--random-loops-per-agent` | `bool` | `False` | Enable random number of loops per agent (1-10 range) |
 | `--verbose` | `bool` | `False` | Enable verbose output showing detailed progress |
 

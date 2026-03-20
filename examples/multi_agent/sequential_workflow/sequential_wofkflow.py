@@ -4,14 +4,14 @@ from swarms import Agent, SequentialWorkflow
 researcher = Agent(
     agent_name="Researcher",
     system_prompt="Your job is to research the provided topic and provide a detailed summary.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
 )
 
 # Agent 2: The Writer
 writer = Agent(
     agent_name="Writer",
     system_prompt="Your job is to take the research summary and write a beautiful, engaging blog post about it.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
 )
 
 # Create a sequential workflow where the researcher's output feeds into the writer's input

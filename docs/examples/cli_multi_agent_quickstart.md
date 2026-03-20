@@ -163,7 +163,7 @@ Execute a single agent task:
 swarms agent \
     --name "Research-Agent" \
     --task "Summarize recent AI developments" \
-    --model "gpt-4o-mini" \
+    --model "gpt-5.4" \
     --max-loops 1
 ```
 

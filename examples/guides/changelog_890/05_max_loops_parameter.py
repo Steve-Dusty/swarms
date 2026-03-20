@@ -18,7 +18,7 @@ from swarms import Agent
 agent_fixed_loops = Agent(
     agent_name="FixedLoopsAgent",
     system_prompt="You are a helpful assistant that provides step-by-step solutions.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=3,
 )
 
@@ -31,7 +31,7 @@ agent_autonomous = Agent(
     agent_name="AutonomousAgent",
     system_prompt="""You are an autonomous problem solver that can break down complex tasks
     and execute them step by step.""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops="auto",
     interactive=False,
 )

@@ -3,19 +3,19 @@ from swarms.structs.agent import Agent
 
 agent_one = Agent(
     agent_name="research_agent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     name="Research Agent",
     agent_description="Agent responsible for gathering and summarizing research information.",
 )
 agent_two = Agent(
     agent_name="research_agent_two",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     name="Analysis Agent",
     agent_description="Agent that analyzes the research data provided and processes insights.",
 )
 agent_three = Agent(
     agent_name="research_agent_three",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     agent_description="Agent tasked with structuring analysis into a final report or output.",
 )
 

@@ -101,7 +101,7 @@ def test_agent_integration():
 
         # Create a simple agent with a tool schema
         agent = Agent(
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             tool_schema=TestModel,
             max_loops=1,
             verbose=True,

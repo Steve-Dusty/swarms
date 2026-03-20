@@ -23,7 +23,7 @@ try:
     agent = Agent(
         agent_name="MarketplaceAgent",
         marketplace_prompt_id="550e8400-e29b-41d4-a716-446655440000",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 

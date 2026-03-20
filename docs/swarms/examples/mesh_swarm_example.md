@@ -50,21 +50,21 @@ from swarms.structs.swarming_architectures import mesh_swarm
 agent1 = Agent(
     agent_name="Worker-1",
     system_prompt="You are a task processor. Process tasks efficiently.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 agent2 = Agent(
     agent_name="Worker-2",
     system_prompt="You are a task processor. Process tasks efficiently.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 agent3 = Agent(
     agent_name="Worker-3",
     system_prompt="You are a task processor. Process tasks efficiently.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 ```
@@ -107,7 +107,7 @@ workers = [
     Agent(
         agent_name=f"Worker-{i+1}",
         system_prompt="You process tasks efficiently and accurately.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
     for i in range(3)  # 3 workers
@@ -214,7 +214,7 @@ processors = [
     Agent(
         agent_name=f"Processor-{i+1}",
         system_prompt="You process and analyze documents.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
     for i in range(5)  # 5 processors
@@ -240,7 +240,7 @@ analysts = [
     Agent(
         agent_name=f"Analyst-{i+1}",
         system_prompt="You analyze data and generate insights.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
     for i in range(3)
@@ -271,7 +271,7 @@ creators = [
     Agent(
         agent_name=f"Creator-{i+1}",
         system_prompt="You create engaging content.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
     for i in range(4)

@@ -4,7 +4,7 @@ from swarms.structs.agent import Agent
 market_researcher = Agent(
     agent_name="Market-Researcher",
     agent_description="Conducts comprehensive market research and data collection",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )
@@ -12,7 +12,7 @@ market_researcher = Agent(
 competitor_analyst = Agent(
     agent_name="Competitor-Analyst",
     agent_description="Analyzes competitor landscape and positioning",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )
@@ -20,7 +20,7 @@ competitor_analyst = Agent(
 market_analyst = Agent(
     agent_name="Market-Analyst",
     agent_description="Analyzes market trends and opportunities",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )
@@ -28,7 +28,7 @@ market_analyst = Agent(
 financial_analyst = Agent(
     agent_name="Financial-Analyst",
     agent_description="Analyzes financial metrics and projections",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )
@@ -36,7 +36,7 @@ financial_analyst = Agent(
 risk_analyst = Agent(
     agent_name="Risk-Analyst",
     agent_description="Assesses market risks and challenges",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )
@@ -44,7 +44,7 @@ risk_analyst = Agent(
 strategy_consultant = Agent(
     agent_name="Strategy-Consultant",
     agent_description="Develops strategic recommendations based on all analyses",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )
@@ -52,7 +52,7 @@ strategy_consultant = Agent(
 report_writer = Agent(
     agent_name="Report-Writer",
     agent_description="Compiles comprehensive market research report",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )
@@ -60,7 +60,7 @@ report_writer = Agent(
 executive_summary_writer = Agent(
     agent_name="Executive-Summary-Writer",
     agent_description="Creates executive summary for leadership",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )

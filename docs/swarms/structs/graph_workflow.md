@@ -187,9 +187,9 @@ from swarms import Agent, GraphWorkflow
 
 # Create multiple agents
 agents = [
-    Agent(agent_name="ResearchAgent", model_name="gpt-4o-mini"),
-    Agent(agent_name="AnalysisAgent", model_name="gpt-4o-mini"),
-    Agent(agent_name="SynthesisAgent", model_name="gpt-4o-mini"),
+    Agent(agent_name="ResearchAgent", model_name="gpt-5.4"),
+    Agent(agent_name="AnalysisAgent", model_name="gpt-5.4"),
+    Agent(agent_name="SynthesisAgent", model_name="gpt-5.4"),
 ]
 
 # Add all agents at once with batch processing
@@ -599,19 +599,19 @@ from swarms import Agent, GraphWorkflow
 # Create agents
 research_agent = Agent(
     agent_name="ResearchAgent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
 analysis_agent = Agent(
     agent_name="AnalysisAgent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
 synthesis_agent = Agent(
     agent_name="SynthesisAgent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 

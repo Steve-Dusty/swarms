@@ -238,7 +238,7 @@ class TestAutoSwarmBuilderFix:
                     "agent_name": "test_agent_1",
                     "description": "Test agent 1 description",
                     "system_prompt": "You are a helpful assistant",
-                    "model_name": "gpt-4o-mini",
+                    "model_name": "gpt-5.4",
                     "max_loops": 1,
                 }
             ]
@@ -270,7 +270,7 @@ class TestAutoSwarmBuilderFix:
             agent_name="test_agent_pydantic",
             description="Pydantic test agent",
             system_prompt="You are a helpful assistant",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
         )
 
@@ -372,7 +372,7 @@ class TestAutoSwarmBuilderFix:
         ]
 
         # Set random models
-        model_names = ["gpt-4o-mini", "gpt-4o", "claude-3-5-sonnet"]
+        model_names = ["gpt-5.4", "gpt-4o", "claude-3-5-sonnet"]
         result = set_random_models_for_agents(
             agents=agents, model_names=model_names
         )
@@ -393,7 +393,7 @@ class TestAutoSwarmBuilderFix:
             max_loops=1,
         )
 
-        model_names = ["gpt-4o-mini", "gpt-4o"]
+        model_names = ["gpt-5.4", "gpt-4o"]
         result = set_random_models_for_agents(
             agents=agent, model_names=model_names
         )
@@ -404,7 +404,7 @@ class TestAutoSwarmBuilderFix:
 
     def test_set_random_models_for_agents_with_none(self):
         """Test set_random_models_for_agents with None returns random model name."""
-        model_names = ["gpt-4o-mini", "gpt-4o", "claude-3-5-sonnet"]
+        model_names = ["gpt-5.4", "gpt-4o", "claude-3-5-sonnet"]
         result = set_random_models_for_agents(
             agents=None, model_names=model_names
         )
@@ -425,7 +425,7 @@ class TestAutoSwarmBuilderFix:
         """
         builder = AutoSwarmBuilder(
             execution_type="return-agents-objects",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
         )
@@ -451,7 +451,7 @@ class TestAutoSwarmBuilderFix:
             agent_name="full_test_agent",
             description="Full test description",
             system_prompt="You are a comprehensive test agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             auto_generate_prompt=False,
             max_tokens=4096,
             temperature=0.7,

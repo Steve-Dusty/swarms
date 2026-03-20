@@ -48,21 +48,21 @@ from swarms import Agent, RoundRobinSwarm
 researcher = Agent(
     agent_name="Researcher",
     system_prompt="You are a research specialist. Gather and present factual information.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 analyst = Agent(
     agent_name="Analyst",
     system_prompt="You are an analyst. Interpret data and identify patterns.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 writer = Agent(
     agent_name="Writer",
     system_prompt="You synthesize information into clear, actionable insights.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -96,21 +96,21 @@ from swarms import Agent, RoundRobinSwarm
 researcher = Agent(
     agent_name="Research-Specialist",
     system_prompt="You research and gather factual information on topics.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 analyst = Agent(
     agent_name="Data-Analyst",
     system_prompt="You analyze data and identify patterns and insights.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 strategist = Agent(
     agent_name="Business-Strategist",
     system_prompt="You develop actionable strategies based on research and analysis.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -157,25 +157,25 @@ agents = [
     Agent(
         agent_name="UX-Designer",
         system_prompt="You focus on user experience, usability, and user research.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="Product-Manager",
         system_prompt="You balance business goals, user needs, and technical feasibility.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="Engineer",
         system_prompt="You evaluate technical implementation, scalability, and maintainability.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="Designer",
         system_prompt="You focus on visual design, brand consistency, and aesthetics.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
 ]
@@ -201,19 +201,19 @@ agents = [
     Agent(
         agent_name="Market-Analyst",
         system_prompt="Analyze market trends, competition, and opportunities.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="Financial-Planner",
         system_prompt="Evaluate financial implications, ROI, and resource allocation.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="Operations-Lead",
         system_prompt="Assess operational feasibility, execution plans, and timelines.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
 ]
@@ -257,9 +257,9 @@ result = swarm.run("Complex multi-round task...")
 
 ```python
 agents = [
-    Agent(agent_name="Medical-Researcher", system_prompt="Clinical research expert", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Data-Scientist", system_prompt="Statistical analysis expert", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Literature-Reviewer", system_prompt="Research synthesis expert", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="Medical-Researcher", system_prompt="Clinical research expert", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Data-Scientist", system_prompt="Statistical analysis expert", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Literature-Reviewer", system_prompt="Research synthesis expert", model_name="gpt-5.4", max_loops=1),
 ]
 
 swarm = RoundRobinSwarm(agents=agents, max_loops=2)
@@ -270,9 +270,9 @@ result = swarm.run("Synthesize current research on effectiveness of immunotherap
 
 ```python
 agents = [
-    Agent(agent_name="Security-Reviewer", system_prompt="Security and vulnerabilities expert", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Performance-Reviewer", system_prompt="Performance optimization expert", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Architecture-Reviewer", system_prompt="Code architecture and patterns expert", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="Security-Reviewer", system_prompt="Security and vulnerabilities expert", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Performance-Reviewer", system_prompt="Performance optimization expert", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Architecture-Reviewer", system_prompt="Code architecture and patterns expert", model_name="gpt-5.4", max_loops=1),
 ]
 
 swarm = RoundRobinSwarm(agents=agents, max_loops=2)
@@ -283,9 +283,9 @@ result = swarm.run("Review the authentication middleware implementation in auth.
 
 ```python
 agents = [
-    Agent(agent_name="Researcher", system_prompt="Research and fact-checking specialist", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Writer", system_prompt="Content writing and storytelling specialist", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Editor", system_prompt="Editing, clarity, and refinement specialist", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="Researcher", system_prompt="Research and fact-checking specialist", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Writer", system_prompt="Content writing and storytelling specialist", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Editor", system_prompt="Editing, clarity, and refinement specialist", model_name="gpt-5.4", max_loops=1),
 ]
 
 swarm = RoundRobinSwarm(agents=agents, max_loops=2)

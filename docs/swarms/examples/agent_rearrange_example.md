@@ -698,7 +698,7 @@ researcher = Agent(
    agent_name="Researcher",
    agent_description="Research specialist",
    system_prompt="Research the topic thoroughly",
-   model_name="gpt-4o-mini",
+   model_name="gpt-5.4",
    max_loops=1,
 )
 
@@ -707,7 +707,7 @@ writer = Agent(
    agent_name="Writer",
    agent_description="Professional writer",
    system_prompt="Write content based on research",
-   model_name="gpt-4o-mini",
+   model_name="gpt-5.4",
    max_loops=1,
 )
 
@@ -716,7 +716,7 @@ editor = Agent(
    agent_name="Editor",
    agent_description="Expert editor",
    system_prompt="Edit content for quality",
-   model_name="gpt-4o-mini",
+   model_name="gpt-5.4",
    max_loops=1,
 )
 

@@ -107,7 +107,7 @@ class HybridHierarchicalClusterSwarm:
         swarms: List[Union[SwarmRouter, Callable]] = [],
         max_loops: int = 1,
         output_type: HistoryOutputType = "list",
-        router_agent_model_name: str = "gpt-4o-mini",
+        router_agent_model_name: str = "gpt-5.4",
         *args,
         **kwargs,
     ):

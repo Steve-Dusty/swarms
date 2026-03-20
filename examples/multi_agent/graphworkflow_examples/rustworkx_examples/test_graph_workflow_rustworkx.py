@@ -20,7 +20,7 @@ def create_test_agent(name: str, description: str = None) -> Agent:
     return Agent(
         agent_name=name,
         agent_description=description,
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=False,
         print_on=False,
         max_loops=1,

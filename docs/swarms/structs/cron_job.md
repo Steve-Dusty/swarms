@@ -214,7 +214,7 @@ import json
 agent = Agent(
     agent_name="Financial-Analyst",
     system_prompt="You are a financial analyst. Analyze market data and provide insights.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
@@ -280,14 +280,14 @@ import json
 bitcoin_agent = Agent(
     agent_name="Bitcoin-Analyst",
     system_prompt="You are a Bitcoin specialist. Focus only on Bitcoin analysis.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
 ethereum_agent = Agent(
     agent_name="Ethereum-Analyst", 
     system_prompt="You are an Ethereum specialist. Focus only on Ethereum analysis.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
@@ -336,7 +336,7 @@ import json
 agent = Agent(
     agent_name="News-Analyst",
     system_prompt="Analyze news and provide summaries.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 

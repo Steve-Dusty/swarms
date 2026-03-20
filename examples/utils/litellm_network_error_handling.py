@@ -18,7 +18,7 @@ def example_with_network_handling():
     """
     # Initialize LiteLLM with a cloud model
     model = LiteLLM(
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         temperature=0.7,
         max_tokens=1000,
     )
@@ -67,7 +67,7 @@ def example_check_internet_connection():
 
     if has_internet:
         print("✓ Internet connection available")
-        model = LiteLLM(model_name="gpt-4o-mini")
+        model = LiteLLM(model_name="gpt-5.4")
     else:
         print("✗ No internet connection detected")
         print("Using local Ollama model instead...")
@@ -90,7 +90,7 @@ def example_is_local_model():
     """
     # Check various model names
     models = [
-        "gpt-4o-mini",
+        "gpt-5.4",
         "ollama/llama2",
         "anthropic/claude-3",
         "ollama/mistral",

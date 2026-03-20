@@ -14,35 +14,35 @@ from swarms.structs.social_algorithms import SocialAlgorithms
 adaptive_agent1 = Agent(
     agent_name="Adaptive_Agent_1",
     system_prompt="You are a versatile agent that can adapt your role based on the situation. You can be a researcher, analyst, creator, or reviewer as needed. You excel at switching contexts and approaches.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 adaptive_agent2 = Agent(
     agent_name="Adaptive_Agent_2",
     system_prompt="You are a versatile agent that can adapt your role based on the situation. You can be a researcher, analyst, creator, or reviewer as needed. You excel at switching contexts and approaches.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 adaptive_agent3 = Agent(
     agent_name="Adaptive_Agent_3",
     system_prompt="You are a versatile agent that can adapt your role based on the situation. You can be a researcher, analyst, creator, or reviewer as needed. You excel at switching contexts and approaches.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 workflow_controller = Agent(
     agent_name="Workflow_Controller",
     system_prompt="You are a workflow controller that monitors progress, analyzes results, and dynamically adjusts the workflow strategy. You make decisions about what to do next based on what you learn.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 quality_monitor = Agent(
     agent_name="Quality_Monitor",
     system_prompt="You are a quality monitor that continuously assesses the quality and progress of work. You provide feedback that helps the workflow controller make adaptive decisions.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

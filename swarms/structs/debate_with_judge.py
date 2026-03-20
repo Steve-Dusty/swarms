@@ -130,7 +130,7 @@ class DebateWithJudge:
         max_loops: int = 3,
         output_type: str = "str-all-except-first",
         verbose: bool = True,
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
     ):
         """
         Initialize the DebateWithJudge architecture.
@@ -152,7 +152,7 @@ class DebateWithJudge:
                 Defaults to "str-all-except-first".
             verbose (bool): Whether to enable verbose logging. Defaults to True.
             model_name (str): The model name to use for preset agents.
-                Defaults to "gpt-4o-mini".
+                Defaults to "gpt-5.4".
 
         Raises:
             ValueError: If no valid agent configuration is provided (no agents, no list,

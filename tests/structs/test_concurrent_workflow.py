@@ -12,7 +12,7 @@ def test_concurrent_workflow_basic_execution():
     research_agent = Agent(
         agent_name="Research-Analyst",
         agent_description="Agent specializing in research and data collection",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=False,
         print_on=False,
         max_loops=1,
@@ -21,7 +21,7 @@ def test_concurrent_workflow_basic_execution():
     strategy_agent = Agent(
         agent_name="Strategy-Consultant",
         agent_description="Agent specializing in strategic planning and analysis",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=False,
         print_on=False,
         max_loops=1,
@@ -30,7 +30,7 @@ def test_concurrent_workflow_basic_execution():
     risk_agent = Agent(
         agent_name="Risk-Assessment-Specialist",
         agent_description="Agent specializing in risk analysis and mitigation",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=False,
         print_on=False,
         max_loops=1,
@@ -69,7 +69,7 @@ def test_concurrent_workflow_with_dashboard():
     market_agent = Agent(
         agent_name="Market-Analyst",
         agent_description="Agent for market analysis and trends",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=False,
         print_on=False,
         max_loops=1,
@@ -78,7 +78,7 @@ def test_concurrent_workflow_with_dashboard():
     financial_agent = Agent(
         agent_name="Financial-Expert",
         agent_description="Agent for financial analysis and forecasting",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=False,
         print_on=False,
         max_loops=1,
@@ -87,7 +87,7 @@ def test_concurrent_workflow_with_dashboard():
     technology_agent = Agent(
         agent_name="Technology-Specialist",
         agent_description="Agent for technology assessment and innovation",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=False,
         print_on=False,
         max_loops=1,
@@ -124,7 +124,7 @@ def test_concurrent_workflow_batched_execution():
         Agent(
             agent_name=f"Analysis-Agent-{i+1}",
             agent_description=f"Agent {i+1} for comprehensive business analysis",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             verbose=False,
             print_on=False,
             max_loops=1,
@@ -183,7 +183,7 @@ def test_concurrent_workflow_max_loops_configuration():
     agent1 = Agent(
         agent_name="Loop-Test-Agent-1",
         agent_description="First agent for loop testing",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=False,
         print_on=False,
         max_loops=2,
@@ -192,7 +192,7 @@ def test_concurrent_workflow_max_loops_configuration():
     agent2 = Agent(
         agent_name="Loop-Test-Agent-2",
         agent_description="Second agent for loop testing",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=False,
         print_on=False,
         max_loops=3,
@@ -225,7 +225,7 @@ def test_concurrent_workflow_different_output_types():
     technical_agent = Agent(
         agent_name="Technical-Analyst",
         agent_description="Agent for technical analysis",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=False,
         print_on=False,
         max_loops=1,
@@ -234,7 +234,7 @@ def test_concurrent_workflow_different_output_types():
     business_agent = Agent(
         agent_name="Business-Strategist",
         agent_description="Agent for business strategy",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=False,
         print_on=False,
         max_loops=1,
@@ -243,7 +243,7 @@ def test_concurrent_workflow_different_output_types():
     legal_agent = Agent(
         agent_name="Legal-Expert",
         agent_description="Agent for legal compliance analysis",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=False,
         print_on=False,
         max_loops=1,
@@ -270,7 +270,7 @@ def test_concurrent_workflow_real_world_scenario():
     marketing_agent = Agent(
         agent_name="Marketing-Director",
         agent_description="Senior marketing director with 15 years experience",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=False,
         print_on=False,
         max_loops=1,
@@ -279,7 +279,7 @@ def test_concurrent_workflow_real_world_scenario():
     product_agent = Agent(
         agent_name="Product-Manager",
         agent_description="Product manager specializing in AI/ML products",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=False,
         print_on=False,
         max_loops=1,
@@ -288,7 +288,7 @@ def test_concurrent_workflow_real_world_scenario():
     engineering_agent = Agent(
         agent_name="Lead-Engineer",
         agent_description="Senior software engineer and technical architect",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=False,
         print_on=False,
         max_loops=1,
@@ -297,7 +297,7 @@ def test_concurrent_workflow_real_world_scenario():
     sales_agent = Agent(
         agent_name="Sales-Executive",
         agent_description="Enterprise sales executive with tech background",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=False,
         print_on=False,
         max_loops=1,
@@ -339,7 +339,7 @@ def test_concurrent_workflow_team_collaboration():
     data_scientist = Agent(
         agent_name="Data-Scientist",
         agent_description="ML engineer and data scientist",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=False,
         print_on=False,
         max_loops=1,
@@ -348,7 +348,7 @@ def test_concurrent_workflow_team_collaboration():
     ux_designer = Agent(
         agent_name="UX-Designer",
         agent_description="User experience designer and researcher",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=False,
         print_on=False,
         max_loops=1,
@@ -357,7 +357,7 @@ def test_concurrent_workflow_team_collaboration():
     product_owner = Agent(
         agent_name="Product-Owner",
         agent_description="Product owner with business and technical background",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=False,
         print_on=False,
         max_loops=1,
@@ -366,7 +366,7 @@ def test_concurrent_workflow_team_collaboration():
     qa_engineer = Agent(
         agent_name="QA-Engineer",
         agent_description="Quality assurance engineer and testing specialist",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=False,
         print_on=False,
         max_loops=1,
@@ -412,7 +412,7 @@ def test_concurrent_workflow_autosave_creates_workspace_dir(
     agent1 = Agent(
         agent_name="Autosave-Concurrent-1",
         agent_description="Agent for autosave test",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -420,7 +420,7 @@ def test_concurrent_workflow_autosave_creates_workspace_dir(
     agent2 = Agent(
         agent_name="Autosave-Concurrent-2",
         agent_description="Agent for autosave test",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -455,7 +455,7 @@ def test_concurrent_workflow_autosave_saves_conversation_after_run(
     agent1 = Agent(
         agent_name="Autosave-Run-Concurrent-1",
         agent_description="Agent for autosave run test",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -463,7 +463,7 @@ def test_concurrent_workflow_autosave_saves_conversation_after_run(
     agent2 = Agent(
         agent_name="Autosave-Run-Concurrent-2",
         agent_description="Agent for autosave run test",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,

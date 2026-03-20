@@ -67,7 +67,7 @@ Where:
 | `agents` | `List[Union[Agent, Callable]]` | `None` | List of agents to orchestrate (required, at least 1) |
 | `max_loops` | `int` | `1` | Maximum execution-feedback loops per task |
 | `output_type` | `OutputType` | `"dict"` | Output format: `"dict"`, `"str"`, `"json"`, `"final"`, etc. |
-| `model` | `str` | `"gpt-4o-mini"` | LLM model for skill inference and evaluation |
+| `model` | `str` | `"gpt-5.4"` | LLM model for skill inference and evaluation |
 | `temperature` | `float` | `0.1` | LLM temperature for inference calls |
 | `skill_handbook` | `Optional[SkillHandbook]` | `None` | Pre-built skill handbook. If `None`, auto-generated from agent descriptions |
 | `auto_generate_skills` | `bool` | `True` | Whether to auto-generate handbook when none is provided |

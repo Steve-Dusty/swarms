@@ -411,7 +411,7 @@ def create_rag_context(
 
 
 def create_rag_agent(
-    model_name: str = "gpt-4o-mini",
+    model_name: str = "gpt-5.4",
     system_prompt: Optional[str] = None,
     temperature: float = 0.7,
     verbose: bool = True,
@@ -421,7 +421,7 @@ def create_rag_agent(
 
     Args:
         model_name (str): Name of the LLM model to use.
-            Defaults to "gpt-4o-mini".
+            Defaults to "gpt-5.4".
         system_prompt (Optional[str]): Custom system prompt.
             If None, uses default RAG-focused prompt.
         max_loops (int): Maximum number of agent loops. Defaults to 1.
@@ -513,7 +513,7 @@ def setup_rag_agent_with_mem0(
     pdf_paths: Optional[List[str]] = None,
     csv_paths: Optional[List[str]] = None,
     user_id: str = "default_user",
-    model_name: str = "gpt-4o-mini",
+    model_name: str = "gpt-5.4",
     metadata: Optional[Dict[str, Any]] = None,
     chunk_size: int = 2000,
 ) -> Dict[str, Any]:
@@ -524,7 +524,7 @@ def setup_rag_agent_with_mem0(
         pdf_paths (Optional[List[str]]): List of PDF file paths to process.
         csv_paths (Optional[List[str]]): List of CSV file paths to process.
         user_id (str): User identifier for Mem0. Defaults to "default_user".
-        model_name (str): LLM model name. Defaults to "gpt-4o-mini".
+        model_name (str): LLM model name. Defaults to "gpt-5.4".
         metadata (Optional[Dict[str, Any]]): Additional metadata for documents.
         chunk_size (int): Size of chunks for large documents. Defaults to 2000.
 

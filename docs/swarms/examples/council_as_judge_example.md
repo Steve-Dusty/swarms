@@ -87,8 +87,8 @@ from swarms import CouncilAsAJudge
 council = CouncilAsAJudge(
     name="Quality-Evaluation-Council",
     description="Evaluates response quality across multiple dimensions",
-    model_name="gpt-4o-mini",  # Model for judge agents
-    aggregation_model_name="gpt-4o-mini",  # Model for aggregator
+    model_name="gpt-5.4",  # Model for judge agents
+    aggregation_model_name="gpt-5.4",  # Model for aggregator
 )
 ```
 
@@ -116,8 +116,8 @@ print(result)
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `name` | `str` | `"CouncilAsAJudge"` | Display name of the council |
-| `model_name` | `str` | `"gpt-4o-mini"` | Model name for judge agents |
-| `aggregation_model_name` | `str` | `"gpt-4o-mini"` | Model name for the aggregator agent |
+| `model_name` | `str` | `"gpt-5.4"` | Model name for judge agents |
+| `aggregation_model_name` | `str` | `"gpt-5.4"` | Model name for the aggregator agent |
 | `judge_agent_model_name` | `Optional[str]` | `None` | Override model for specific judge agents |
 | `output_type` | `str` | `"final"` | Type of output to return |
 | `max_loops` | `int` | `1` | Maximum number of loops for agents |
@@ -137,8 +137,8 @@ from swarms import CouncilAsAJudge
 council = CouncilAsAJudge(
     name="Content-Quality-Evaluator",
     description="Evaluates content quality across multiple dimensions",
-    model_name="gpt-4o-mini",
-    aggregation_model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
+    aggregation_model_name="gpt-5.4",
 )
 
 # Task with response to evaluate
@@ -168,7 +168,7 @@ from swarms import CouncilAsAJudge
 # Initialize council with powerful aggregation
 council = CouncilAsAJudge(
     name="AI-Model-Comparator",
-    model_name="gpt-4o-mini",  # For judge agents
+    model_name="gpt-5.4",  # For judge agents
     aggregation_model_name="gpt-4o",  # More powerful for synthesis
     cache_size=256,  # Larger cache for multiple evaluations
 )
@@ -218,7 +218,7 @@ from swarms import CouncilAsAJudge
 council = CouncilAsAJudge(
     name="Tech-Doc-Reviewer",
     description="Evaluates technical documentation quality",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
 )
 
 # API documentation to evaluate
@@ -296,14 +296,14 @@ from swarms import CouncilAsAJudge, Agent
 generator = Agent(
     agent_name="Content-Generator",
     system_prompt="You are a helpful assistant that generates educational content.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 # Setup: Create evaluation council
 evaluator = CouncilAsAJudge(
     name="QA-Council",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
 )
 
 # Generate content
@@ -340,7 +340,7 @@ from swarms import CouncilAsAJudge
 council = CouncilAsAJudge(
     name="Education-Quality-Council",
     description="Evaluates educational content for learners",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
 )
 
 # Student's explanation to evaluate
@@ -405,13 +405,13 @@ Balance cost and quality based on your needs:
 ```python
 # Development/Testing - Faster, cheaper
 council = CouncilAsAJudge(
-    model_name="gpt-4o-mini",
-    aggregation_model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
+    aggregation_model_name="gpt-5.4",
 )
 
 # Production/Critical - Higher quality
 council = CouncilAsAJudge(
-    model_name="gpt-4o-mini",  # Judges can use lighter model
+    model_name="gpt-5.4",  # Judges can use lighter model
     aggregation_model_name="gpt-4o",  # Aggregation uses powerful model
 )
 ```

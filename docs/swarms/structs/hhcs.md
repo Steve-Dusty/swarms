@@ -83,7 +83,7 @@ flowchart TD
 | `swarms` | List[SwarmRouter] | [] | List of available swarm routers |
 | `max_loops` | integer | 1 | Maximum number of processing loops |
 | `output_type` | string | "list" | Format for output (e.g., "list", "json") |
-| `router_agent_model_name` | string | "gpt-4o-mini" | LLM model used by the router agent |
+| `router_agent_model_name` | string | "gpt-5.4" | LLM model used by the router agent |
 
 ## Methods
 
@@ -211,7 +211,7 @@ hybrid_hiearchical_swarm = HybridHierarchicalClusterSwarm(
         dispute_swarm,
     ],
     max_loops=1,
-    router_agent_model_name="gpt-4o-mini",
+    router_agent_model_name="gpt-5.4",
 )
 
 

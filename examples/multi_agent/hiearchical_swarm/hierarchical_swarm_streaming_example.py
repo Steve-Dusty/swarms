@@ -104,7 +104,7 @@ def create_sample_agents():
         agent_name="MarketingStrategist",
         agent_description="Expert in marketing strategy and campaign planning",
         system_prompt="You are a marketing strategist. Provide creative and effective marketing strategies.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -113,7 +113,7 @@ def create_sample_agents():
         agent_name="ContentCreator",
         agent_description="Expert in creating engaging content",
         system_prompt="You are a content creator. Create engaging, well-written content for various platforms.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -122,7 +122,7 @@ def create_sample_agents():
         agent_name="DataAnalyst",
         agent_description="Expert in data analysis and insights",
         system_prompt="You are a data analyst. Provide detailed analysis and insights from data.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -142,7 +142,7 @@ def main():
         name="MarketingCampaignSwarm",
         description="A swarm for planning and executing marketing campaigns",
         agents=agents,
-        director_model_name="gpt-4o-mini",
+        director_model_name="gpt-5.4",
         max_loops=1,
         verbose=True,
     )
@@ -228,14 +228,14 @@ def simple_callback_example():
             agent_name="Researcher",
             agent_description="Research specialist",
             system_prompt="You are a researcher. Provide thorough research on given topics.",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
         ),
         Agent(
             agent_name="Writer",
             agent_description="Content writer",
             system_prompt="You are a writer. Create clear, concise content.",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
         ),
     ]
@@ -244,7 +244,7 @@ def simple_callback_example():
         name="SimpleSwarm",
         description="Simple swarm example",
         agents=agents,
-        director_model_name="gpt-4o-mini",
+        director_model_name="gpt-5.4",
         max_loops=1,
     )
 

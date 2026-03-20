@@ -44,7 +44,7 @@ from swarms import DebateWithJudge
 debate = DebateWithJudge(
     preset_agents=True,
     max_loops=3,
-    model_name="gpt-4o-mini"
+    model_name="gpt-5.4"
 )
 
 # Run debate

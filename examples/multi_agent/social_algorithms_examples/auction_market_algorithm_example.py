@@ -14,35 +14,35 @@ from swarms.structs.social_algorithms import SocialAlgorithms
 bidder1 = Agent(
     agent_name="Technical_Specialist",
     system_prompt="You are a technical specialist focused on innovative technical solutions. You excel at creating detailed technical proposals with specific implementation plans.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 bidder2 = Agent(
     agent_name="Business_Strategist",
     system_prompt="You are a business strategist focused on market analysis and business value. You excel at creating proposals that emphasize ROI and market potential.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 bidder3 = Agent(
     agent_name="Creative_Innovator",
     system_prompt="You are a creative innovator focused on out-of-the-box solutions and novel approaches. You excel at creating unique and creative proposals.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 auctioneer = Agent(
     agent_name="Auctioneer",
     system_prompt="You are an impartial auctioneer and evaluator. You analyze proposals based on technical merit, business value, creativity, and feasibility. You must select the best proposal and provide detailed reasoning.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 quality_assessor = Agent(
     agent_name="Quality_Assessor",
     system_prompt="You are a quality assessor focused on evaluating the feasibility and quality of proposals. You provide objective technical and practical assessments.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

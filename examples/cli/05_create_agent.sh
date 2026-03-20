@@ -8,5 +8,5 @@ swarms agent \
     --description "AI research specialist" \
     --system-prompt "You are an expert research agent." \
     --task "Analyze current trends in renewable energy" \
-    --model-name "gpt-4o-mini"
+    --model-name "gpt-5.4"
 

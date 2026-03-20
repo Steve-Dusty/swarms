@@ -9,21 +9,21 @@ def create_agents():
             agent_name="Research_Agent",
             agent_description="Specialized in gathering and analyzing information",
             system_prompt="You are a research specialist. Provide detailed, accurate information on any topic.",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
         ),
         Agent(
             agent_name="Analysis_Agent",
             agent_description="Expert at analyzing data and drawing insights",
             system_prompt="You are an analysis expert. Break down complex information and provide clear insights.",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
         ),
         Agent(
             agent_name="Summary_Agent",
             agent_description="Skilled at creating concise summaries",
             system_prompt="You are a summarization expert. Create clear, concise summaries of complex topics.",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
         ),
     ]
@@ -41,7 +41,7 @@ def run_traditional_swarm():
         agents=agents,
         max_loops=1,
         verbose=False,
-        director_model_name="gpt-4o-mini",
+        director_model_name="gpt-5.4",
     )
 
     task = "What are the main benefits of renewable energy sources?"
@@ -88,7 +88,7 @@ def run_streaming_swarm():
         agents=agents,
         max_loops=1,
         verbose=False,
-        director_model_name="gpt-4o-mini",
+        director_model_name="gpt-5.4",
     )
 
     task = "What are the main benefits of renewable energy sources?"

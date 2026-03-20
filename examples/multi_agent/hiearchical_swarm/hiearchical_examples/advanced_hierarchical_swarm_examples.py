@@ -98,7 +98,7 @@ def create_medical_diagnosis_swarm():
         6. Ensure adherence to medical standards and protocols
         
         You create specific, medically appropriate task assignments for each specialist.""",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         temperature=0.3,
     )
@@ -216,7 +216,7 @@ def create_legal_research_swarm():
         6. Ensure adherence to professional standards and ethics
         
         You create specific, legally appropriate task assignments for each specialist.""",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         temperature=0.2,
     )
@@ -334,7 +334,7 @@ def create_software_development_swarm():
         6. Ensure adherence to coding standards and best practices
         
         You create specific, technically appropriate task assignments for each specialist.""",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         temperature=0.4,
     )

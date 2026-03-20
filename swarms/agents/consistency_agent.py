@@ -70,7 +70,7 @@ Throughout your analysis, focus on uncovering clear patterns while being attenti
 def aggregation_agent(
     responses: List[str],
     prompt: str = majority_voting_prompt,
-    model_name: str = "gpt-4o-mini",
+    model_name: str = "gpt-5.4",
 ) -> str:
     """
     Aggregates a list of responses into a single final answer using an AI-powered aggregation agent.
@@ -84,7 +84,7 @@ def aggregation_agent(
         prompt (str, optional): Custom prompt for the aggregation agent.
                                Defaults to the majority_voting_prompt.
         model_name (str, optional): Model to use for aggregation.
-                                   Defaults to "gpt-4o-mini".
+                                   Defaults to "gpt-5.4".
 
     Returns:
         str: The aggregated final answer
@@ -145,7 +145,7 @@ class SelfConsistencyAgent:
     Example:
         >>> agent = SelfConsistencyAgent(
         ...     name="Math-Reasoning-Agent",
-        ...     model_name="gpt-4o-mini",
+        ...     model_name="gpt-5.4",
         ...     num_samples=5,
         ...     max_loops=1
         ... )
@@ -157,7 +157,7 @@ class SelfConsistencyAgent:
         self,
         name: str = "Self-Consistency-Agent",
         description: str = "An agent that uses self consistency to generate a final answer.",
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
         system_prompt: str = CONSISTENCY_SYSTEM_PROMPT,
         num_samples: int = 5,
         max_loops: int = 1,
@@ -178,7 +178,7 @@ class SelfConsistencyAgent:
             description (str, optional): Description of the agent's purpose.
                                        Defaults to "An agent that uses self consistency to generate a final answer.".
             model_name (str, optional): The underlying language model to use.
-                                       Defaults to "gpt-4o-mini".
+                                       Defaults to "gpt-5.4".
             system_prompt (str, optional): System prompt for the reasoning agent.
                                          Defaults to CONSISTENCY_SYSTEM_PROMPT.
             num_samples (int, optional): Number of independent responses to generate.

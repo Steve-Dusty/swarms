@@ -22,7 +22,7 @@ code_agent = Agent(
     agent_name="CodeExpert",
     description="Expert Python developer who writes clean, efficient, production-ready code",
     system_prompt="You are an expert Python developer. Write clean, well-documented, production-ready code with proper error handling and type hints.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -30,7 +30,7 @@ writer_agent = Agent(
     agent_name="TechWriter",
     description="Technical writing specialist who creates clear documentation and tutorials",
     system_prompt="You are a technical writing specialist. Write clear, comprehensive documentation with examples and proper formatting.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -38,7 +38,7 @@ researcher_agent = Agent(
     agent_name="Researcher",
     description="Research analyst who gathers, synthesizes, and compares information",
     system_prompt="You are a research analyst. Provide thorough, well-structured analysis with comparisons, trade-offs, and actionable recommendations.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -46,7 +46,7 @@ researcher_agent = Agent(
 orchestra = SkillOrchestra(
     name="DevTeamOrchestra",
     agents=[code_agent, writer_agent, researcher_agent],
-    model="gpt-4o-mini",
+    model="gpt-5.4",
     top_k_agents=1,          # Select the single best agent per task
     learning_enabled=False,  # Disable profile updates for simplicity
     output_type="final",     # Return only the final agent output
@@ -134,9 +134,9 @@ agent_profiles = [
 handbook = SkillHandbook(skills=skills, agent_profiles=agent_profiles)
 
 # Create agents
-code_agent = Agent(agent_name="CodeExpert", description="Expert Python developer", model_name="gpt-4o-mini", max_loops=1)
-writer_agent = Agent(agent_name="TechWriter", description="Technical writing specialist", model_name="gpt-4o-mini", max_loops=1)
-data_agent = Agent(agent_name="DataAnalyst", description="Data analysis expert", model_name="gpt-4o-mini", max_loops=1)
+code_agent = Agent(agent_name="CodeExpert", description="Expert Python developer", model_name="gpt-5.4", max_loops=1)
+writer_agent = Agent(agent_name="TechWriter", description="Technical writing specialist", model_name="gpt-5.4", max_loops=1)
+data_agent = Agent(agent_name="DataAnalyst", description="Data analysis expert", model_name="gpt-5.4", max_loops=1)
 
 # Pass the custom handbook
 orchestra = SkillOrchestra(
@@ -157,9 +157,9 @@ Select multiple agents per task by setting `top_k_agents > 1`. Selected agents e
 from swarms import Agent, SkillOrchestra
 
 agents = [
-    Agent(agent_name="BackendDev", description="Backend API developer with database expertise", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="FrontendDev", description="Frontend developer specializing in React and UI/UX", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="SecurityEngineer", description="Security expert for vulnerability assessment and secure coding", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="BackendDev", description="Backend API developer with database expertise", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="FrontendDev", description="Frontend developer specializing in React and UI/UX", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="SecurityEngineer", description="Security expert for vulnerability assessment and secure coding", model_name="gpt-5.4", max_loops=1),
 ]
 
 orchestra = SkillOrchestra(
@@ -180,8 +180,8 @@ Enable learning to update agent skill profiles over time based on execution qual
 from swarms import Agent, SkillOrchestra
 
 agents = [
-    Agent(agent_name="GeneralistA", description="General-purpose assistant", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="GeneralistB", description="General-purpose assistant", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="GeneralistA", description="General-purpose assistant", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="GeneralistB", description="General-purpose assistant", model_name="gpt-5.4", max_loops=1),
 ]
 
 orchestra = SkillOrchestra(
@@ -215,35 +215,35 @@ agents = [
         agent_name="ArchitectAgent",
         description="Software architect who designs system architecture, selects technology stacks, and creates scalable solutions",
         system_prompt="You are a software architect. Design clean, scalable system architectures with clear component boundaries and data flow.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="BackendAgent",
         description="Backend developer specializing in APIs, databases, and server-side logic",
         system_prompt="You are a backend developer. Write robust server-side code with proper API design, database queries, and error handling.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="FrontendAgent",
         description="Frontend developer specializing in React, CSS, and responsive UI components",
         system_prompt="You are a frontend developer. Build responsive, accessible UI components with clean React code and modern CSS.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="DevOpsAgent",
         description="DevOps engineer handling CI/CD pipelines, Docker, Kubernetes, and cloud infrastructure",
         system_prompt="You are a DevOps engineer. Design and implement CI/CD pipelines, containerization, and cloud infrastructure.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="QAAgent",
         description="QA engineer who writes test plans, test cases, and automated tests",
         system_prompt="You are a QA engineer. Write comprehensive test plans, unit tests, integration tests, and end-to-end tests.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
 ]
@@ -251,7 +251,7 @@ agents = [
 orchestra = SkillOrchestra(
     name="DevTeam",
     agents=agents,
-    model="gpt-4o-mini",
+    model="gpt-5.4",
     top_k_agents=1,
     learning_enabled=True,
     output_type="final",
@@ -283,21 +283,21 @@ agents = [
         agent_name="QuantAnalyst",
         description="Quantitative analyst specializing in statistical modeling, risk metrics, and portfolio optimization",
         system_prompt="You are a quantitative analyst. Build statistical models, compute risk metrics (VaR, Sharpe, etc.), and optimize portfolios.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="FundamentalAnalyst",
         description="Fundamental analyst who evaluates company financials, earnings reports, and intrinsic valuations",
         system_prompt="You are a fundamental analyst. Analyze financial statements, compute valuation metrics, and assess company health.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="ComplianceOfficer",
         description="Regulatory compliance specialist for financial regulations, reporting requirements, and audit procedures",
         system_prompt="You are a compliance officer. Ensure regulatory compliance, review reporting requirements, and flag potential violations.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
 ]
@@ -305,7 +305,7 @@ agents = [
 orchestra = SkillOrchestra(
     name="FinanceTeam",
     agents=agents,
-    model="gpt-4o-mini",
+    model="gpt-5.4",
     competence_weight=0.8,  # Prioritize competence over cost
     cost_weight=0.2,
     output_type="final",

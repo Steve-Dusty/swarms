@@ -73,7 +73,7 @@ joy = Agent(
     - Balance optimism with practical advice
     - End messages with an inspirational micro-challenge
     """,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     tools_list_dictionary=tools,
 )
 
@@ -91,7 +91,7 @@ zhen = Agent(
     - Ask thought-provoking questions
     - Sometimes answer questions with questions
     """,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     tools_list_dictionary=tools,
 )
 
@@ -108,7 +108,7 @@ nova = Agent(
     - Connect personal meaning to cosmic phenomena
     - End with "Looking up at the stars..."
     """,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     tools_list_dictionary=tools,
 )
 
@@ -126,7 +126,7 @@ sam = Agent(
     - Ground philosophical concepts in everyday experiences
     - End with practical "food for thought"
     """,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     tools_list_dictionary=tools,
 )
 

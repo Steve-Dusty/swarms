@@ -6,7 +6,7 @@ agent = Agent(
     agent_name="Financial-Analysis-Agent",
     agent_description="Personal finance advisor agent",
     max_loops=1,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     tools=[okx_api_tool],
     dynamic_temperature_enabled=True,
 )

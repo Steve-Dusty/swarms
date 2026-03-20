@@ -12,7 +12,7 @@ def test_hierarchical_swarm_basic_initialization():
     research_agent = Agent(
         agent_name="Research-Specialist",
         agent_description="Specialist in research and data collection",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -21,7 +21,7 @@ def test_hierarchical_swarm_basic_initialization():
     analysis_agent = Agent(
         agent_name="Analysis-Expert",
         agent_description="Expert in data analysis and insights",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -30,7 +30,7 @@ def test_hierarchical_swarm_basic_initialization():
     implementation_agent = Agent(
         agent_name="Implementation-Manager",
         agent_description="Manager for implementation and execution",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -61,7 +61,7 @@ def test_hierarchical_swarm_with_director():
     director = Agent(
         agent_name="Project-Director",
         agent_description="Senior project director with extensive experience",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -71,7 +71,7 @@ def test_hierarchical_swarm_with_director():
     developer = Agent(
         agent_name="Senior-Developer",
         agent_description="Senior software developer",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -80,7 +80,7 @@ def test_hierarchical_swarm_with_director():
     tester = Agent(
         agent_name="QA-Lead",
         agent_description="Quality assurance lead",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -106,7 +106,7 @@ def test_hierarchical_swarm_execution():
     market_researcher = Agent(
         agent_name="Market-Researcher",
         agent_description="Market research specialist",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -115,7 +115,7 @@ def test_hierarchical_swarm_execution():
     product_strategist = Agent(
         agent_name="Product-Strategist",
         agent_description="Product strategy and planning expert",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -124,7 +124,7 @@ def test_hierarchical_swarm_execution():
     technical_architect = Agent(
         agent_name="Technical-Architect",
         agent_description="Technical architecture and design specialist",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -133,7 +133,7 @@ def test_hierarchical_swarm_execution():
     risk_analyst = Agent(
         agent_name="Risk-Analyst",
         agent_description="Risk assessment and mitigation specialist",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -169,7 +169,7 @@ def test_hierarchical_swarm_multiple_loops():
     planner = Agent(
         agent_name="Strategic-Planner",
         agent_description="Strategic planning and project management",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -178,7 +178,7 @@ def test_hierarchical_swarm_multiple_loops():
     executor = Agent(
         agent_name="Task-Executor",
         agent_description="Task execution and implementation",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -187,7 +187,7 @@ def test_hierarchical_swarm_multiple_loops():
     reviewer = Agent(
         agent_name="Quality-Reviewer",
         agent_description="Quality assurance and review specialist",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -225,7 +225,7 @@ def test_hierarchical_swarm_error_handling():
     researcher = Agent(
         agent_name="Test-Researcher",
         agent_description="Test researcher",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -246,7 +246,7 @@ def test_hierarchical_swarm_collaboration_prompts():
     data_analyst = Agent(
         agent_name="Data-Analyst",
         agent_description="Data analysis specialist",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -255,7 +255,7 @@ def test_hierarchical_swarm_collaboration_prompts():
     business_analyst = Agent(
         agent_name="Business-Analyst",
         agent_description="Business analysis specialist",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -287,7 +287,7 @@ def test_hierarchical_swarm_with_dashboard():
     content_creator = Agent(
         agent_name="Content-Creator",
         agent_description="Content creation specialist",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -296,7 +296,7 @@ def test_hierarchical_swarm_with_dashboard():
     editor = Agent(
         agent_name="Editor",
         agent_description="Content editor and proofreader",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -305,7 +305,7 @@ def test_hierarchical_swarm_with_dashboard():
     publisher = Agent(
         agent_name="Publisher",
         agent_description="Publishing and distribution specialist",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -338,7 +338,7 @@ def test_hierarchical_swarm_real_world_scenario():
     market_intelligence = Agent(
         agent_name="Market-Intelligence-Director",
         agent_description="Director of market intelligence and competitive analysis",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -347,7 +347,7 @@ def test_hierarchical_swarm_real_world_scenario():
     product_strategy = Agent(
         agent_name="Product-Strategy-Manager",
         agent_description="Product strategy and roadmap manager",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -356,7 +356,7 @@ def test_hierarchical_swarm_real_world_scenario():
     engineering_lead = Agent(
         agent_name="Engineering-Lead",
         agent_description="Senior engineering lead and technical architect",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -365,7 +365,7 @@ def test_hierarchical_swarm_real_world_scenario():
     operations_manager = Agent(
         agent_name="Operations-Manager",
         agent_description="Operations and implementation manager",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -374,7 +374,7 @@ def test_hierarchical_swarm_real_world_scenario():
     compliance_officer = Agent(
         agent_name="Compliance-Officer",
         agent_description="Legal compliance and regulatory specialist",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -416,7 +416,7 @@ def test_hierarchical_swarm_autosave_creates_workspace_dir(
     agent1 = Agent(
         agent_name="Autosave-Hierarchical-1",
         agent_description="Agent for autosave test",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -424,7 +424,7 @@ def test_hierarchical_swarm_autosave_creates_workspace_dir(
     agent2 = Agent(
         agent_name="Autosave-Hierarchical-2",
         agent_description="Agent for autosave test",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -458,7 +458,7 @@ def test_hierarchical_swarm_autosave_saves_conversation_after_run(
     agent1 = Agent(
         agent_name="Autosave-Run-Hierarchical-1",
         agent_description="Agent for autosave run test",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -466,7 +466,7 @@ def test_hierarchical_swarm_autosave_saves_conversation_after_run(
     agent2 = Agent(
         agent_name="Autosave-Run-Hierarchical-2",
         agent_description="Agent for autosave run test",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,

@@ -34,7 +34,7 @@ load_dotenv()
 # Configuration
 BENCHMARK_CONFIG = {
     "models": [
-        "gpt-4o-mini",  # OpenAI GPT-4o Mini (fast)
+        "gpt-5.4",  # OpenAI GPT-4o Mini (fast)
         "gpt-4o",  # OpenAI GPT-4o (premium)
         "gpt-4-turbo",  # OpenAI GPT-4 Turbo (latest)
         "claude-3-5-sonnet",  # Anthropic Claude 3.5 Sonnet (latest)
@@ -540,7 +540,7 @@ class AOPBenchmarkSuite:
                 cost_per_1k_tokens = {
                     # OpenAI models
                     "gpt-4o": 0.005,
-                    "gpt-4o-mini": 0.00015,
+                    "gpt-5.4": 0.00015,
                     "gpt-4-turbo": 0.01,
                     "gpt-3.5-turbo": 0.002,
                     # Anthropic models
@@ -568,7 +568,7 @@ class AOPBenchmarkSuite:
                 base_quality = {
                     # OpenAI models
                     "gpt-4o": 0.95,
-                    "gpt-4o-mini": 0.85,
+                    "gpt-5.4": 0.85,
                     "gpt-4-turbo": 0.97,
                     "gpt-3.5-turbo": 0.80,
                     # Anthropic models

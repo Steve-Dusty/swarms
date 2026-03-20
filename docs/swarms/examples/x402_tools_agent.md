@@ -170,7 +170,7 @@ discovery_agent = Agent(
     - Help users find the best services for their needs
     
     Always provide clear summaries of services and their pricing.""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=3,
     tools=[
         get_x402_services_sync,
@@ -334,7 +334,7 @@ purchase_agent = Agent(
     
     Always check wallet balance and affordability before making purchases.
     Only purchase services when the wallet has sufficient funds.""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=5,
     tools=[
         buy_service_sync,
@@ -555,7 +555,7 @@ x402_agent = Agent(
     
     Always verify wallet has sufficient funds before purchasing.
     Provide clear summaries of services and pricing.""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=10,
     tools=[
         discover_services_sync,
@@ -698,7 +698,7 @@ buyer_agent = Agent(
     4. Execute purchase using wallet
     
     Never purchase without user confirmation or if wallet lacks funds.""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=5,
     tools=[
         get_my_wallet_address,

@@ -12,7 +12,7 @@ if __name__ == "__main__":
         {
             "agent_name": "Financial-Analysis-Agent",
             "system_prompt": "You are a financial expert...",
-            "model_name": "gpt-4o-mini",  # Updated to correct model name
+            "model_name": "gpt-5.4",  # Updated to correct model name
             "max_loops": 1,
             "autosave": True,
             "dashboard": False,

@@ -53,7 +53,7 @@ def test_default_initialization():
     """Test that SelfMoASeq initializes with default parameters."""
     seq = SelfMoASeq()
 
-    assert seq.model_name == "gpt-4o-mini"
+    assert seq.model_name == "gpt-5.4"
     assert seq.temperature == 0.7
     assert seq.window_size == 6
     assert seq.reserved_slots == 3

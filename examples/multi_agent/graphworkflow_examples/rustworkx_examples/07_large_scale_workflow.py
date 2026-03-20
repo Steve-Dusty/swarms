@@ -8,7 +8,7 @@ agents = [
     Agent(
         agent_name=f"Agent-{i:02d}",
         agent_description=f"Agent number {i} in large-scale workflow",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
     )

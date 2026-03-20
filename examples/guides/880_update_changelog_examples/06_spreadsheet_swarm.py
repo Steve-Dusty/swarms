@@ -10,21 +10,21 @@ from swarms import Agent, SpreadSheetSwarm
 market_researcher = Agent(
     agent_name="Market-Researcher",
     system_prompt="You are a market research analyst. Analyze market trends, competitors, and opportunities.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 financial_analyst = Agent(
     agent_name="Financial-Analyst",
     system_prompt="You are a financial analyst. Analyze financial data, calculate metrics, and provide insights.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 risk_assessor = Agent(
     agent_name="Risk-Assessor",
     system_prompt="You are a risk assessment specialist. Identify and evaluate potential risks.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

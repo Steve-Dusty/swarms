@@ -357,14 +357,14 @@ Output only the protein sequence, nothing else.
 supervisor_agent = Agent(
     agent_name="Supervisor-Agent",
     system_prompt=SUPERVISOR_AGENT_SYS_PROMPT,
-    model_name="gpt-4o-mini",  # Example placeholder
+    model_name="gpt-5.4",  # Example placeholder
     max_loops=1,
 )
 
 research_agent = Agent(
     agent_name="Research-Agent",
     system_prompt=RESEARCH_AGENT_SYS_PROMPT,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     tools=[exa_search],
 )
@@ -374,7 +374,7 @@ research_agent = Agent(
 generation_agent = Agent(
     agent_name="Generation-Agent",
     system_prompt=GENERATION_AGENT_SYS_PROMPT,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -382,7 +382,7 @@ generation_agent = Agent(
 review_agent = Agent(
     agent_name="Review-Agent",
     system_prompt=REVIEW_AGENT_SYS_PROMPT,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -390,7 +390,7 @@ review_agent = Agent(
 ranking_agent = Agent(
     agent_name="Ranking-Agent",
     system_prompt=RANKING_AGENT_SYS_PROMPT,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -398,7 +398,7 @@ ranking_agent = Agent(
 evolution_agent = Agent(
     agent_name="Evolution-Agent",
     system_prompt=EVOLUTION_AGENT_SYS_PROMPT,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -406,7 +406,7 @@ evolution_agent = Agent(
 proximity_agent = Agent(
     agent_name="Proximity-Agent",
     system_prompt=PROXIMITY_AGENT_SYS_PROMPT,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -414,7 +414,7 @@ proximity_agent = Agent(
 meta_review_agent = Agent(
     agent_name="Meta-Review-Agent",
     system_prompt=META_REVIEW_AGENT_SYS_PROMPT,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -422,7 +422,7 @@ meta_review_agent = Agent(
 protein_generation_agent = Agent(
     agent_name="Protein-Generation-Agent",
     system_prompt=PROTEIN_GENERATION_AGENT_SYS_PROMPT,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

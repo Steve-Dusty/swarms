@@ -103,7 +103,7 @@ def test_agent_registry_add_single_agent():
         agent = Agent(
             agent_name="Test-Agent-1",
             agent_description="Test agent for registry",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -143,7 +143,7 @@ def test_agent_registry_add_multiple_agents():
         agent1 = Agent(
             agent_name="Test-Agent-1",
             agent_description="First test agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -153,7 +153,7 @@ def test_agent_registry_add_multiple_agents():
         agent2 = Agent(
             agent_name="Test-Agent-2",
             agent_description="Second test agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -163,7 +163,7 @@ def test_agent_registry_add_multiple_agents():
         agent3 = Agent(
             agent_name="Test-Agent-3",
             agent_description="Third test agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -211,7 +211,7 @@ def test_agent_registry_get_agent():
         agent = Agent(
             agent_name="Retrievable-Agent",
             agent_description="Agent for retrieval testing",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -252,7 +252,7 @@ def test_agent_registry_delete_agent():
         agent1 = Agent(
             agent_name="Agent-To-Delete",
             agent_description="Agent that will be deleted",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -262,7 +262,7 @@ def test_agent_registry_delete_agent():
         agent2 = Agent(
             agent_name="Agent-To-Keep",
             agent_description="Agent that will remain",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -305,7 +305,7 @@ def test_agent_registry_update_agent():
         original_agent = Agent(
             agent_name="Agent-To-Update",
             agent_description="Original description",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -317,7 +317,7 @@ def test_agent_registry_update_agent():
         updated_agent = Agent(
             agent_name="Agent-To-Update",
             agent_description="Updated description",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=2,
             verbose=True,
             print_on=False,
@@ -358,7 +358,7 @@ def test_agent_registry_list_agents():
         agent1 = Agent(
             agent_name="List-Agent-1",
             agent_description="First agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -368,7 +368,7 @@ def test_agent_registry_list_agents():
         agent2 = Agent(
             agent_name="List-Agent-2",
             agent_description="Second agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -409,7 +409,7 @@ def test_agent_registry_return_all_agents():
         agent1 = Agent(
             agent_name="Return-Agent-1",
             agent_description="First agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -419,7 +419,7 @@ def test_agent_registry_return_all_agents():
         agent2 = Agent(
             agent_name="Return-Agent-2",
             agent_description="Second agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -463,7 +463,7 @@ def test_agent_registry_query_with_condition():
         agent1 = Agent(
             agent_name="Query-Agent-1",
             agent_description="Agent with max_loops=1",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -473,7 +473,7 @@ def test_agent_registry_query_with_condition():
         agent2 = Agent(
             agent_name="Query-Agent-2",
             agent_description="Agent with max_loops=2",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=2,
             verbose=False,
             print_on=False,
@@ -483,7 +483,7 @@ def test_agent_registry_query_with_condition():
         agent3 = Agent(
             agent_name="Query-Agent-3",
             agent_description="Agent with max_loops=1",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -531,7 +531,7 @@ def test_agent_registry_query_without_condition():
         agent1 = Agent(
             agent_name="Query-All-Agent-1",
             agent_description="First agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -541,7 +541,7 @@ def test_agent_registry_query_without_condition():
         agent2 = Agent(
             agent_name="Query-All-Agent-2",
             agent_description="Second agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -574,7 +574,7 @@ def test_agent_registry_find_agent_by_name():
         agent = Agent(
             agent_name="Findable-Agent",
             agent_description="Agent to find",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -612,7 +612,7 @@ def test_agent_registry_find_agent_by_id():
         agent = Agent(
             agent_name="ID-Agent",
             agent_description="Agent with ID",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -647,7 +647,7 @@ def test_agent_registry_agents_to_json():
         agent1 = Agent(
             agent_name="JSON-Agent-1",
             agent_description="First agent for JSON",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -657,7 +657,7 @@ def test_agent_registry_agents_to_json():
         agent2 = Agent(
             agent_name="JSON-Agent-2",
             agent_description="Second agent for JSON",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -704,7 +704,7 @@ def test_agent_registry_initialization_with_agents():
         agent1 = Agent(
             agent_name="Init-Agent-1",
             agent_description="First initial agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -714,7 +714,7 @@ def test_agent_registry_initialization_with_agents():
         agent2 = Agent(
             agent_name="Init-Agent-2",
             agent_description="Second initial agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -751,7 +751,7 @@ def test_agent_registry_error_duplicate_agent():
         agent1 = Agent(
             agent_name="Duplicate-Agent",
             agent_description="First agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -761,7 +761,7 @@ def test_agent_registry_error_duplicate_agent():
         agent2 = Agent(
             agent_name="Duplicate-Agent",
             agent_description="Duplicate agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -834,7 +834,7 @@ def test_agent_registry_retrieved_agents_can_run():
         agent = Agent(
             agent_name="Runnable-Registry-Agent",
             agent_description="Agent for running tasks",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -874,7 +874,7 @@ def test_agent_registry_thread_safety():
         agent1 = Agent(
             agent_name="Thread-Agent-1",
             agent_description="First thread agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -884,7 +884,7 @@ def test_agent_registry_thread_safety():
         agent2 = Agent(
             agent_name="Thread-Agent-2",
             agent_description="Second thread agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,

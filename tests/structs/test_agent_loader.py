@@ -62,7 +62,7 @@ def create_test_yaml_file(file_path: str) -> str:
     content = """agents:
   - agent_name: "Test-Agent-1"
     model:
-      model_name: "gpt-4o-mini"
+      model_name: "gpt-5.4"
       temperature: 0.1
       max_tokens: 2000
     system_prompt: "You are a test agent for agent loader testing."
@@ -72,7 +72,7 @@ def create_test_yaml_file(file_path: str) -> str:
     
   - agent_name: "Test-Agent-2"
     model:
-      model_name: "gpt-4o-mini"
+      model_name: "gpt-5.4"
       temperature: 0.2
       max_tokens: 1500
     system_prompt: "You are another test agent for agent loader testing."

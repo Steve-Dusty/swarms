@@ -51,7 +51,7 @@ def generate_color_palette(theme: str, num_colors: int = 5) -> str:
 
 swarm = FairySwarm(
     name="Color-Aware Design Team",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=2,
     verbose=True,
     additional_tools=[generate_color_palette],

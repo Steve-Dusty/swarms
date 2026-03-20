@@ -354,7 +354,7 @@ from swarms.agents import ReasoningAgentRouter
 # Initialize router with specific reasoning strategy
 router = ReasoningAgentRouter(
     swarm_type="self-consistency",  # Select reasoning methodology
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     num_samples=5,                  # Configuration for consensus-based methods
     max_loops=3                     # Configuration for iterative methods
 )
@@ -371,18 +371,18 @@ from swarms.agents import SelfConsistencyAgent, ReasoningDuo, ReflexionAgent
 
 # Self-Consistency Agent for high-accuracy requirements
 consistency_agent = SelfConsistencyAgent(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     num_samples=5
 )
 
 # Reasoning Duo for collaborative analysis workflows
 duo_agent = ReasoningDuo(
-    model_names=["gpt-4o-mini", "gpt-4.1"]
+    model_names=["gpt-5.4", "gpt-4.1"]
 )
 
 # Reflexion Agent for adaptive learning scenarios
 reflexion_agent = ReflexionAgent(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=3,
     memory_capacity=100
 )

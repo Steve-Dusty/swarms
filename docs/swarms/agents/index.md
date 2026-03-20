@@ -48,7 +48,7 @@ agent = Agent(
     agent_name="MyAgent",
     agent_description="A specialized AI agent for specific tasks",
     system_prompt="You are a helpful assistant...",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     max_tokens=4096,
     temperature=0.7,
@@ -64,7 +64,7 @@ agent = Agent(
 | `agent_name` | str | Unique identifier for the agent | Required |
 | `agent_description` | str | Detailed description of capabilities | Required |
 | `system_prompt` | str | Core instructions defining behavior | Required |
-| `model_name` | str | AI model to use | "gpt-4o-mini" |
+| `model_name` | str | AI model to use | "gpt-5.4" |
 | `max_loops` | int | Maximum execution loops | 1 |
 | `max_tokens` | int | Maximum response tokens | 4096 |
 | `temperature` | float | Response creativity (0-1) | 0.7 |
@@ -88,7 +88,7 @@ financial_agent = Agent(
     - Financial planning and budgeting
     
     Provide clear, actionable advice while considering risk tolerance.""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     temperature=0.3,
     output_type="str"
@@ -119,7 +119,7 @@ vision_agent = Agent(
     - Defect identification and reporting
     
     Provide comprehensive analysis with specific observations.""",
-    model_name="gpt-4o-mini",  # Vision-enabled model
+    model_name="gpt-5.4",  # Vision-enabled model
     multi_modal=True,  # Enable multi-modal processing
     max_loops=1,
     output_type="str"
@@ -177,7 +177,7 @@ quality_agent = Agent(
     3. Determine appropriate danger levels (low, medium, high)
     4. Use the security_analysis function for threat assessment
     """,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     multi_modal=True,
     max_loops=1,
     tools=[security_analysis]
@@ -271,7 +271,7 @@ multi_tool_agent = Agent(
     - Portfolio analysis and financial calculations
     
     Use these tools to provide comprehensive assistance.""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     tools=[get_weather_data, calculate_portfolio_metrics]
 )
@@ -336,7 +336,7 @@ crypto_agent = Agent(
     - Trading volume and price change data
     
     Provide insightful market analysis and investment guidance.""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     tools=[get_cryptocurrency_price, get_top_cryptocurrencies]
 )
@@ -434,7 +434,7 @@ structured_agent = Agent(
     agent_description="Financial analysis agent with structured output capabilities",
     system_prompt="""You are a financial analysis expert that provides structured outputs.
     Use the provided function schemas to format your responses consistently.""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     tools_list_dictionary=[stock_analysis_schema, portfolio_optimization_schema]
 )
@@ -457,7 +457,7 @@ adaptive_agent = Agent(
     agent_name="Adaptive-Response-Agent",
     agent_description="Agent that adjusts response creativity based on context",
     system_prompt="You are an adaptive AI that adjusts your response style based on the task complexity.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     dynamic_temperature_enabled=True,  # Enable adaptive temperature
     max_loops=1,
     output_type="str"
@@ -499,7 +499,7 @@ optimized_agent = Agent(
     agent_name="Optimized-Agent",
     agent_description="Performance-optimized agent configuration",
     system_prompt="You are an efficient AI assistant optimized for performance.",
-    model_name="gpt-4o-mini",  # Faster model
+    model_name="gpt-5.4",  # Faster model
     max_loops=1,  # Minimize loops
     max_tokens=2048,  # Reasonable token limit
     temperature=0.5,  # Balanced creativity
@@ -583,7 +583,7 @@ quality_control_system = Agent(
     
     Always provide specific, actionable feedback.
     """,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     multi_modal=True,
     max_loops=1,
     tools=[security_analysis, quality_assessment],
@@ -706,7 +706,7 @@ financial_analyst = Agent(
     
     Use available tools to gather market data and calculate risk metrics.
     Provide structured outputs using the defined schemas.""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     tools=[get_market_data, calculate_risk_metrics],
     tools_list_dictionary=[financial_analysis_schema],
@@ -732,7 +732,7 @@ research_agent = Agent(
     agent_name="Research-Specialist",
     agent_description="Market research and data analysis specialist",
     system_prompt="You are a market research expert specializing in data collection and analysis.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     temperature=0.3
 )
@@ -741,7 +741,7 @@ strategy_agent = Agent(
     agent_name="Strategy-Advisor", 
     agent_description="Strategic planning and recommendation specialist",
     system_prompt="You are a strategic advisor providing high-level recommendations based on research.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     temperature=0.5
 )
@@ -750,7 +750,7 @@ execution_agent = Agent(
     agent_name="Execution-Planner",
     agent_description="Implementation and execution planning specialist", 
     system_prompt="You are an execution expert creating detailed implementation plans.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     temperature=0.4
 )

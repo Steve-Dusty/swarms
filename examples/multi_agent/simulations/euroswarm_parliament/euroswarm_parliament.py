@@ -1068,7 +1068,7 @@ class EuroSwarmParliament:
         return Agent(
             agent_name=f"MEP_{mep.full_name.replace(' ', '_')}",
             system_prompt=system_prompt,
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=3,
             verbose=self.verbose,
         )

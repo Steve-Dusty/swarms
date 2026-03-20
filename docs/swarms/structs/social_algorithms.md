@@ -380,42 +380,42 @@ def research_development_algorithm(agents, task, **kwargs):
 project_manager = Agent(
     agent_name="ProjectManager",
     system_prompt="You are an experienced project manager focused on planning, coordination, and delivery excellence.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
 researcher = Agent(
     agent_name="Researcher",
     system_prompt="You are a research specialist focused on gathering comprehensive information and insights.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
 analyst = Agent(
     agent_name="Analyst",
     system_prompt="You are a systems analyst focused on requirements analysis and solution design.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
 developer = Agent(
     agent_name="Developer",
     system_prompt="You are a senior developer focused on creating high-quality, maintainable code.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
 tester = Agent(
     agent_name="Tester",
     system_prompt="You are a QA specialist focused on ensuring quality and reliability.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
 reviewer = Agent(
     agent_name="Reviewer",
     system_prompt="You are a technical reviewer focused on quality assurance and best practices.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
@@ -631,35 +631,35 @@ def creative_collaboration_algorithm(agents, task, **kwargs):
 creative_director = Agent(
     agent_name="CreativeDirector",
     system_prompt="You are a creative director focused on leading creative vision and ensuring brand consistency.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
 copywriter = Agent(
     agent_name="Copywriter",
     system_prompt="You are a creative copywriter focused on compelling messaging and storytelling.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
 designer = Agent(
     agent_name="Designer",
     system_prompt="You are a visual designer focused on creating impactful and beautiful designs.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
 strategist = Agent(
     agent_name="Strategist",
     system_prompt="You are a marketing strategist focused on data-driven insights and campaign optimization.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
 client = Agent(
     agent_name="Client",
     system_prompt="You are a client representative focused on brand requirements and business objectives.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
@@ -939,42 +939,42 @@ def emergency_response_algorithm(agents, task, **kwargs):
 incident_commander = Agent(
     agent_name="IncidentCommander",
     system_prompt="You are an experienced incident commander focused on leadership and decision-making in emergency situations.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
 operations_chief = Agent(
     agent_name="OperationsChief",
     system_prompt="You are an operations chief focused on tactical execution and resource coordination.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
 safety_officer = Agent(
     agent_name="SafetyOfficer",
     system_prompt="You are a safety officer focused on hazard assessment and safety protocols.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
 communications_officer = Agent(
     agent_name="CommunicationsOfficer",
     system_prompt="You are a communications officer focused on information management and public relations.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
 logistics_coordinator = Agent(
     agent_name="LogisticsCoordinator",
     system_prompt="You are a logistics coordinator focused on resource management and support operations.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
 medical_officer = Agent(
     agent_name="MedicalOfficer",
     system_prompt="You are a medical officer focused on casualty care and medical response coordination.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
@@ -1023,9 +1023,9 @@ def custom_communication_algorithm(agents, task, **kwargs):
     }
 
 # Create agents
-researcher = Agent(agent_name="Researcher", model_name="gpt-4o-mini")
-analyst = Agent(agent_name="Analyst", model_name="gpt-4o-mini")
-synthesizer = Agent(agent_name="Synthesizer", model_name="gpt-4o-mini")
+researcher = Agent(agent_name="Researcher", model_name="gpt-5.4")
+analyst = Agent(agent_name="Analyst", model_name="gpt-5.4")
+synthesizer = Agent(agent_name="Synthesizer", model_name="gpt-5.4")
 
 # Create social algorithm
 social_alg = SocialAlgorithms(

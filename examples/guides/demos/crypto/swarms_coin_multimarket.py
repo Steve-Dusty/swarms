@@ -97,7 +97,7 @@ Leverage your knowledge of $Swarms' vision, roadmap, and economics to provide us
 swarms_agent = Agent(
     agent_name="Swarms-Token-Agent",
     system_prompt=SWARMS_AGENT_SYS_PROMPT,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     autosave=True,
     dashboard=False,

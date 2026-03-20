@@ -77,7 +77,7 @@ def test_agent():
             agent_name="test_agent",
             agent_description="A test agent",
             system_prompt="You are a test agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -826,7 +826,7 @@ class TestCreateAgentsFromYaml:
           - agent_name: "Financial-Analysis-Agent"
             model:
               openai_api_key: "fake-api-key"
-              model_name: "gpt-4o-mini"
+              model_name: "gpt-5.4"
               temperature: 0.1
               max_tokens: 2000
             system_prompt: "financial_agent_sys_prompt"
@@ -861,7 +861,7 @@ class TestCreateAgentsFromYaml:
                     "agent_name": "Financial-Analysis-Agent",
                     "model": {
                         "openai_api_key": "fake-api-key",
-                        "model_name": "gpt-4o-mini",
+                        "model_name": "gpt-5.4",
                         "temperature": 0.1,
                         "max_tokens": 2000,
                     },
@@ -909,7 +909,7 @@ class TestCreateAgentsFromYaml:
                     "agent_name": "Financial-Analysis-Agent",
                     "model": {
                         "openai_api_key": "fake-api-key",
-                        "model_name": "gpt-4o-mini",
+                        "model_name": "gpt-5.4",
                         "temperature": 0.1,
                         "max_tokens": 2000,
                     },
@@ -958,7 +958,7 @@ class TestCreateAgentsFromYaml:
                     "agent_name": "Financial-Analysis-Agent",
                     "model": {
                         "openai_api_key": "fake-api-key",
-                        "model_name": "gpt-4o-mini",
+                        "model_name": "gpt-5.4",
                         "temperature": 0.1,
                         "max_tokens": 2000,
                     },
@@ -1024,7 +1024,7 @@ class TestCreateAgentsFromYaml:
                     "agent_name": "Financial-Analysis-Agent",
                     "model": {
                         "openai_api_key": "fake-api-key",
-                        "model_name": "gpt-4o-mini",
+                        "model_name": "gpt-5.4",
                         "temperature": 0.1,
                         "max_tokens": 2000,
                     },
@@ -1089,7 +1089,7 @@ class TestAgentBenchmark:
                 agent_name=f"Financial-Analysis-Agent-{i}",
                 agent_description="Personal finance advisor agent",
                 max_loops=2,
-                model_name="gpt-4o-mini",
+                model_name="gpt-5.4",
                 dynamic_temperature_enabled=True,
                 interactive=False,
             )
@@ -1180,7 +1180,7 @@ class TestAgentToolUsage:
         # Test with individual function tools
         agent = Agent(
             agent_name="Callable-Tools-Test-Agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             tools=[math_tool, string_tool, list_tool],
         )
@@ -1233,7 +1233,7 @@ class TestAgentToolUsage:
 
         agent = Agent(
             agent_name="Tool-Management-Test-Agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             tools=[tool1, tool2],
         )
@@ -1318,7 +1318,7 @@ class TestAgentToolUsage:
 
             agent = Agent(
                 agent_name="MCP-Single-URL-Test-Agent",
-                model_name="gpt-4o-mini",
+                model_name="gpt-5.4",
                 max_loops=1,
                 mcp_url=mock_mcp_url,
                 verbose=True,
@@ -1401,7 +1401,7 @@ class TestAgentToolUsage:
 
             agent = Agent(
                 agent_name="MCP-Multiple-URLs-Test-Agent",
-                model_name="gpt-4o-mini",
+                model_name="gpt-5.4",
                 max_loops=1,
                 mcp_urls=mock_mcp_urls,
                 verbose=True,
@@ -1483,7 +1483,7 @@ class TestAgentToolUsage:
 
         agent = Agent(
             agent_name="Tool-Execution-Test-Agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             tools=[valid_tool, error_tool, type_error_tool],
         )
@@ -1522,7 +1522,7 @@ class TestAgentToolUsage:
 
         agent = Agent(
             agent_name="Tool-Schema-Test-Agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             tools=[complex_tool],
         )
@@ -1547,13 +1547,13 @@ class TestAgentToolUsage:
         # Create test agents
         agent1 = Agent(
             agent_name="AOP-Agent-1",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
         )
 
         agent2 = Agent(
             agent_name="AOP-Agent-2",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
         )
 
@@ -1604,7 +1604,7 @@ class TestAgentToolUsage:
         # Test with auto tool choice
         agent_auto = Agent(
             agent_name="Auto-Tool-Choice-Agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             tools=[tool_a, tool_b],
             tool_choice="auto",
@@ -1618,7 +1618,7 @@ class TestAgentToolUsage:
         # Test with specific tool choice
         agent_specific = Agent(
             agent_name="Specific-Tool-Choice-Agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             tools=[tool_a, tool_b],
             tool_choice="tool_a",
@@ -1634,7 +1634,7 @@ class TestAgentToolUsage:
         # Test with tool execution enabled/disabled
         agent_execute = Agent(
             agent_name="Tool-Execute-Agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             tools=[tool_a, tool_b],
             execute_tool=True,
@@ -1663,7 +1663,7 @@ class TestAgentToolUsage:
 
         agent = Agent(
             agent_name="Tool-Prompt-Test-Agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             tools=[calculator_tool],
             tool_system_prompt=custom_tool_prompt,
@@ -1699,7 +1699,7 @@ class TestAgentToolUsage:
 
         agent = Agent(
             agent_name="Parallel-Tool-Test-Agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             tools=[slow_tool, fast_tool],
         )
@@ -1727,7 +1727,7 @@ class TestAgentToolUsage:
 
         agent = Agent(
             agent_name="Tool-Validation-Test-Agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             tools=[typed_tool],
         )
@@ -1761,7 +1761,7 @@ class TestAgentToolUsage:
 
         agent = Agent(
             agent_name="Tool-Caching-Test-Agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             tools=[cached_tool],
         )
@@ -1793,7 +1793,7 @@ class TestAgentToolUsage:
 
         agent = Agent(
             agent_name="Tool-Recovery-Test-Agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             tools=[unreliable_tool, fallback_tool],
             retry_attempts=3,
@@ -1827,7 +1827,7 @@ class TestAgentToolUsage:
 
         agent = Agent(
             agent_name="Output-Types-Test-Agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             tools=[json_tool, yaml_tool, dict_tool],
         )
@@ -1867,7 +1867,7 @@ class TestAgentToolUsage:
 
         agent = Agent(
             agent_name="Async-Tool-Test-Agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             tools=[
                 sync_tool
@@ -1906,7 +1906,7 @@ class TestAgentToolUsage:
 
             agent = Agent(
                 agent_name="File-Ops-Test-Agent",
-                model_name="gpt-4o-mini",
+                model_name="gpt-5.4",
                 max_loops=1,
                 tools=[file_writer_tool, file_reader_tool],
             )
@@ -1943,7 +1943,7 @@ class TestAgentToolUsage:
 
         agent = Agent(
             agent_name="Network-Ops-Test-Agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             tools=[url_tool, api_tool],
         )
@@ -1976,7 +1976,7 @@ class TestAgentToolUsage:
 
         agent = Agent(
             agent_name="Database-Ops-Test-Agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             tools=[db_query_tool, db_insert_tool],
         )
@@ -2013,7 +2013,7 @@ class TestAgentToolUsage:
 
         agent = Agent(
             agent_name="ML-Ops-Test-Agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             tools=[predict_tool, train_tool],
         )
@@ -2052,7 +2052,7 @@ class TestAgentToolUsage:
 
         agent = Agent(
             agent_name="Image-Processing-Test-Agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             tools=[resize_tool, filter_tool],
         )
@@ -2093,7 +2093,7 @@ class TestAgentToolUsage:
 
         agent = Agent(
             agent_name="Text-Processing-Test-Agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             tools=[tokenize_tool, translate_tool, sentiment_tool],
         )
@@ -2157,7 +2157,7 @@ class TestAgentToolUsage:
 
         agent = Agent(
             agent_name="Math-Ops-Test-Agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             tools=[
                 matrix_multiply_tool,
@@ -2233,7 +2233,7 @@ class TestLLMArgsAndHandling:
             print("Testing Agent with only llm_args...")
             Agent(
                 agent_name="test-agent-1",
-                model_name="gpt-4o-mini",
+                model_name="gpt-5.4",
                 llm_args=llm_args,
             )
             print("✓ Agent with only llm_args created successfully")
@@ -2242,7 +2242,7 @@ class TestLLMArgsAndHandling:
             print("Testing Agent with only tools_list_dictionary...")
             Agent(
                 agent_name="test-agent-2",
-                model_name="gpt-4o-mini",
+                model_name="gpt-5.4",
                 tools_list_dictionary=tools_list,
             )
             print(
@@ -2255,7 +2255,7 @@ class TestLLMArgsAndHandling:
             )
             agent3 = Agent(
                 agent_name="test-agent-3",
-                model_name="gpt-4o-mini",
+                model_name="gpt-5.4",
                 llm_args=llm_args,
                 tools_list_dictionary=tools_list,
             )
@@ -2348,7 +2348,7 @@ class TestLLMArgsAndHandling:
         # Create an agent instance
         agent = Agent(
             agent_name="test-agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             temperature=0.7,
             max_tokens=1000,
         )

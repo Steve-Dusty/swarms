@@ -2,7 +2,7 @@ from swarms import SelfConsistencyAgent
 
 agent = SelfConsistencyAgent(
     max_loops=1,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     system_prompt="You are a helpful assistant that can answer questions and help with tasks.",
     description="You are a helpful assistant that can answer questions and help with tasks.",
 )

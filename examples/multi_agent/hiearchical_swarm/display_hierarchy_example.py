@@ -4,7 +4,7 @@ from swarms import Agent, HierarchicalSwarm
 research_agent = Agent(
     agent_name="Research-Analyst",
     agent_description="Specialized in comprehensive research and data gathering",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )
@@ -12,7 +12,7 @@ research_agent = Agent(
 analysis_agent = Agent(
     agent_name="Data-Analyst",
     agent_description="Expert in data analysis and pattern recognition",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )
@@ -20,7 +20,7 @@ analysis_agent = Agent(
 strategy_agent = Agent(
     agent_name="Strategy-Consultant",
     agent_description="Specialized in strategic planning and recommendations",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )

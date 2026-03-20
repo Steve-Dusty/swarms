@@ -74,21 +74,21 @@ from swarms import Agent, SocialAlgorithms
 researcher = Agent(
     agent_name="Researcher",
     system_prompt="You are a research specialist. Gather comprehensive information.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 analyst = Agent(
     agent_name="Analyst",
     system_prompt="You are an analyst. Interpret data and identify insights.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 synthesizer = Agent(
     agent_name="Synthesizer",
     system_prompt="You synthesize information into clear recommendations.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -134,9 +134,9 @@ def research_pipeline(agents, task, **kwargs):
 
 # Create agents
 agents = [
-    Agent(agent_name="Researcher", system_prompt="Research specialist", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Analyst", system_prompt="Analysis specialist", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Synthesizer", system_prompt="Synthesis specialist", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="Researcher", system_prompt="Research specialist", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Analyst", system_prompt="Analysis specialist", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Synthesizer", system_prompt="Synthesis specialist", model_name="gpt-5.4", max_loops=1),
 ]
 
 # Create and run algorithm
@@ -215,10 +215,10 @@ def consensus_building(agents, task, **kwargs):
 
 # Implementation
 agents = [
-    Agent(agent_name="Tech-Lead", system_prompt="Technical perspective", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Business-Lead", system_prompt="Business perspective", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="UX-Lead", system_prompt="User experience perspective", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Facilitator", system_prompt="Neutral facilitator", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="Tech-Lead", system_prompt="Technical perspective", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Business-Lead", system_prompt="Business perspective", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="UX-Lead", system_prompt="User experience perspective", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Facilitator", system_prompt="Neutral facilitator", model_name="gpt-5.4", max_loops=1),
 ]
 
 social_alg = SocialAlgorithms(
@@ -264,10 +264,10 @@ def hierarchical_decision(agents, task, **kwargs):
     }
 
 agents = [
-    Agent(agent_name="Manager", system_prompt="Strategic manager", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Worker-1", system_prompt="Implementation specialist", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Worker-2", system_prompt="Quality specialist", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Worker-3", system_prompt="Testing specialist", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="Manager", system_prompt="Strategic manager", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Worker-1", system_prompt="Implementation specialist", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Worker-2", system_prompt="Quality specialist", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Worker-3", system_prompt="Testing specialist", model_name="gpt-5.4", max_loops=1),
 ]
 
 social_alg = SocialAlgorithms(

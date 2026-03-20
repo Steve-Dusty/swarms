@@ -46,7 +46,7 @@ from swarms import Agent, SequentialWorkflow
     litigation_agent = Agent(
         agent_name="Alex Johnson",
         system_prompt="As a Litigator, you specialize in navigating the complexities of lawsuits. Your role involves analyzing intricate facts, constructing compelling arguments, and devising effective case strategies to achieve favorable outcomes for your clients.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -54,7 +54,7 @@ from swarms import Agent, SequentialWorkflow
     corporate_agent = Agent(
         agent_name="Emily Carter",
         system_prompt="As a Corporate Attorney, you provide expert legal advice on business law matters. You guide clients on corporate structure, governance, compliance, and transactions, ensuring their business operations align with legal requirements.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -62,7 +62,7 @@ from swarms import Agent, SequentialWorkflow
     ip_agent = Agent(
         agent_name="Michael Smith",
         system_prompt="As an IP Attorney, your expertise lies in protecting intellectual property rights. You handle various aspects of IP law, including patents, trademarks, copyrights, and trade secrets, helping clients safeguard their innovations.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
     ```
@@ -101,21 +101,21 @@ from swarms import Agent, SequentialWorkflow
     litigation_agent = Agent(
         agent_name="Alex Johnson",
         system_prompt="As a Litigator, you specialize in navigating the complexities of lawsuits. Your role involves analyzing intricate facts, constructing compelling arguments, and devising effective case strategies to achieve favorable outcomes for your clients.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
     corporate_agent = Agent(
         agent_name="Emily Carter",
         system_prompt="As a Corporate Attorney, you provide expert legal advice on business law matters. You guide clients on corporate structure, governance, compliance, and transactions, ensuring their business operations align with legal requirements.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
     ip_agent = Agent(
         agent_name="Michael Smith",
         system_prompt="As an IP Attorney, your expertise lies in protecting intellectual property rights. You handle various aspects of IP law, including patents, trademarks, copyrights, and trade secrets, helping clients safeguard their innovations.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -145,7 +145,7 @@ from swarms import Agent, SequentialWorkflow
     |-----------|-------------|---------|
     | `agent_name` | Human-readable name for the agent | Required |
     | `system_prompt` | Detailed role description and expertise | Required |
-    | `model_name` | LLM model to use | "gpt-4o-mini" |
+    | `model_name` | LLM model to use | "gpt-5.4" |
     | `max_loops` | Maximum number of processing loops | 1 |
 
 ## Next Steps

@@ -21,7 +21,7 @@ Your Specialties:
 
 Always USE YOUR TOOLS to add text elements to the canvas.
 Output format: COPY CREATED: [your copy], ACTIONS TAKEN: [tools used]""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -38,13 +38,13 @@ Your Specialties:
 
 Always USE YOUR TOOLS to create UX elements on the canvas.
 Output format: UX DESIGN: [your design], ACTIONS TAKEN: [tools used]""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 swarm = FairySwarm(
     name="Marketing Team",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=2,
     verbose=True,
     fairies=[copywriter, ux_designer],

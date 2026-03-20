@@ -27,7 +27,7 @@ try:
     director = Agent(
         agent_name="Director",
         system_prompt="You are the director coordinating complex research projects with voice communication.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         streaming_on=True,
         streaming_callback=director_callback,
@@ -36,7 +36,7 @@ try:
     researcher = Agent(
         agent_name="Researcher",
         system_prompt="You are a research specialist gathering comprehensive information.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         streaming_on=True,
         streaming_callback=researcher_callback,
@@ -45,7 +45,7 @@ try:
     analyst = Agent(
         agent_name="Analyst",
         system_prompt="You are a data analyst providing insights and recommendations.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         streaming_on=True,
         streaming_callback=analyst_callback,

@@ -21,7 +21,7 @@ def create_sample_agents():
             agent_name="ResearchAgent",
             agent_description="Specializes in researching topics",
             system_prompt="You are a research specialist.",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -30,7 +30,7 @@ def create_sample_agents():
             agent_name="CodeAgent",
             agent_description="Expert in coding",
             system_prompt="You are a coding expert.",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -108,17 +108,17 @@ def test_initialization_with_heavy_swarm_config():
         agents=sample_agents,
         swarm_type="HeavySwarm",
         heavy_swarm_loops_per_agent=2,
-        heavy_swarm_question_agent_model_name="gpt-4o-mini",
-        heavy_swarm_worker_model_name="gpt-4o-mini",
+        heavy_swarm_question_agent_model_name="gpt-5.4",
+        heavy_swarm_worker_model_name="gpt-5.4",
         heavy_swarm_swarm_show_output=False,
     )
 
     assert router.swarm_type == "HeavySwarm"
     assert router.heavy_swarm_loops_per_agent == 2
     assert (
-        router.heavy_swarm_question_agent_model_name == "gpt-4o-mini"
+        router.heavy_swarm_question_agent_model_name == "gpt-5.4"
     )
-    assert router.heavy_swarm_worker_model_name == "gpt-4o-mini"
+    assert router.heavy_swarm_worker_model_name == "gpt-5.4"
     assert router.heavy_swarm_swarm_show_output is False
 
 

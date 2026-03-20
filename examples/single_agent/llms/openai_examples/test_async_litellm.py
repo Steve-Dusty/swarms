@@ -1,7 +1,7 @@
 from swarms.utils.litellm_wrapper import LiteLLM
 
 llm = LiteLLM(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     temperature=0.5,
     max_tokens=1000,
     stream=True,

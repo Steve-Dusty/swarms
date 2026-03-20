@@ -45,7 +45,7 @@ class DebateWithJudge:
         max_loops: int = 3,
         output_type: str = "str-all-except-first",
         verbose: bool = True,
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
     ):
 ```
 
@@ -61,7 +61,7 @@ class DebateWithJudge:
 | `max_loops` | `int` | `3` | Maximum number of debate rounds to execute |
 | `output_type` | `str` | `"str-all-except-first"` | Format for the output conversation history |
 | `verbose` | `bool` | `True` | Whether to enable verbose logging |
-| `model_name` | `str` | `"gpt-4o-mini"` | The model name to use for preset agents |
+| `model_name` | `str` | `"gpt-5.4"` | The model name to use for preset agents |
 
 ### Initialization Options
 
@@ -78,7 +78,7 @@ from swarms import DebateWithJudge
 debate = DebateWithJudge(
     preset_agents=True,
     max_loops=3,
-    model_name="gpt-4o-mini"  # Optional: specify model
+    model_name="gpt-5.4"  # Optional: specify model
 )
 
 result = debate.run("Should AI be regulated?")
@@ -192,21 +192,21 @@ from swarms import Agent, DebateWithJudge
 pro_agent = Agent(
     agent_name="Pro-Agent",
     system_prompt="You are a skilled debater who argues in favor of positions...",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 con_agent = Agent(
     agent_name="Con-Agent",
     system_prompt="You are a skilled debater who argues against positions...",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 judge_agent = Agent(
     agent_name="Judge-Agent",
     system_prompt="You are an impartial judge who evaluates debates...",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -236,7 +236,7 @@ pro_agent = Agent(
         "You present well-reasoned arguments with evidence, examples, "
         "and logical reasoning. You are persuasive and articulate."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -249,7 +249,7 @@ con_agent = Agent(
         "and logical reasoning. You identify weaknesses in opposing "
         "arguments and provide compelling alternatives."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -263,7 +263,7 @@ judge_agent = Agent(
         "You may declare a winner or provide a refined answer that "
         "incorporates the best elements from both arguments."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -542,7 +542,7 @@ from swarms import DebateWithJudge
 debate_system = DebateWithJudge(
     preset_agents=True,
     max_loops=3,
-    model_name="gpt-4o-mini",  # Specify model for preset agents
+    model_name="gpt-5.4",  # Specify model for preset agents
     output_type="str-all-except-first",
     verbose=True,
 )
@@ -580,7 +580,7 @@ pro_agent = Agent(
         "You are persuasive and articulate, emphasizing the need for oversight "
         "to prevent harm and ensure responsible AI development."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -596,7 +596,7 @@ con_agent = Agent(
         "and ethical guidelines. You emphasize the importance of maintaining "
         "technological competitiveness."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -612,7 +612,7 @@ judge_agent = Agent(
         "answer that incorporates the best elements from both arguments, such as "
         "balanced regulatory frameworks that protect public interest while fostering innovation."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -655,21 +655,21 @@ from swarms import Agent, DebateWithJudge
 pro = Agent(
     agent_name="Microservices-Pro",
     system_prompt="You advocate for microservices architecture...",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 con = Agent(
     agent_name="Monolith-Pro", 
     system_prompt="You advocate for monolithic architecture...",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 judge = Agent(
     agent_name="Architecture-Judge",
     system_prompt="You evaluate architecture debates...",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -700,7 +700,7 @@ pro_agent = Agent(
         "technology diversity, and team autonomy. You use real-world examples and "
         "case studies to support your position."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -712,7 +712,7 @@ con_agent = Agent(
         "easier debugging, and lower operational overhead. You identify weaknesses "
         "in microservices approaches and provide compelling alternatives."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -724,7 +724,7 @@ judge_agent = Agent(
         "complexity, operational capabilities, and long-term maintainability. "
         "You provide balanced synthesis that considers context-specific trade-offs."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -771,7 +771,7 @@ pro_agent = Agent(
         "network effects, and competitive positioning. You use case studies from "
         "successful companies like Amazon, Uber, and Airbnb to support your position."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -785,7 +785,7 @@ con_agent = Agent(
         "weaknesses in 'growth at all costs' approaches and provide compelling alternatives "
         "based on companies like Apple, Microsoft, and Berkshire Hathaway."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -802,7 +802,7 @@ judge_agent = Agent(
         "You provide balanced synthesis that incorporates the best elements from both arguments, "
         "considering context-specific factors. You may recommend a hybrid approach when appropriate."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

@@ -49,7 +49,7 @@ from swarms.structs.swarming_architectures import star_swarm
 coordinator = Agent(
     agent_name="Coordinator",
     system_prompt="You are a coordinator. You analyze tasks and provide initial insights.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -57,14 +57,14 @@ coordinator = Agent(
 researcher = Agent(
     agent_name="Researcher",
     system_prompt="You are a research specialist.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 analyst = Agent(
     agent_name="Analyst",
     system_prompt="You are an analyst.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 ```
@@ -105,7 +105,7 @@ coordinator = Agent(
     agent_name="Project-Coordinator",
     system_prompt="""You are a project coordinator. You analyze tasks, 
     break them down, and provide initial direction.""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -113,21 +113,21 @@ coordinator = Agent(
 researcher = Agent(
     agent_name="Research-Specialist",
     system_prompt="You research topics thoroughly and gather information.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 analyst = Agent(
     agent_name="Data-Analyst",
     system_prompt="You analyze data and identify patterns.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 writer = Agent(
     agent_name="Content-Writer",
     system_prompt="You synthesize information into clear content.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -222,15 +222,15 @@ result = star_swarm(
 project_manager = Agent(
     agent_name="Project-Manager",
     system_prompt="You coordinate projects and break down tasks.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 # Team members
 team = [
-    Agent(agent_name="Developer", system_prompt="Technical implementation", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Designer", system_prompt="UI/UX design", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Tester", system_prompt="Quality assurance", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="Developer", system_prompt="Technical implementation", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Designer", system_prompt="UI/UX design", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Tester", system_prompt="Quality assurance", model_name="gpt-5.4", max_loops=1),
 ]
 
 tasks = [
@@ -251,15 +251,15 @@ result = star_swarm(
 lead_researcher = Agent(
     agent_name="Lead-Researcher",
     system_prompt="You coordinate research efforts and provide initial analysis.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 # Research team
 research_team = [
-    Agent(agent_name="Data-Collector", system_prompt="Collects research data", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Statistician", system_prompt="Statistical analysis", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Writer", system_prompt="Research writing", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="Data-Collector", system_prompt="Collects research data", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Statistician", system_prompt="Statistical analysis", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Writer", system_prompt="Research writing", model_name="gpt-5.4", max_loops=1),
 ]
 
 tasks = [

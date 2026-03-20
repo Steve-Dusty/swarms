@@ -107,7 +107,7 @@ framework = HierarchicalStructuredCommunicationFramework(
     enable_structured_communication=True,
     enable_hierarchical_evaluation=True,
     shared_memory=True,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     verbose=True
 )
 

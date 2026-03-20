@@ -41,7 +41,7 @@ class BrowserState:
         env: str = "LOCAL",
         api_key: Optional[str] = None,
         project_id: Optional[str] = None,
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
         model_api_key: Optional[str] = None,
     ):
         """Initialize the browser if not already initialized."""
@@ -348,7 +348,7 @@ if __name__ == "__main__":
     # Create a Swarms agent with browser tools
     browser_agent = Agent(
         agent_name="BrowserAutomationAgent",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         tools=[
             navigate_browser,

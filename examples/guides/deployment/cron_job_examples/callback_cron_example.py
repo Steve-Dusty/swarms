@@ -20,7 +20,7 @@ def create_sample_agent():
         agent_name="Sample-Analysis-Agent",
         system_prompt="""You are a data analysis agent. Analyze the given data and provide insights.
         Keep your responses concise and focused on key findings.""",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         print_on=False,
     )

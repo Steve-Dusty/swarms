@@ -4,7 +4,7 @@ from swarms.structs.agent import Agent
 agent_a = Agent(
     agent_name="Agent-A",
     agent_description="Agent A",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )
@@ -12,7 +12,7 @@ agent_a = Agent(
 agent_b = Agent(
     agent_name="Agent-B",
     agent_description="Agent B",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )
@@ -20,7 +20,7 @@ agent_b = Agent(
 agent_c = Agent(
     agent_name="Agent-C",
     agent_description="Agent C",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )
@@ -28,7 +28,7 @@ agent_c = Agent(
 agent_isolated = Agent(
     agent_name="Agent-Isolated",
     agent_description="Isolated agent with no connections",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )

@@ -64,13 +64,13 @@ class TestStagehandAgent:
 
         agent = StagehandAgent(
             agent_name="TestAgent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             env="LOCAL",
         )
 
         assert agent.agent_name == "TestAgent"
         assert agent.stagehand_config.env == "LOCAL"
-        assert agent.stagehand_config.model_name == "gpt-4o-mini"
+        assert agent.stagehand_config.model_name == "gpt-5.4"
         assert not agent._initialized
 
     @patch(
@@ -85,7 +85,7 @@ class TestStagehandAgent:
 
         agent = StagehandAgent(
             agent_name="TestAgent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             env="LOCAL",
         )
 
@@ -115,7 +115,7 @@ class TestStagehandAgent:
 
         agent = StagehandAgent(
             agent_name="TestAgent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             env="LOCAL",
         )
 
@@ -140,7 +140,7 @@ class TestStagehandAgent:
 
         agent = StagehandAgent(
             agent_name="TestAgent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             env="LOCAL",
         )
 
@@ -272,12 +272,12 @@ class TestStagehandMCP:
         mcp_agent = StagehandMCPAgent(
             agent_name="TestMCPAgent",
             mcp_server_url="http://localhost:3000/mcp",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
         )
 
         assert mcp_agent.agent.agent_name == "TestMCPAgent"
         assert mcp_agent.agent.mcp_url == "http://localhost:3000/mcp"
-        assert mcp_agent.agent.model_name == "gpt-4o-mini"
+        assert mcp_agent.agent.model_name == "gpt-5.4"
 
     def test_multi_session_swarm_creation(self):
         """Test multi-session browser swarm creation."""
@@ -412,7 +412,7 @@ class TestIntegration:
 
         agent = StagehandAgent(
             agent_name="IntegrationTestAgent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             env="LOCAL",
         )
 

@@ -158,14 +158,14 @@ enable_board_feature()
 chairman = Agent(
     agent_name="Chairman",
     agent_description="Chairman of the Board responsible for leading meetings",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     system_prompt="You are the Chairman of the Board..."
 )
 
 vice_chairman = Agent(
     agent_name="Vice-Chairman",
     agent_description="Vice Chairman who supports the Chairman",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     system_prompt="You are the Vice Chairman..."
 )
 

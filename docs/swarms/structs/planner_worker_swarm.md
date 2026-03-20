@@ -35,8 +35,8 @@ from swarms.structs.planner_worker_swarm import PlannerWorkerSwarm
 
 swarm = PlannerWorkerSwarm(
     agents=[
-        Agent(agent_name="Research", agent_description="Gathers information", model_name="gpt-4o-mini", max_loops=1),
-        Agent(agent_name="Analysis", agent_description="Analyzes data", model_name="gpt-4o-mini", max_loops=1),
+        Agent(agent_name="Research", agent_description="Gathers information", model_name="gpt-5.4", max_loops=1),
+        Agent(agent_name="Analysis", agent_description="Analyzes data", model_name="gpt-5.4", max_loops=1),
     ],
     max_loops=1,
     max_workers=2,
@@ -122,8 +122,8 @@ Cycle 2+ (if not complete):
 | `description` | `str` | `"A planner-worker execution swarm"` | No | Description of the swarm's purpose |
 | `agents` | `List[Union[Agent, Callable]]` | `None` | **Yes** | Worker agents that execute tasks. Must not be empty |
 | `max_loops` | `int` | `1` | No | Maximum planner-worker-judge cycles (must be > 0) |
-| `planner_model_name` | `str` | `"gpt-4o-mini"` | No | Model for the planner agent |
-| `judge_model_name` | `str` | `"gpt-4o-mini"` | No | Model for the judge agent |
+| `planner_model_name` | `str` | `"gpt-5.4"` | No | Model for the planner agent |
+| `judge_model_name` | `str` | `"gpt-5.4"` | No | Model for the judge agent |
 | `max_planner_depth` | `int` | `1` | No | Max recursive sub-planner depth. `1` = no sub-planners; `2` = CRITICAL tasks are decomposed once |
 | `worker_timeout` | `Optional[float]` | `None` | No | Max seconds for the entire worker pool per cycle |
 | `task_timeout` | `Optional[float]` | `None` | No | Max seconds per individual task execution |
@@ -175,13 +175,13 @@ workers = [
     Agent(
         agent_name="Research-Agent",
         agent_description="Gathers factual information and data",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="Analysis-Agent",
         agent_description="Analyzes data and identifies patterns",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
 ]
@@ -303,8 +303,8 @@ from swarms import Agent
 from swarms.structs.swarm_router import SwarmRouter
 
 workers = [
-    Agent(agent_name="W1", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="W2", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="W1", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="W2", model_name="gpt-5.4", max_loops=1),
 ]
 
 router = SwarmRouter(agents=workers, swarm_type="PlannerWorkerSwarm")

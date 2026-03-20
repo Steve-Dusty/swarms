@@ -220,7 +220,7 @@ agent = Agent(
         "http://0.0.0.0:8001/mcp",  # OKX Crypto Server
         "http://0.0.0.0:8000/mcp",  # Agent Tools Server
     ],
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     output_type="all",
 )
 
@@ -258,7 +258,7 @@ agent = Agent(
         "http://0.0.0.0:8001/mcp",  # OKX Crypto
         "http://0.0.0.0:8000/mcp",  # Agent Tools
     ],
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=3,
 )
 
@@ -303,7 +303,7 @@ agent = Agent(
         "http://0.0.0.0:8001/mcp",
         "http://0.0.0.0:8000/mcp",
     ],
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     # The agent will gracefully handle MCP server failures
     # and continue with available tools

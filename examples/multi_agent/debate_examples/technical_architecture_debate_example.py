@@ -16,7 +16,7 @@ pro_agent = Agent(
         "technology diversity, and team autonomy. You use real-world examples and "
         "case studies to support your position."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -28,7 +28,7 @@ con_agent = Agent(
         "easier debugging, and lower operational overhead. You identify weaknesses "
         "in microservices approaches and provide compelling alternatives."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -40,7 +40,7 @@ judge_agent = Agent(
         "complexity, operational capabilities, and long-term maintainability. "
         "You provide balanced synthesis that considers context-specific trade-offs."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

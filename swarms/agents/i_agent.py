@@ -52,7 +52,7 @@ class IterativeReflectiveExpansion:
         agent: Agent = None,
         max_loops: int = 5,
         system_prompt: str = GENERAL_REASONING_AGENT_SYS_PROMPT,
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
         output_type: OutputType = "dict",
     ) -> None:
         """

@@ -55,21 +55,21 @@ def competitive_evaluation_algorithm(
 competitor1 = Agent(
     agent_name="Competitor1",
     system_prompt="You are a competitive problem-solver focused on finding the best solution.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 competitor2 = Agent(
     agent_name="Competitor2",
     system_prompt="You are a competitive problem-solver focused on finding the best solution.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 judge = Agent(
     agent_name="Judge",
     system_prompt="You are an impartial judge focused on evaluating and ranking solutions objectively.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

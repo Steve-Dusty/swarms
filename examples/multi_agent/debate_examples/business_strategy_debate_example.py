@@ -17,7 +17,7 @@ pro_agent = Agent(
         "network effects, and competitive positioning. You use case studies from "
         "successful companies like Amazon, Uber, and Airbnb to support your position."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -31,7 +31,7 @@ con_agent = Agent(
         "weaknesses in 'growth at all costs' approaches and provide compelling alternatives "
         "based on companies like Apple, Microsoft, and Berkshire Hathaway."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -48,7 +48,7 @@ judge_agent = Agent(
         "You provide balanced synthesis that incorporates the best elements from both arguments, "
         "considering context-specific factors. You may recommend a hybrid approach when appropriate."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

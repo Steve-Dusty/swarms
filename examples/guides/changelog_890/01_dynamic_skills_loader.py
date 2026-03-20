@@ -18,7 +18,7 @@ from swarms import Agent
 # The agent will automatically load skills based on task similarity
 agent = Agent(
     agent_name="Adaptive Research Agent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     skills_dir="./examples/single_agent/agent_skill_examples",  # Directory with skill folders
 )

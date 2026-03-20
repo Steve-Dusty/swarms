@@ -84,7 +84,7 @@ agent = Agent(
     agent_name="API-Finance-Expert",
     agent_description="An API expert agent specialized in financial analysis and investment planning.",
     system_prompt=API_AGENT_SYS_PROMPT,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     tools=[omni_api],
 )
 

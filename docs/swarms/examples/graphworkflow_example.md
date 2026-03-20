@@ -34,14 +34,14 @@ from swarms import Agent, GraphWorkflow
 # Create specialized agents
 research_agent = Agent(
     agent_name="ResearchAgent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     system_prompt="You are a research specialist. Gather and analyze information.",
     max_loops=1
 )
 
 analysis_agent = Agent(
     agent_name="AnalysisAgent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     system_prompt="You are an analyst. Process research findings and extract insights.",
     max_loops=1
 )
@@ -355,7 +355,7 @@ researcher = Agent(
     agent_name="Researcher",
     agent_description="Research specialist",
     system_prompt="Research the topic thoroughly and provide comprehensive findings",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
@@ -363,7 +363,7 @@ analyzer = Agent(
     agent_name="Analyzer",
     agent_description="Data analyst",
     system_prompt="Analyze research findings and extract key insights",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
@@ -371,7 +371,7 @@ reporter = Agent(
     agent_name="Reporter",
     agent_description="Report writer",
     system_prompt="Create final report based on analysis",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
@@ -457,21 +457,21 @@ from swarms import Agent, GraphWorkflow
 research_agent = Agent(
     agent_name="ResearchAgent",
     agent_description="Specialized in comprehensive research and data gathering",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 analysis_agent = Agent(
     agent_name="AnalysisAgent",
     agent_description="Expert in data analysis and pattern recognition",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 synthesis_agent = Agent(
     agent_name="SynthesisAgent",
     agent_description="Specialized in synthesizing insights into reports",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

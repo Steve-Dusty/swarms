@@ -26,7 +26,7 @@ if __name__ == "__main__":
         agent_name="Simple_Agent",
         agent_description="A simple agent for demonstration",
         system_prompt="You are a helpful assistant.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -36,7 +36,7 @@ if __name__ == "__main__":
         description="Basic streaming demo",
         agents=[agent],
         max_loops=1,
-        director_model_name="gpt-4o-mini",
+        director_model_name="gpt-5.4",
     )
 
     # Simple task

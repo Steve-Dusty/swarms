@@ -6,56 +6,56 @@ from swarms.structs.social_algorithms import SocialAlgorithms
 data_collector1 = Agent(
     agent_name="Data_Collector_1",
     system_prompt="You are a data collection specialist focused on gathering comprehensive information from various sources. You excel at research and information gathering.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 data_collector2 = Agent(
     agent_name="Data_Collector_2",
     system_prompt="You are a data collection specialist focused on gathering comprehensive information from various sources. You excel at research and information gathering.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 data_processor1 = Agent(
     agent_name="Data_Processor_1",
     system_prompt="You are a data processing specialist focused on cleaning, organizing, and structuring data. You excel at data transformation and preparation.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 data_processor2 = Agent(
     agent_name="Data_Processor_2",
     system_prompt="You are a data processing specialist focused on cleaning, organizing, and structuring data. You excel at data transformation and preparation.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 analyst1 = Agent(
     agent_name="Analyst_1",
     system_prompt="You are an analysis specialist focused on extracting insights and patterns from processed data. You excel at statistical analysis and pattern recognition.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 analyst2 = Agent(
     agent_name="Analyst_2",
     system_prompt="You are an analysis specialist focused on extracting insights and patterns from processed data. You excel at statistical analysis and pattern recognition.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 synthesizer = Agent(
     agent_name="Synthesizer",
     system_prompt="You are a synthesis specialist focused on combining multiple analyses into coherent conclusions. You excel at integration and synthesis.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 pipeline_coordinator = Agent(
     agent_name="Pipeline_Coordinator",
     system_prompt="You are a pipeline coordinator that manages the flow of work between stages, ensures dependencies are met, and coordinates parallel and sequential processing.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

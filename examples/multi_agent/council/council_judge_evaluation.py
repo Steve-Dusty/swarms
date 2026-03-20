@@ -58,7 +58,7 @@ Problem-Solving Framework:
    - Provide actionable recommendations
 
 Remember to maintain a systematic, analytical approach while being adaptable to different problem domains.""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     max_tokens=16000,
 )
@@ -73,7 +73,7 @@ class CouncilJudgeEvaluator:
     def __init__(
         self,
         base_agent: Optional[Agent] = base_agent,
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
         output_dir: str = "evaluation_results",
     ):
         """

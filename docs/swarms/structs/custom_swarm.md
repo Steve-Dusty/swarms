@@ -565,7 +565,7 @@ def create_financial_agent() -> Agent:
     return Agent(
         agent_name="FinancialAnalyst",
         system_prompt="You are a financial analyst specializing in market analysis and risk assessment.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -574,7 +574,7 @@ def create_marketing_agent() -> Agent:
     return Agent(
         agent_name="MarketingSpecialist", 
         system_prompt="You are a marketing specialist focused on campaign analysis and customer insights.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 ```
@@ -603,7 +603,7 @@ def create_multi_domain_swarm() -> CustomSwarm:
         Agent(
             agent_name="OperationsAnalyst",
             system_prompt="You are an operations analyst specializing in process optimization and efficiency.",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
         ),
     ]

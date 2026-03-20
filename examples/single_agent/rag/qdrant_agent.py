@@ -178,7 +178,7 @@ agent = Agent(
     agent_name="Financial-Analysis-Agent",
     system_prompt="Agent system prompt here",
     agent_description="Agent performs financial analysis.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     long_term_memory=memory,
 )
 

@@ -9,7 +9,7 @@ workers = [
             "You are a research specialist. Provide thorough, factual "
             "information with specific details. Be concise but comprehensive."
         ),
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
@@ -19,7 +19,7 @@ workers = [
             "You are an analysis specialist. Analyze information critically, "
             "identify patterns, and provide structured conclusions."
         ),
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
@@ -29,7 +29,7 @@ workers = [
             "You are a writing specialist. Produce clear, well-organized "
             "content with good readability and logical flow."
         ),
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
@@ -39,7 +39,7 @@ workers = [
             "You are a strategy specialist. Evaluate information from a "
             "strategic perspective and provide actionable recommendations."
         ),
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
@@ -49,7 +49,7 @@ workers = [
             "You are a data specialist. Compile relevant statistics, "
             "create comparisons, and present quantitative insights clearly."
         ),
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
 ]
@@ -59,8 +59,8 @@ swarm = PlannerWorkerSwarm(
     description="Conducts market research through parallel agent collaboration",
     agents=workers,
     max_loops=1,
-    planner_model_name="gpt-4o-mini",
-    judge_model_name="gpt-4o-mini",
+    planner_model_name="gpt-5.4",
+    judge_model_name="gpt-5.4",
     max_workers=5,
     worker_timeout=120,
     output_type="string",

@@ -13,7 +13,7 @@ risk_metrics_agent = Agent(
     
     Provide clear, numerical results with brief explanations.""",
     max_loops=1,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     dynamic_temperature_enabled=True,
 )
 

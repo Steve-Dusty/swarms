@@ -23,7 +23,7 @@ from examples.stagehand.stagehand_wrapper_agent import StagehandAgent
 # Create a browser automation agent
 browser_agent = StagehandAgent(
     agent_name="WebScraperAgent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     env="LOCAL",  # or "BROWSERBASE" for cloud execution
 )
 
@@ -52,7 +52,7 @@ from examples.stagehand.stagehand_tools_agent import (
 # Create agent with browser tools
 browser_agent = Agent(
     agent_name="BrowserAutomationAgent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     tools=[
         NavigateTool(),
         ActTool(),

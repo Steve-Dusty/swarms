@@ -43,7 +43,7 @@ To enable autosave, simply set `autosave=True` when creating an agent:
 from swarms import Agent
 
 agent = Agent(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     agent_name="my-agent",
     max_loops=5,
     autosave=True,  # Enable autosave
@@ -125,7 +125,7 @@ load_dotenv()
 
 # Create an agent with autosave enabled
 agent = Agent(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     agent_name="autosave-demo",
     max_loops=5,
     autosave=True,  # Enable autosave
@@ -179,7 +179,7 @@ import os
 
 # Create agent with same name to potentially resume
 agent = Agent(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     agent_name="autosave-demo",
     autosave=True,
 )

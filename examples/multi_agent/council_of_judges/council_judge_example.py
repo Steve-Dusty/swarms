@@ -17,7 +17,7 @@ def main():
     council = CouncilAsAJudge(
         name="Quality Evaluation Council",
         description="Evaluates response quality across multiple dimensions",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_workers=4,
     )
 

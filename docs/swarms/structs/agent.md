@@ -429,7 +429,7 @@ from swarms.structs.agent import Agent
 research_agent = Agent(
     agent_name="ResearchAgent",
     agent_description="Specializes in researching topics and providing detailed, factual information",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     system_prompt="You are a research specialist. Provide detailed, well-researched information about any topic, citing sources when possible.",
 )
@@ -437,7 +437,7 @@ research_agent = Agent(
 code_agent = Agent(
     agent_name="CodeExpertAgent",
     agent_description="Expert in writing, reviewing, and explaining code across multiple programming languages",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     system_prompt="You are a coding expert. Write, review, and explain code with a focus on best practices and clean code principles.",
 )
@@ -445,7 +445,7 @@ code_agent = Agent(
 writing_agent = Agent(
     agent_name="WritingAgent",
     agent_description="Skilled in creative and technical writing, content creation, and editing",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     system_prompt="You are a writing specialist. Create, edit, and improve written content while maintaining appropriate tone and style.",
 )
@@ -454,7 +454,7 @@ writing_agent = Agent(
 coordinator = Agent(
     agent_name="CoordinatorAgent",
     agent_description="Coordinates tasks and delegates to specialized agents",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     handoffs=[research_agent, code_agent, writing_agent],
     system_prompt="You are a coordinator agent. Analyze tasks and delegate them to the most appropriate specialized agent using the handoff_task tool. You can delegate to multiple agents if needed.",
@@ -746,7 +746,7 @@ from swarms.structs.agent import Agent
 research_agent = Agent(
     agent_name="ResearchAgent",
     agent_description="Specializes in researching topics and providing detailed, factual information",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     system_prompt="You are a research specialist. Provide detailed, well-researched information about any topic, citing sources when possible.",
 )
@@ -754,7 +754,7 @@ research_agent = Agent(
 code_agent = Agent(
     agent_name="CodeExpertAgent",
     agent_description="Expert in writing, reviewing, and explaining code across multiple programming languages",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     system_prompt="You are a coding expert. Write, review, and explain code with a focus on best practices and clean code principles.",
 )
@@ -762,7 +762,7 @@ code_agent = Agent(
 writing_agent = Agent(
     agent_name="WritingAgent",
     agent_description="Skilled in creative and technical writing, content creation, and editing",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     system_prompt="You are a writing specialist. Create, edit, and improve written content while maintaining appropriate tone and style.",
 )
@@ -771,7 +771,7 @@ writing_agent = Agent(
 coordinator = Agent(
     agent_name="CoordinatorAgent",
     agent_description="Coordinates tasks and delegates to specialized agents",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     handoffs=[research_agent, code_agent, writing_agent],
     system_prompt="You are a coordinator agent. Analyze tasks and delegate them to the most appropriate specialized agent using the handoff_task tool. You can delegate to multiple agents if needed.",
@@ -1073,7 +1073,7 @@ from swarms import Agent
 
 # Simple agent with minimal configuration
 agent = Agent(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -1189,7 +1189,7 @@ Save and restore agent state to persist conversations and configurations across 
 agent.save_state('saved_flow.json')
 
 # Load the agent state
-agent = Agent(model_name="gpt-4o-mini", max_loops=5)
+agent = Agent(model_name="gpt-5.4", max_loops=5)
 agent.load('saved_flow.json')
 agent.run("Continue with the task")
 ```
@@ -1213,7 +1213,7 @@ from swarms import Agent
 
 # Enable autosave
 agent = Agent(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     agent_name="autosave-demo",
     max_loops=5,
     autosave=True,  # Enable automatic saving
@@ -1255,7 +1255,7 @@ os.environ["WORKSPACE_DIR"] = "/path/to/my/workspace"
 
 # Or it defaults to 'agent_workspace' in current directory
 agent = Agent(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     autosave=True,
 )
 
@@ -1455,7 +1455,7 @@ from swarms import Agent
 # Agent with fallback models - automatically switches if primary fails
 agent = Agent(
     model_name="gpt-4o",
-    fallback_models=["gpt-4o-mini", "gpt-3.5-turbo"],
+    fallback_models=["gpt-5.4", "gpt-3.5-turbo"],
     max_loops=1
 )
 
@@ -1472,7 +1472,7 @@ from swarms import Agent
 
 # Load a prompt from the Swarms marketplace
 agent = Agent(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     marketplace_prompt_id="550e8400-e29b-41d4-a716-446655440000",
     max_loops=1
 )
@@ -1509,21 +1509,21 @@ from swarms import Agent
 
 # Fast mode - optimized for performance (reduces verbosity)
 fast_agent = Agent(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     mode="fast",  # Disables print_on and verbose automatically
     max_loops=1
 )
 
 # Interactive mode - for real-time conversations
 interactive_agent = Agent(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     mode="interactive",
     max_loops=5
 )
 
 # Standard mode - default behavior
 standard_agent = Agent(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     mode="standard",
     max_loops=1
 )
@@ -1542,7 +1542,7 @@ def my_streaming_callback(token: str):
 
 # Agent with streaming callback
 agent = Agent(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     streaming_callback=my_streaming_callback,
     max_loops=1
 )
@@ -1568,7 +1568,7 @@ mcp_configs = MultipleMCPConnections(
 )
 
 agent = Agent(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     mcp_configs=mcp_configs,
     max_loops=1
 )
@@ -1591,7 +1591,7 @@ transforms = TransformConfig(
 )
 
 agent = Agent(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     transforms=transforms,
     context_length=100000,
     max_loops=1
@@ -1610,7 +1610,7 @@ from swarms import Agent
 
 # Agent with defined capabilities for better routing
 agent = Agent(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     agent_name="Data-Analysis-Agent",
     capabilities=["data_analysis", "statistics", "visualization"],
     max_loops=1
@@ -1628,7 +1628,7 @@ from swarms import Agent
 
 # Agent configured to publish prompt to marketplace
 agent = Agent(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     agent_name="Financial-Advisor",
     agent_description="Expert financial advisor agent",
     system_prompt="You are an expert financial advisor...",

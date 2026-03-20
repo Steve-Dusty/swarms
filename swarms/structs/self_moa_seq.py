@@ -60,7 +60,7 @@ class SelfMoASeq:
         self,
         name: str = "SelfMoASeq",
         description: str = "Self-MoA-Seq: Sequential Self-Mixture of Agents",
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
         temperature: float = 0.7,
         window_size: int = 6,
         reserved_slots: int = 3,

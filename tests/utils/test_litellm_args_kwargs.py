@@ -10,7 +10,7 @@ def test_litellm_args_kwargs():
     print("\nTest 1: Testing __init__ with kwargs...")
     try:
         llm = LiteLLM(
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             temperature=0.7,
             max_tokens=1000,
             top_p=0.9,
@@ -29,7 +29,7 @@ def test_litellm_args_kwargs():
             "presence_penalty": 0.2,
             "logit_bias": {"123": 1},
         }
-        llm = LiteLLM("gpt-4o-mini", additional_config)
+        llm = LiteLLM("gpt-5.4", additional_config)
         print("✓ __init__ with args (dictionary) works")
         print(f"  - init_args: {llm.init_args}")
     except Exception as e:
@@ -40,7 +40,7 @@ def test_litellm_args_kwargs():
     try:
         additional_config = {"presence_penalty": 0.3}
         llm = LiteLLM(
-            "gpt-4o-mini",
+            "gpt-5.4",
             additional_config,
             temperature=0.8,
             max_tokens=2000,
@@ -55,7 +55,7 @@ def test_litellm_args_kwargs():
     print("\nTest 4: Testing run method with kwargs...")
     try:
         llm = LiteLLM(
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             temperature=0.5,  # This should be overridden
             max_tokens=1000,
         )
@@ -74,7 +74,7 @@ def test_litellm_args_kwargs():
     # Test 5: Run method with args (dictionary)
     print("\nTest 5: Testing run method with args (dictionary)...")
     try:
-        llm = LiteLLM(model_name="gpt-4o-mini")
+        llm = LiteLLM(model_name="gpt-5.4")
 
         runtime_config = {"temperature": 0.8, "max_tokens": 500}
         result = llm.run("Hello, world!", runtime_config)
@@ -88,7 +88,7 @@ def test_litellm_args_kwargs():
     try:
         # Init with some kwargs
         llm = LiteLLM(
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             temperature=0.1,  # Should be overridden
             max_tokens=100,  # Should be overridden
         )

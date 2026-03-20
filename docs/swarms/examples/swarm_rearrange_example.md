@@ -47,13 +47,13 @@ from swarms import Agent, SwarmRearrange, SequentialWorkflow, MixtureOfAgents
 researcher = Agent(
     agent_name="Researcher",
     system_prompt="You are a research specialist. Gather and analyze information.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
 )
 
 writer = Agent(
     agent_name="Writer",
     system_prompt="You are a technical writer. Write clear, structured documents.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
 )
 
 research_swarm = SequentialWorkflow(
@@ -66,13 +66,13 @@ research_swarm = SequentialWorkflow(
 analyst1 = Agent(
     agent_name="Analyst-1",
     system_prompt="You are a data analyst. Analyze data and provide insights.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
 )
 
 analyst2 = Agent(
     agent_name="Analyst-2",
     system_prompt="You are a strategic analyst. Provide strategic recommendations.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
 )
 
 analysis_swarm = MixtureOfAgents(
@@ -84,7 +84,7 @@ analysis_swarm = MixtureOfAgents(
 reviewer = Agent(
     agent_name="Reviewer",
     system_prompt="You are a quality reviewer. Review and provide feedback.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
 )
 ```
 

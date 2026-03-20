@@ -332,8 +332,8 @@ class HeavySwarm:
             >>> swarm = HeavySwarm(
             ...     name="AnalysisSwarm",
             ...     description="Market analysis swarm",
-            ...     question_agent_model_name="gpt-4o-mini",
-            ...     worker_model_name="gpt-4o-mini",
+            ...     question_agent_model_name="gpt-5.4",
+            ...     worker_model_name="gpt-5.4",
             ...     show_dashboard=True,
             ...     max_loops=3
             ... )
@@ -351,8 +351,8 @@ class HeavySwarm:
         timeout: int = 300,
         aggregation_strategy: str = "synthesis",
         loops_per_agent: int = 1,
-        question_agent_model_name: str = "gpt-4o-mini",
-        worker_model_name: str = "gpt-4o-mini",
+        question_agent_model_name: str = "gpt-5.4",
+        worker_model_name: str = "gpt-5.4",
         verbose: bool = False,
         max_workers: int = int(os.cpu_count() * 0.9),
         show_dashboard: bool = False,
@@ -377,9 +377,9 @@ class HeavySwarm:
             loops_per_agent (int, optional): Number of execution loops each
                 agent should perform. Must be greater than 0. Defaults to 1.
             question_agent_model_name (str, optional): Language model for
-                question generation. Defaults to "gpt-4o-mini".
+                question generation. Defaults to "gpt-5.4".
             worker_model_name (str, optional): Language model for specialized
-                worker agents. Defaults to "gpt-4o-mini".
+                worker agents. Defaults to "gpt-5.4".
             verbose (bool, optional): Enable detailed logging and debug output. Defaults to False.
             max_workers (int, optional): Maximum concurrent workers for
                 parallel execution. Defaults to 90% of CPU count.

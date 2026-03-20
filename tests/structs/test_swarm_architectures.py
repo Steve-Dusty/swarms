@@ -17,7 +17,7 @@ def create_test_agent(name: str) -> Agent:
     return Agent(
         agent_name=name,
         system_prompt=f"You are {name}. Respond with your name and the task you received.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 

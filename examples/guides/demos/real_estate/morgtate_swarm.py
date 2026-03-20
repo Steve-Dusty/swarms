@@ -100,7 +100,7 @@ class MortgageUnderwritingSwarm:
         # -------------------------------
         self.document_agent = Agent(
             agent_name="Document-Analyzer-Agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             streaming_on=True,
         )
@@ -155,7 +155,7 @@ class MortgageUnderwritingSwarm:
         # -------------------------------
         self.risk_agent = Agent(
             agent_name="Risk-Evaluator-Agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             streaming_on=True,
         )
@@ -212,7 +212,7 @@ class MortgageUnderwritingSwarm:
         # -------------------------------
         self.underwriter_agent = Agent(
             agent_name="Mortgage-Underwriter-Agent",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             streaming_on=True,
         )

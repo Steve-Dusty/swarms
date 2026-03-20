@@ -14,7 +14,7 @@ app = FastAPI(title="Research Agent API")
 research_agent = Agent(
     agent_name="Research-Agent",
     system_prompt="You are an expert research analyst. Conduct thorough research on the given topic and provide comprehensive, well-structured insights with citations.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     tools=[exa_search],
 )

@@ -33,7 +33,7 @@ graph TD
     |----------|------|---------|-------------|
     | `agent_name` | str | "reasoning_agent" | Name identifier for the agent |
     | `description` | str | "A reasoning agent..." | Description of the agent's capabilities |
-    | `model_name` | str | "gpt-4o-mini" | The underlying language model to use |
+    | `model_name` | str | "gpt-5.4" | The underlying language model to use |
     | `system_prompt` | str | "You are a helpful..." | System prompt for the agent |
     | `max_loops` | int | 1 | Maximum number of reasoning loops |
     | `swarm_type` | agent_types | "reasoning_duo" | Type of reasoning swarm to use |
@@ -257,7 +257,7 @@ graph TD
     router = ReasoningAgentRouter(
         agent_name="reasoning-agent",
         description="A reasoning agent that can answer questions and help with tasks.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         system_prompt="You are a helpful assistant that can answer questions and help with tasks.",
         max_loops=1,
         swarm_type="self-consistency",
@@ -283,14 +283,14 @@ graph TD
     router = ReasoningAgentRouter(
         swarm_type="self-consistency",
         num_samples=3,
-        model_name="gpt-4o-mini"
+        model_name="gpt-5.4"
     )
     
     # Self-consistency with evaluation mode
     router = ReasoningAgentRouter(
         swarm_type="self-consistency",
         num_samples=5,
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         eval=True,
         random_models_on=True
     )
@@ -299,7 +299,7 @@ graph TD
     router = ReasoningAgentRouter(
         swarm_type="self-consistency",
         num_samples=3,
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         majority_voting_prompt="Analyze the responses and provide the most accurate answer."
     )
     ```
@@ -309,7 +309,7 @@ graph TD
     router = ReasoningAgentRouter(
         swarm_type="ReflexionAgent",
         max_loops=3,
-        model_name="gpt-4o-mini"
+        model_name="gpt-5.4"
     )
     ```
 
@@ -317,7 +317,7 @@ graph TD
     ```python
     router = ReasoningAgentRouter(
         swarm_type="GKPAgent",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         num_knowledge_items=6
     )
     ```
@@ -327,14 +327,14 @@ graph TD
     # Basic ReasoningDuo
     router = ReasoningAgentRouter(
         swarm_type="reasoning-duo",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         reasoning_model_name="claude-3-5-sonnet-20240620"
     )
     
     # ReasoningDuo with image support
     router = ReasoningAgentRouter(
         swarm_type="reasoning-duo",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         reasoning_model_name="gpt-4-vision-preview",
         max_loops=2
     )
@@ -349,7 +349,7 @@ graph TD
     ```python
     router = ReasoningAgentRouter(
         swarm_type="AgentJudge",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=2
     )
     ```

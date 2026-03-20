@@ -279,22 +279,22 @@ def create_finance_agents() -> List[Agent]:
         Agent(
             agent_name="MarketAnalyst",
             system_prompt="You are a market analysis expert. Analyze market trends and provide insights.",
-            model_name="gpt-4o-mini"
+            model_name="gpt-5.4"
         ),
         Agent(
             agent_name="RiskManager",
             system_prompt="You are a risk management specialist. Evaluate risks and provide mitigation strategies.",
-            model_name="gpt-4o-mini"
+            model_name="gpt-5.4"
         ),
         Agent(
             agent_name="PortfolioManager",
             system_prompt="You are a portfolio management expert. Optimize investment portfolios and asset allocation.",
-            model_name="gpt-4o-mini"
+            model_name="gpt-5.4"
         ),
         Agent(
             agent_name="ComplianceOfficer",
             system_prompt="You are a financial compliance expert. Ensure regulatory compliance and identify issues.",
-            model_name="gpt-4o-mini"
+            model_name="gpt-5.4"
         )
     ]
 
@@ -304,22 +304,22 @@ def create_healthcare_agents() -> List[Agent]:
         Agent(
             agent_name="Diagnostician",
             system_prompt="You are a medical diagnostician. Analyze symptoms and suggest potential diagnoses.",
-            model_name="gpt-4o-mini"
+            model_name="gpt-5.4"
         ),
         Agent(
             agent_name="Treatment_Planner",
             system_prompt="You are a treatment planning specialist. Develop comprehensive treatment plans.",
-            model_name="gpt-4o-mini"
+            model_name="gpt-5.4"
         ),
         Agent(
             agent_name="MedicalResearcher",
             system_prompt="You are a medical researcher. Analyze latest research and provide evidence-based recommendations.",
-            model_name="gpt-4o-mini"
+            model_name="gpt-5.4"
         ),
         Agent(
             agent_name="PatientCareCoordinator",
             system_prompt="You are a patient care coordinator. Manage patient care workflow and coordination.",
-            model_name="gpt-4o-mini"
+            model_name="gpt-5.4"
         )
     ]
 

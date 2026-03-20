@@ -6,35 +6,35 @@ from swarms.structs.social_algorithms import SocialAlgorithms
 content_creator = Agent(
     agent_name="Content_Creator",
     system_prompt="You are a content creation specialist focused on generating high-quality, engaging content. You excel at creating initial drafts and creative content.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 technical_reviewer = Agent(
     agent_name="Technical_Reviewer",
     system_prompt="You are a technical reviewer focused on accuracy, technical correctness, and implementation feasibility. You identify technical issues and suggest improvements.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 style_editor = Agent(
     agent_name="Style_Editor",
     system_prompt="You are a style and language editor focused on clarity, readability, and professional presentation. You improve writing style and structure.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 quality_assessor = Agent(
     agent_name="Quality_Assessor",
     system_prompt="You are a quality assessor focused on overall quality, completeness, and meeting requirements. You provide final quality checks and approval.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 coordinator = Agent(
     agent_name="Coordinator",
     system_prompt="You are a project coordinator focused on managing the refinement process, tracking progress, and ensuring all improvements are integrated effectively.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

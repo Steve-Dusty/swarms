@@ -21,7 +21,7 @@ def main():
         tags=["data", "analysis", "python", "pandas"],
         capabilities=["data_analysis", "visualization", "statistics"],
         role="analyst",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         temperature=0.3,
     )
 
@@ -36,7 +36,7 @@ def main():
             "best_practices",
         ],
         role="reviewer",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         temperature=0.2,
     )
 
@@ -51,7 +51,7 @@ def main():
             "storytelling",
         ],
         role="writer",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         temperature=0.8,
     )
 

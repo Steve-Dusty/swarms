@@ -15,7 +15,7 @@ from swarms.structs import HierarchicalSwarm
 director = Agent(
     agent_name="Director-Agent",
     agent_description="Senior director who delegates and coordinates team efforts",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     system_prompt="You are a senior director. Break down complex projects into specific tasks and provide clear instructions to specialized teams.",
 )
@@ -24,7 +24,7 @@ director = Agent(
 research_team = Agent(
     agent_name="Research-Team",
     agent_description="Research specialists who gather and analyze information",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     system_prompt="You are a research team. Conduct thorough research on assigned topics and provide detailed findings.",
 )
@@ -32,7 +32,7 @@ research_team = Agent(
 development_team = Agent(
     agent_name="Development-Team",
     agent_description="Development specialists who create technical solutions",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     system_prompt="You are a development team. Design and plan technical implementations based on requirements.",
 )
@@ -40,7 +40,7 @@ development_team = Agent(
 marketing_team = Agent(
     agent_name="Marketing-Team",
     agent_description="Marketing specialists who create promotional strategies",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     system_prompt="You are a marketing team. Create comprehensive marketing strategies and campaigns.",
 )

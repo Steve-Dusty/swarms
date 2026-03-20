@@ -86,7 +86,7 @@ What actually happened.
 # Minimal code that reproduces the issue
 from swarms import Agent
 
-agent = Agent(model_name="gpt-4o-mini")
+agent = Agent(model_name="gpt-5.4")
 result = agent.run("Your task here")
 ```
 

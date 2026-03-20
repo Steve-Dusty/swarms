@@ -219,7 +219,7 @@ class SwarmRouter:
         heavy_swarm_worker_model_name: str = "gpt-4.1",
         heavy_swarm_swarm_show_output: bool = True,
         telemetry_enabled: bool = False,
-        council_judge_model_name: str = "gpt-4o-mini",  # Add missing model_name attribute
+        council_judge_model_name: str = "gpt-5.4",  # Add missing model_name attribute
         verbose: bool = False,
         worker_tools: List[Callable] = None,
         aggregation_strategy: str = "synthesis",

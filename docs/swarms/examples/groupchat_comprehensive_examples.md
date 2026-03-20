@@ -58,7 +58,7 @@ from swarms.structs.groupchat import (
 analyst = Agent(
     agent_name="analyst",
     system_prompt="You are a data analyst. You excel at analyzing data, creating charts, and providing insights.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=True,
 )
@@ -66,7 +66,7 @@ analyst = Agent(
 researcher = Agent(
     agent_name="researcher",
     system_prompt="You are a research specialist. You are great at gathering information, fact-checking, and providing detailed research.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=True,
 )
@@ -74,7 +74,7 @@ researcher = Agent(
 writer = Agent(
     agent_name="writer",
     system_prompt="You are a content writer. You excel at writing clear, engaging content and summarizing information.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=True,
 )
@@ -82,7 +82,7 @@ writer = Agent(
 reviewer = Agent(
     agent_name="reviewer",
     system_prompt="You are a quality reviewer. You ensure accuracy, completeness, and quality of all outputs.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=True,
 )
@@ -1214,7 +1214,7 @@ load_dotenv()
 market_researcher = Agent(
     agent_name="market_researcher",
     system_prompt="You are a market research specialist. You analyze market trends, customer behavior, and competitive landscape.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=True,
 )
@@ -1222,7 +1222,7 @@ market_researcher = Agent(
 content_strategist = Agent(
     agent_name="content_strategist",
     system_prompt="You are a content strategist. You create engaging content strategies and messaging frameworks.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=True,
 )
@@ -1230,7 +1230,7 @@ content_strategist = Agent(
 data_analyst = Agent(
     agent_name="data_analyst",
     system_prompt="You are a data analyst. You analyze campaign performance, metrics, and ROI data.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=True,
 )
@@ -1238,7 +1238,7 @@ data_analyst = Agent(
 creative_director = Agent(
     agent_name="creative_director",
     system_prompt="You are a creative director. You oversee creative vision and ensure brand consistency.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=True,
 )

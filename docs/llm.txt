@@ -2200,7 +2200,7 @@ from swarms import Agent
 # Enable real-time streaming
 agent = Agent(
     agent_name="StoryAgent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     streaming_on=True,  # 🔥 This enables real streaming!
     max_loops=1,
     print_on=True,  # By default, it's False for raw streaming!
@@ -7586,7 +7586,7 @@ from swarms import Agent
 
 # Initialize a new agent
 agent = Agent(
-    model_name="gpt-4o-mini", # Specify the LLM
+    model_name="gpt-5.4", # Specify the LLM
     max_loops=1,              # Set the number of interactions
     interactive=True,         # Enable interactive mode for real-time feedback
 )
@@ -7606,14 +7606,14 @@ from swarms import Agent, SequentialWorkflow
 researcher = Agent(
     agent_name="Researcher",
     system_prompt="Your job is to research the provided topic and provide a detailed summary.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
 )
 
 # Agent 2: The Writer
 writer = Agent(
     agent_name="Writer",
     system_prompt="Your job is to take the research summary and write a beautiful, engaging blog post about it.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
 )
 
 # Create a sequential workflow where the researcher's output feeds into the writer's input
@@ -7654,11 +7654,11 @@ from swarms import Agent, SequentialWorkflow
 
 # Initialize agents for a 3-step process
 # 1. Generate an idea
-idea_generator = Agent(agent_name="IdeaGenerator", system_prompt="Generate a unique startup idea.", model_name="gpt-4o-mini")
+idea_generator = Agent(agent_name="IdeaGenerator", system_prompt="Generate a unique startup idea.", model_name="gpt-5.4")
 # 2. Validate the idea
-validator = Agent(agent_name="Validator", system_prompt="Take this startup idea and analyze its market viability.", model_name="gpt-4o-mini")
+validator = Agent(agent_name="Validator", system_prompt="Take this startup idea and analyze its market viability.", model_name="gpt-5.4")
 # 3. Create a pitch
-pitch_creator = Agent(agent_name="PitchCreator", system_prompt="Write a 3-sentence elevator pitch for this validated startup idea.", model_name="gpt-4o-mini")
+pitch_creator = Agent(agent_name="PitchCreator", system_prompt="Write a 3-sentence elevator pitch for this validated startup idea.", model_name="gpt-5.4")
 
 # Create the sequential workflow
 workflow = SequentialWorkflow(agents=[idea_generator, validator, pitch_creator])
@@ -7686,7 +7686,7 @@ agents = [
     Agent(
         agent_name=f"{platform}-Marketer",
         system_prompt=f"Generate a real estate marketing post for {platform}.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
     )
     for platform in platforms
 ]
@@ -7714,9 +7714,9 @@ Inspired by `einsum`, `AgentRearrange` lets you define complex, non-linear relat
 from swarms import Agent, AgentRearrange
 
 # Define agents
-researcher = Agent(agent_name="researcher", model_name="gpt-4o-mini")
-writer = Agent(agent_name="writer", model_name="gpt-4o-mini")
-editor = Agent(agent_name="editor", model_name="gpt-4o-mini")
+researcher = Agent(agent_name="researcher", model_name="gpt-5.4")
+writer = Agent(agent_name="writer", model_name="gpt-5.4")
+editor = Agent(agent_name="editor", model_name="gpt-5.4")
 
 # Define a flow: researcher sends work to both writer and editor simultaneously
 # This is a one-to-many relationship
@@ -7747,8 +7747,8 @@ print(outputs)
 from swarms import Agent, GraphWorkflow, Node, Edge, NodeType
 
 # Define agents and a simple python function as nodes
-code_generator = Agent(agent_name="CodeGenerator", system_prompt="Write Python code for the given task.", model_name="gpt-4o-mini")
-code_tester = Agent(agent_name="CodeTester", system_prompt="Test the given Python code and find bugs.", model_name="gpt-4o-mini")
+code_generator = Agent(agent_name="CodeGenerator", system_prompt="Write Python code for the given task.", model_name="gpt-5.4")
+code_tester = Agent(agent_name="CodeTester", system_prompt="Test the given Python code and find bugs.", model_name="gpt-5.4")
 
 # Create nodes for the graph
 node1 = Node(id="generator", agent=code_generator)
@@ -7781,9 +7781,9 @@ from swarms import Agent
 from swarms.structs.swarm_router import SwarmRouter, SwarmType
 
 # Define a few generic agents
-writer = Agent(agent_name="Writer", system_prompt="You are a creative writer.", model_name="gpt-4o-mini")
-editor = Agent(agent_name="Editor", system_prompt="You are an expert editor for stories.", model_name="gpt-4o-mini")
-reviewer = Agent(agent_name="Reviewer", system_prompt="You are a final reviewer who gives a score.", model_name="gpt-4o-mini")
+writer = Agent(agent_name="Writer", system_prompt="You are a creative writer.", model_name="gpt-5.4")
+editor = Agent(agent_name="Editor", system_prompt="You are an expert editor for stories.", model_name="gpt-5.4")
+reviewer = Agent(agent_name="Reviewer", system_prompt="You are a final reviewer who gives a score.", model_name="gpt-5.4")
 
 # The agents and task will be the same for all examples
 agents = [writer, editor, reviewer]
@@ -7811,7 +7811,7 @@ print("Running a Mixture of Agents Workflow...")
 aggregator = Agent(
     agent_name="Aggregator",
     system_prompt="Combine the story, edits, and review into a final document.",
-    model_name="gpt-4o-mini"
+    model_name="gpt-5.4"
 )
 moa_router = SwarmRouter(
     swarm_type=SwarmType.MixtureOfAgents,
@@ -7835,15 +7835,15 @@ The `MixtureOfAgents` architecture processes tasks by feeding them to multiple "
 from swarms import Agent, MixtureOfAgents
 
 # Define expert agents
-financial_analyst = Agent(agent_name="FinancialAnalyst", system_prompt="Analyze financial data.", model_name="gpt-4o-mini")
-market_analyst = Agent(agent_name="MarketAnalyst", system_prompt="Analyze market trends.", model_name="gpt-4o-mini")
-risk_analyst = Agent(agent_name="RiskAnalyst", system_prompt="Analyze investment risks.", model_name="gpt-4o-mini")
+financial_analyst = Agent(agent_name="FinancialAnalyst", system_prompt="Analyze financial data.", model_name="gpt-5.4")
+market_analyst = Agent(agent_name="MarketAnalyst", system_prompt="Analyze market trends.", model_name="gpt-5.4")
+risk_analyst = Agent(agent_name="RiskAnalyst", system_prompt="Analyze investment risks.", model_name="gpt-5.4")
 
 # Define the aggregator agent
 aggregator = Agent(
     agent_name="InvestmentAdvisor",
     system_prompt="Synthesize the financial, market, and risk analyses to provide a final investment recommendation.",
-    model_name="gpt-4o-mini"
+    model_name="gpt-5.4"
 )
 
 # Create the MoA swarm
@@ -7867,8 +7867,8 @@ print(recommendation)
 from swarms import Agent, GroupChat
 
 # Define agents for a debate
-tech_optimist = Agent(agent_name="TechOptimist", system_prompt="Argue for the benefits of AI in society.", model_name="gpt-4o-mini")
-tech_critic = Agent(agent_name="TechCritic", system_prompt="Argue against the unchecked advancement of AI.", model_name="gpt-4o-mini")
+tech_optimist = Agent(agent_name="TechOptimist", system_prompt="Argue for the benefits of AI in society.", model_name="gpt-5.4")
+tech_critic = Agent(agent_name="TechCritic", system_prompt="Argue against the unchecked advancement of AI.", model_name="gpt-5.4")
 
 # Create the group chat
 chat = GroupChat(
@@ -8344,7 +8344,7 @@ from swarms.agents.consistency_agent import SelfConsistencyAgent
 # Initialize the agent
 agent = SelfConsistencyAgent(
     name="Math-Reasoning-Agent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     num_samples=5
 )
@@ -8367,7 +8367,7 @@ from swarms.agents.consistency_agent import SelfConsistencyAgent
 # Initialize the agent with a custom majority voting prompt
 agent = SelfConsistencyAgent(
     name="Reasoning-Agent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     num_samples=5,
     majority_voting_prompt="Please provide the most common response."
@@ -8391,7 +8391,7 @@ from swarms.agents.consistency_agent import SelfConsistencyAgent
 # Initialize the agent with evaluation mode
 agent = SelfConsistencyAgent(
     name="Validation-Agent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     num_samples=3,
     eval=True
 )
@@ -8412,7 +8412,7 @@ from swarms.agents.consistency_agent import SelfConsistencyAgent
 # Initialize the agent with random model selection
 agent = SelfConsistencyAgent(
     name="Diverse-Reasoning-Agent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     num_samples=5,
     random_models_on=True
 )
@@ -8430,7 +8430,7 @@ from swarms.agents.consistency_agent import SelfConsistencyAgent
 # Initialize the agent
 agent = SelfConsistencyAgent(
     name="Batch-Processing-Agent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     num_samples=3
 )
 
@@ -9440,7 +9440,7 @@ agent = Agent(
     agent_name="MyAgent",
     agent_description="A specialized AI agent for specific tasks",
     system_prompt="You are a helpful assistant...",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     max_tokens=4096,
     temperature=0.7,
@@ -9456,7 +9456,7 @@ agent = Agent(
 | `agent_name` | str | Unique identifier for the agent | Required |
 | `agent_description` | str | Detailed description of capabilities | Required |
 | `system_prompt` | str | Core instructions defining behavior | Required |
-| `model_name` | str | AI model to use | "gpt-4o-mini" |
+| `model_name` | str | AI model to use | "gpt-5.4" |
 | `max_loops` | int | Maximum execution loops | 1 |
 | `max_tokens` | int | Maximum response tokens | 4096 |
 | `temperature` | float | Response creativity (0-1) | 0.7 |
@@ -9480,7 +9480,7 @@ financial_agent = Agent(
     - Financial planning and budgeting
     
     Provide clear, actionable advice while considering risk tolerance.""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     temperature=0.3,
     output_type="str"
@@ -9511,7 +9511,7 @@ vision_agent = Agent(
     - Defect identification and reporting
     
     Provide comprehensive analysis with specific observations.""",
-    model_name="gpt-4o-mini",  # Vision-enabled model
+    model_name="gpt-5.4",  # Vision-enabled model
     multi_modal=True,  # Enable multi-modal processing
     max_loops=1,
     output_type="str"
@@ -9569,7 +9569,7 @@ quality_agent = Agent(
     3. Determine appropriate danger levels (low, medium, high)
     4. Use the security_analysis function for threat assessment
     """,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     multi_modal=True,
     max_loops=1,
     tools=[security_analysis]
@@ -9663,7 +9663,7 @@ multi_tool_agent = Agent(
     - Portfolio analysis and financial calculations
     
     Use these tools to provide comprehensive assistance.""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     tools=[get_weather_data, calculate_portfolio_metrics]
 )
@@ -9728,7 +9728,7 @@ crypto_agent = Agent(
     - Trading volume and price change data
     
     Provide insightful market analysis and investment guidance.""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     tools=[get_cryptocurrency_price, get_top_cryptocurrencies]
 )
@@ -9826,7 +9826,7 @@ structured_agent = Agent(
     agent_description="Financial analysis agent with structured output capabilities",
     system_prompt="""You are a financial analysis expert that provides structured outputs.
     Use the provided function schemas to format your responses consistently.""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     tools_list_dictionary=[stock_analysis_schema, portfolio_optimization_schema]
 )
@@ -9849,7 +9849,7 @@ adaptive_agent = Agent(
     agent_name="Adaptive-Response-Agent",
     agent_description="Agent that adjusts response creativity based on context",
     system_prompt="You are an adaptive AI that adjusts your response style based on the task complexity.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     dynamic_temperature_enabled=True,  # Enable adaptive temperature
     max_loops=1,
     output_type="str"
@@ -9891,7 +9891,7 @@ optimized_agent = Agent(
     agent_name="Optimized-Agent",
     agent_description="Performance-optimized agent configuration",
     system_prompt="You are an efficient AI assistant optimized for performance.",
-    model_name="gpt-4o-mini",  # Faster model
+    model_name="gpt-5.4",  # Faster model
     max_loops=1,  # Minimize loops
     max_tokens=2048,  # Reasonable token limit
     temperature=0.5,  # Balanced creativity
@@ -9975,7 +9975,7 @@ quality_control_system = Agent(
     
     Always provide specific, actionable feedback.
     """,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     multi_modal=True,
     max_loops=1,
     tools=[security_analysis, quality_assessment],
@@ -10098,7 +10098,7 @@ financial_analyst = Agent(
     
     Use available tools to gather market data and calculate risk metrics.
     Provide structured outputs using the defined schemas.""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     tools=[get_market_data, calculate_risk_metrics],
     tools_list_dictionary=[financial_analysis_schema],
@@ -10124,7 +10124,7 @@ research_agent = Agent(
     agent_name="Research-Specialist",
     agent_description="Market research and data analysis specialist",
     system_prompt="You are a market research expert specializing in data collection and analysis.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     temperature=0.3
 )
@@ -10133,7 +10133,7 @@ strategy_agent = Agent(
     agent_name="Strategy-Advisor", 
     agent_description="Strategic planning and recommendation specialist",
     system_prompt="You are a strategic advisor providing high-level recommendations based on research.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     temperature=0.5
 )
@@ -10142,7 +10142,7 @@ execution_agent = Agent(
     agent_name="Execution-Planner",
     agent_description="Implementation and execution planning specialist", 
     system_prompt="You are an execution expert creating detailed implementation plans.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     temperature=0.4
 )
@@ -10821,7 +10821,7 @@ graph TD
     |----------|------|---------|-------------|
     | `agent_name` | str | "reasoning_agent" | Name identifier for the agent |
     | `description` | str | "A reasoning agent..." | Description of the agent's capabilities |
-    | `model_name` | str | "gpt-4o-mini" | The underlying language model to use |
+    | `model_name` | str | "gpt-5.4" | The underlying language model to use |
     | `system_prompt` | str | "You are a helpful..." | System prompt for the agent |
     | `max_loops` | int | 1 | Maximum number of reasoning loops |
     | `swarm_type` | agent_types | "reasoning_duo" | Type of reasoning swarm to use |
@@ -11046,7 +11046,7 @@ graph TD
     router = ReasoningAgentRouter(
         agent_name="reasoning-agent",
         description="A reasoning agent that can answer questions and help with tasks.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         system_prompt="You are a helpful assistant that can answer questions and help with tasks.",
         max_loops=1,
         swarm_type="self-consistency",
@@ -11072,14 +11072,14 @@ graph TD
     router = ReasoningAgentRouter(
         swarm_type="self-consistency",
         num_samples=3,
-        model_name="gpt-4o-mini"
+        model_name="gpt-5.4"
     )
     
     # Self-consistency with evaluation mode
     router = ReasoningAgentRouter(
         swarm_type="self-consistency",
         num_samples=5,
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         eval=True,
         random_models_on=True
     )
@@ -11088,7 +11088,7 @@ graph TD
     router = ReasoningAgentRouter(
         swarm_type="self-consistency",
         num_samples=3,
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         majority_voting_prompt="Analyze the responses and provide the most accurate answer."
     )
     ```
@@ -11098,7 +11098,7 @@ graph TD
     router = ReasoningAgentRouter(
         swarm_type="ReflexionAgent",
         max_loops=3,
-        model_name="gpt-4o-mini"
+        model_name="gpt-5.4"
     )
     ```
 
@@ -11106,7 +11106,7 @@ graph TD
     ```python
     router = ReasoningAgentRouter(
         swarm_type="GKPAgent",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         num_knowledge_items=6
     )
     ```
@@ -11116,14 +11116,14 @@ graph TD
     # Basic ReasoningDuo
     router = ReasoningAgentRouter(
         swarm_type="reasoning-duo",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         reasoning_model_name="claude-3-5-sonnet-20240620"
     )
     
     # ReasoningDuo with image support
     router = ReasoningAgentRouter(
         swarm_type="reasoning-duo",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         reasoning_model_name="gpt-4-vision-preview",
         max_loops=2
     )
@@ -11138,7 +11138,7 @@ graph TD
     ```python
     router = ReasoningAgentRouter(
         swarm_type="AgentJudge",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=2
     )
     ```
@@ -11577,7 +11577,7 @@ from swarms.agents import ReasoningAgentRouter
 # Initialize router with specific reasoning strategy
 router = ReasoningAgentRouter(
     swarm_type="self-consistency",  # Select reasoning methodology
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     num_samples=5,                  # Configuration for consensus-based methods
     max_loops=3                     # Configuration for iterative methods
 )
@@ -11594,18 +11594,18 @@ from swarms.agents import SelfConsistencyAgent, ReasoningDuo, ReflexionAgent
 
 # Self-Consistency Agent for high-accuracy requirements
 consistency_agent = SelfConsistencyAgent(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     num_samples=5
 )
 
 # Reasoning Duo for collaborative analysis workflows
 duo_agent = ReasoningDuo(
-    model_names=["gpt-4o-mini", "gpt-4.1"]
+    model_names=["gpt-5.4", "gpt-4.1"]
 )
 
 # Reflexion Agent for adaptive learning scenarios
 reflexion_agent = ReflexionAgent(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=3,
     memory_capacity=100
 )
@@ -11665,7 +11665,7 @@ The ReasoningDuo class implements a dual-agent reasoning system that combines a 
 |-----------|------|---------|-------------|
 | model_name | str | "reasoning-agent-01" | Name identifier for the reasoning agent |
 | description | str | "A highly intelligent..." | Description of the reasoning agent's capabilities |
-| model_names | list[str] | ["gpt-4o-mini", "gpt-4.1"] | Model names for reasoning and main agents |
+| model_names | list[str] | ["gpt-5.4", "gpt-4.1"] | Model names for reasoning and main agents |
 | system_prompt | str | "You are a helpful..." | System prompt for the main agent |
 
 ### Methods
@@ -11685,7 +11685,7 @@ from swarms.agents.reasoning_duo import ReasoningDuo
 # Initialize the ReasoningDuo
 duo = ReasoningDuo(
     model_name="reasoning-agent-01",
-    model_names=["gpt-4o-mini", "gpt-4.1"]
+    model_names=["gpt-5.4", "gpt-4.1"]
 )
 
 # Run a single task
@@ -11751,7 +11751,7 @@ You can customize both agents by modifying their initialization parameters:
 duo = ReasoningDuo(
     model_name="custom-reasoning-agent",
     description="Specialized financial analysis agent",
-    model_names=["gpt-4o-mini", "gpt-4.1"],
+    model_names=["gpt-5.4", "gpt-4.1"],
     system_prompt="You are a financial expert AI assistant..."
 )
 ```
@@ -14361,7 +14361,7 @@ The `agents.yaml` file is at the heart of your Swarms setup. This file allows yo
 agents:
   - agent_name: "Financial-Advisor-Agent"
     model:
-      model_name: "gpt-4o-mini"
+      model_name: "gpt-5.4"
       temperature: 0.3
       max_tokens: 2500
     system_prompt: |
@@ -14382,7 +14382,7 @@ agents:
 
   - agent_name: "Stock-Market-Analysis-Agent"
     model:
-      model_name: "gpt-4o-mini"
+      model_name: "gpt-5.4"
       temperature: 0.25
       max_tokens: 1800
     system_prompt: |
@@ -14403,7 +14403,7 @@ agents:
 
   - agent_name: "Marketing-Strategy-Agent"
     model:
-      model_name: "gpt-4o-mini"
+      model_name: "gpt-5.4"
       temperature: 0.4
       max_tokens: 2200
     system_prompt: |
@@ -14424,7 +14424,7 @@ agents:
 
   - agent_name: "Operations-Optimizer-Agent"
     model:
-      model_name: "gpt-4o-mini"
+      model_name: "gpt-5.4"
       temperature: 0.2
       max_tokens: 2000
     system_prompt: |
@@ -17116,7 +17116,7 @@ from swarms.prompts.finance_agent_sys_prompt import FINANCIAL_AGENT_SYS_PROMPT
 agent = Agent(
     agent_name="Financial-Analysis-Agent",
     system_prompt=FINANCIAL_AGENT_SYS_PROMPT,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     autosave=True,
     dashboard=False,
@@ -18980,7 +18980,7 @@ agent = Agent(
     system_prompt="You are an advanced financial advisor agent with access to real-time cryptocurrency data from multiple sources including CoinGecko, Jupiter Protocol, and HTX. You can help users analyze market trends, check prices, find trading opportunities, perform swaps, and get detailed market insights. Always provide accurate, up-to-date information and explain market data in an easy-to-understand way.",
     max_loops=1,
     max_tokens=4096,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     dynamic_temperature_enabled=True,
     output_type="all",
     tools=[
@@ -19557,7 +19557,7 @@ agent = Agent(
     
     You communicate with clarity and authority while maintaining professionalism and ensuring all stakeholders are aligned.""",
     max_loops=1,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     output_type="final",
     interactive=False,
     tools=[run_quant_trading_agent],
@@ -19641,7 +19641,7 @@ agents = [
         agent_description="Senior financial analyst at BlackRock.",
         system_prompt="You are a financial analyst tasked with optimizing asset allocations for a $50B portfolio. Provide clear, quantitative recommendations for each sector.",
         max_loops=1,
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_tokens=3000,
     ),
     Agent(
@@ -19649,7 +19649,7 @@ agents = [
         agent_description="Expert risk management analyst.",
         system_prompt="You are a risk analyst responsible for advising on risk allocation within a $50B portfolio. Provide detailed insights on risk exposures for each sector.",
         max_loops=1,
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_tokens=3000,
     ),
     Agent(
@@ -19657,7 +19657,7 @@ agents = [
         agent_description="Technology sector analyst.",
         system_prompt="You are a tech sector analyst focused on capital and risk allocations. Provide data-backed insights for the tech sector.",
         max_loops=1,
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_tokens=3000,
     ),
 ]
@@ -20088,7 +20088,7 @@ agent = Agent(
     
     You communicate in precise, technical terms while maintaining clarity for stakeholders.""",
     max_loops=1,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     dynamic_temperature_enabled=True,
     output_type="json",
     safety_prompt_on=True,
@@ -20735,7 +20735,7 @@ from swarms import Agent, GroupChat
     agent1 = Agent(
         agent_name="Expense-Analysis-Agent",
         description="You are an accounting agent specializing in analyzing potential expenses.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         autosave=False,
         dashboard=False,
@@ -20753,7 +20753,7 @@ from swarms import Agent, GroupChat
     agent2 = Agent(
         agent_name="Budget-Adviser-Agent",
         description="You are a budget adviser who provides insights on managing and optimizing expenses.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         autosave=False,
         dashboard=False,
@@ -20815,7 +20815,7 @@ from swarms import Agent, GroupChat
         agent1 = Agent(
             agent_name="Expense-Analysis-Agent",
             description="You are an accounting agent specializing in analyzing potential expenses.",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             autosave=False,
             dashboard=False,
@@ -20832,7 +20832,7 @@ from swarms import Agent, GroupChat
         agent2 = Agent(
             agent_name="Budget-Adviser-Agent",
             description="You are a budget adviser who provides insights on managing and optimizing expenses.",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             autosave=False,
             dashboard=False,
@@ -21020,7 +21020,7 @@ hybrid_hiearchical_swarm = HybridHierarchicalClusterSwarm(
         dispute_swarm,
     ],
     max_loops=1,
-    router_agent_model_name="gpt-4o-mini",
+    router_agent_model_name="gpt-5.4",
 )
 
 
@@ -21829,7 +21829,7 @@ risk_metrics_agent = Agent(
     
     Provide clear, numerical results with brief explanations.""",
     max_loops=1,
-    # model_name="gpt-4o-mini",
+    # model_name="gpt-5.4",
     random_model_enabled=True,
     dynamic_temperature_enabled=True,
     output_type="str-all-except-first",
@@ -21849,7 +21849,7 @@ portfolio_risk_agent = Agent(
     
     Provide actionable insights for risk reduction.""",
     max_loops=1,
-    # model_name="gpt-4o-mini",
+    # model_name="gpt-5.4",
     random_model_enabled=True,
     dynamic_temperature_enabled=True,
     output_type="str-all-except-first",
@@ -21869,7 +21869,7 @@ market_risk_agent = Agent(
     
     Provide current risk alerts and trends.""",
     max_loops=1,
-    # model_name="gpt-4o-mini",
+    # model_name="gpt-5.4",
     random_model_enabled=True,
     dynamic_temperature_enabled=True,
     output_type="str-all-except-first",
@@ -21950,7 +21950,7 @@ load_dotenv()
 # Initialize agent with your chosen model
 agent = Agent(
     agent_name="Your-Agent-Name",
-    model_name="gpt-4o-mini",  # Varies by provider
+    model_name="gpt-5.4",  # Varies by provider
     system_prompt="Your system prompt here",
     agent_description="Description of what your agent does.",
 )
@@ -22068,7 +22068,7 @@ model_router = ModelRouter(
     models={
         "analysis": "claude-3-sonnet-20240229",
         "creative": "gpt-4.1", 
-        "fast": "gpt-4o-mini",
+        "fast": "gpt-5.4",
         "local": "ollama/llama2"
     }
 )
@@ -22111,12 +22111,12 @@ agents = [
     Agent(
         agent_name="Researcher",
         system_prompt="Answer questions briefly.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
     ),
     Agent(
         agent_name="Coder",
         system_prompt="Write small Python functions.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
     ),
 ]
 
@@ -22259,7 +22259,7 @@ from swarms import Agent
 
 Agent(
     agent_name="Stock-Analysis-Agent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops="auto",
     interactive=True,
     streaming_on=True,
@@ -22484,7 +22484,7 @@ from swarms import Agent, SequentialWorkflow
     litigation_agent = Agent(
         agent_name="Alex Johnson",
         system_prompt="As a Litigator, you specialize in navigating the complexities of lawsuits. Your role involves analyzing intricate facts, constructing compelling arguments, and devising effective case strategies to achieve favorable outcomes for your clients.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -22492,7 +22492,7 @@ from swarms import Agent, SequentialWorkflow
     corporate_agent = Agent(
         agent_name="Emily Carter",
         system_prompt="As a Corporate Attorney, you provide expert legal advice on business law matters. You guide clients on corporate structure, governance, compliance, and transactions, ensuring their business operations align with legal requirements.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -22500,7 +22500,7 @@ from swarms import Agent, SequentialWorkflow
     ip_agent = Agent(
         agent_name="Michael Smith",
         system_prompt="As an IP Attorney, your expertise lies in protecting intellectual property rights. You handle various aspects of IP law, including patents, trademarks, copyrights, and trade secrets, helping clients safeguard their innovations.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
     ```
@@ -22539,21 +22539,21 @@ from swarms import Agent, SequentialWorkflow
     litigation_agent = Agent(
         agent_name="Alex Johnson",
         system_prompt="As a Litigator, you specialize in navigating the complexities of lawsuits. Your role involves analyzing intricate facts, constructing compelling arguments, and devising effective case strategies to achieve favorable outcomes for your clients.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
     corporate_agent = Agent(
         agent_name="Emily Carter",
         system_prompt="As a Corporate Attorney, you provide expert legal advice on business law matters. You guide clients on corporate structure, governance, compliance, and transactions, ensuring their business operations align with legal requirements.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
     ip_agent = Agent(
         agent_name="Michael Smith",
         system_prompt="As an IP Attorney, your expertise lies in protecting intellectual property rights. You handle various aspects of IP law, including patents, trademarks, copyrights, and trade secrets, helping clients safeguard their innovations.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -22583,7 +22583,7 @@ from swarms import Agent, SequentialWorkflow
     |-----------|-------------|---------|
     | `agent_name` | Human-readable name for the agent | Required |
     | `system_prompt` | Detailed role description and expertise | Required |
-    | `model_name` | LLM model to use | "gpt-4o-mini" |
+    | `model_name` | LLM model to use | "gpt-5.4" |
     | `max_loops` | Maximum number of processing loops | 1 |
 
 ## Next Steps
@@ -24074,22 +24074,22 @@ def create_finance_agents() -> List[Agent]:
         Agent(
             agent_name="MarketAnalyst",
             system_prompt="You are a market analysis expert. Analyze market trends and provide insights.",
-            model_name="gpt-4o-mini"
+            model_name="gpt-5.4"
         ),
         Agent(
             agent_name="RiskManager",
             system_prompt="You are a risk management specialist. Evaluate risks and provide mitigation strategies.",
-            model_name="gpt-4o-mini"
+            model_name="gpt-5.4"
         ),
         Agent(
             agent_name="PortfolioManager",
             system_prompt="You are a portfolio management expert. Optimize investment portfolios and asset allocation.",
-            model_name="gpt-4o-mini"
+            model_name="gpt-5.4"
         ),
         Agent(
             agent_name="ComplianceOfficer",
             system_prompt="You are a financial compliance expert. Ensure regulatory compliance and identify issues.",
-            model_name="gpt-4o-mini"
+            model_name="gpt-5.4"
         )
     ]
 
@@ -24099,22 +24099,22 @@ def create_healthcare_agents() -> List[Agent]:
         Agent(
             agent_name="Diagnostician",
             system_prompt="You are a medical diagnostician. Analyze symptoms and suggest potential diagnoses.",
-            model_name="gpt-4o-mini"
+            model_name="gpt-5.4"
         ),
         Agent(
             agent_name="Treatment_Planner",
             system_prompt="You are a treatment planning specialist. Develop comprehensive treatment plans.",
-            model_name="gpt-4o-mini"
+            model_name="gpt-5.4"
         ),
         Agent(
             agent_name="MedicalResearcher",
             system_prompt="You are a medical researcher. Analyze latest research and provide evidence-based recommendations.",
-            model_name="gpt-4o-mini"
+            model_name="gpt-5.4"
         ),
         Agent(
             agent_name="PatientCareCoordinator",
             system_prompt="You are a patient care coordinator. Manage patient care workflow and coordination.",
-            model_name="gpt-4o-mini"
+            model_name="gpt-5.4"
         )
     ]
 
@@ -24558,7 +24558,7 @@ quality_control_agent = Agent(
     agent_name="Quality Control Agent",
     agent_description="A quality control agent that analyzes images and provides a detailed report on the quality of the product in the image.",
     # model_name="anthropic/claude-3-opus-20240229",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     system_prompt=custom_system_prompt,
     multi_modal=True,
     max_loops=1,
@@ -28750,7 +28750,7 @@ agent = Agent(
     dashboard=False,
     verbose=True,
     saved_state_path="finance_agent.json",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
 )
 
 # Run your query
@@ -28765,7 +28765,7 @@ print(out)
 - **Attributes:**
   - `agent_name`: Name of the agent.
   - `system_prompt`: System-level instruction guiding the agent's behavior.
-  - `model_name`: Name of the model to use (e.g., "gpt-4o-mini").
+  - `model_name`: Name of the model to use (e.g., "gpt-5.4").
   - `max_loops`: Max iterations for a task.
   - `autosave`: Auto-saves the state after each iteration.
   
@@ -29153,31 +29153,31 @@ agents = [
     Agent(
         agent_name="Twitter Agent",
         system_prompt="Create a tweet",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     ),
     Agent(
         agent_name="Instagram Agent",
         system_prompt="Create an Instagram post",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     ),
     Agent(
         agent_name="Facebook Agent",
         system_prompt="Create a Facebook post",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     ),
     Agent(
         agent_name="LinkedIn Agent",
         system_prompt="Create a LinkedIn post",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     ),
     Agent(
         agent_name="Email Agent",
         system_prompt="Write a marketing email",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     ),
 ]
@@ -29445,7 +29445,7 @@ agent = Agent(
     agent_name="Financial-Analysis-Agent",
     system_prompt="Agent system prompt here",
     agent_description="Agent performs financial analysis.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     long_term_memory=chromadb_memory,
 )
 
@@ -30366,14 +30366,14 @@ enable_board_feature()
 chairman = Agent(
     agent_name="Chairman",
     agent_description="Chairman of the Board responsible for leading meetings",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     system_prompt="You are the Chairman of the Board..."
 )
 
 vice_chairman = Agent(
     agent_name="Vice-Chairman",
     agent_description="Vice Chairman who supports the Chairman",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     system_prompt="You are the Vice Chairman..."
 )
 
@@ -32832,7 +32832,7 @@ api_key = os.getenv("OPENAI_API_KEY")
 
 # Create an instance of the OpenAIChat class
 model = OpenAIChat(
-    api_key=api_key, model_name="gpt-4o-mini", temperature=0.1
+    api_key=api_key, model_name="gpt-5.4", temperature=0.1
 )
 
 # Initialize the agent
@@ -32894,7 +32894,7 @@ memory = ChromaDB(
 # Model
 model = OpenAIChat(
     api_key=os.getenv("OPENAI_API_KEY"),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     temperature=0.1,
 )
 
@@ -37301,7 +37301,7 @@ class CouncilAsAJudge:
         id: str = swarm_id(),
         name: str = "CouncilAsAJudge",
         description: str = "Evaluates the model's response across multiple dimensions",
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
         output_type: str = "all",
         cache_size: int = 128,
         max_workers: int = None,
@@ -38747,7 +38747,7 @@ def create_financial_agent() -> Agent:
     return Agent(
         agent_name="FinancialAnalyst",
         system_prompt="You are a financial analyst specializing in market analysis and risk assessment.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -38756,7 +38756,7 @@ def create_marketing_agent() -> Agent:
     return Agent(
         agent_name="MarketingSpecialist", 
         system_prompt="You are a marketing specialist focused on campaign analysis and customer insights.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 ```
@@ -38785,7 +38785,7 @@ def create_multi_domain_swarm() -> CustomSwarm:
         Agent(
             agent_name="OperationsAnalyst",
             system_prompt="You are an operations analyst specializing in process optimization and efficiency.",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
         ),
     ]
@@ -40642,8 +40642,8 @@ from swarms import HeavySwarm
 swarm = HeavySwarm(
     name="MarketAnalysisSwarm",
     description="Financial market analysis swarm",
-    question_agent_model_name="gpt-4o-mini",
-    worker_model_name="gpt-4o-mini",
+    question_agent_model_name="gpt-5.4",
+    worker_model_name="gpt-5.4",
     show_dashboard=True,
     verbose=True
 )
@@ -40667,8 +40667,8 @@ print(result)
 | `timeout` | `int` | `300` | Maximum execution time per agent in seconds |
 | `aggregation_strategy` | `str` | `"synthesis"` | Strategy for result aggregation |
 | `loops_per_agent` | `int` | `1` | Number of execution loops per agent |
-| `question_agent_model_name` | `str` | `"gpt-4o-mini"` | Model for question generation |
-| `worker_model_name` | `str` | `"gpt-4o-mini"` | Model for specialized worker agents |
+| `question_agent_model_name` | `str` | `"gpt-5.4"` | Model for question generation |
+| `worker_model_name` | `str` | `"gpt-5.4"` | Model for specialized worker agents |
 | `verbose` | `bool` | `False` | Enable detailed logging output |
 | `max_workers` | `int` | `int(os.cpu_count() * 0.9)` | Maximum concurrent workers |
 | `show_dashboard` | `bool` | `False` | Enable rich dashboard visualization |
@@ -40966,7 +40966,7 @@ flowchart TD
 | `swarms` | List[SwarmRouter] | [] | List of available swarm routers |
 | `max_loops` | integer | 1 | Maximum number of processing loops |
 | `output_type` | string | "list" | Format for output (e.g., "list", "json") |
-| `router_agent_model_name` | string | "gpt-4o-mini" | LLM model used by the router agent |
+| `router_agent_model_name` | string | "gpt-5.4" | LLM model used by the router agent |
 
 ## Methods
 
@@ -41094,7 +41094,7 @@ hybrid_hiearchical_swarm = HybridHierarchicalClusterSwarm(
         dispute_swarm,
     ],
     max_loops=1,
-    router_agent_model_name="gpt-4o-mini",
+    router_agent_model_name="gpt-5.4",
 )
 
 
@@ -41218,7 +41218,7 @@ framework = HierarchicalStructuredCommunicationFramework(
     enable_structured_communication=True,
     enable_hierarchical_evaluation=True,
     shared_memory=True,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     verbose=True
 )
 
@@ -41345,9 +41345,9 @@ graph TD
 | `agents` | `List[Union[Agent, Callable, Any]]` | `None` | List of worker agents in the swarm |
 | `max_loops` | `int` | `1` | Maximum number of feedback loops between director and agents |
 | `output_type` | `OutputType` | `"dict-all-except-first"` | Format for output (dict, str, list) |
-| `feedback_director_model_name` | `str` | `"gpt-4o-mini"` | Model name for feedback director |
+| `feedback_director_model_name` | `str` | `"gpt-5.4"` | Model name for feedback director |
 | `director_name` | `str` | `"Director"` | Name of the director agent |
-| `director_model_name` | `str` | `"gpt-4o-mini"` | Model name for the director agent |
+| `director_model_name` | `str` | `"gpt-5.4"` | Model name for the director agent |
 | `verbose` | `bool` | `False` | Enable detailed logging |
 | `add_collaboration_prompt` | `bool` | `True` | Add collaboration prompts to agents |
 | `planning_director_agent` | `Optional[Union[Agent, Callable, Any]]` | `None` | Optional planning agent for enhanced planning |
@@ -42022,11 +42022,11 @@ from swarms import Agent, SequentialWorkflow
 
 # Initialize agents for a 3-step process
 # 1. Generate an idea
-idea_generator = Agent(agent_name="IdeaGenerator", system_prompt="Generate a unique startup idea.", model_name="gpt-4o-mini")
+idea_generator = Agent(agent_name="IdeaGenerator", system_prompt="Generate a unique startup idea.", model_name="gpt-5.4")
 # 2. Validate the idea
-validator = Agent(agent_name="Validator", system_prompt="Take this startup idea and analyze its market viability.", model_name="gpt-4o-mini")
+validator = Agent(agent_name="Validator", system_prompt="Take this startup idea and analyze its market viability.", model_name="gpt-5.4")
 # 3. Create a pitch
-pitch_creator = Agent(agent_name="PitchCreator", system_prompt="Write a 3-sentence elevator pitch for this validated startup idea.", model_name="gpt-4o-mini")
+pitch_creator = Agent(agent_name="PitchCreator", system_prompt="Write a 3-sentence elevator pitch for this validated startup idea.", model_name="gpt-5.4")
 
 # Create the sequential workflow
 workflow = SequentialWorkflow(agents=[idea_generator, validator, pitch_creator])
@@ -42051,7 +42051,7 @@ agents = [
     Agent(
         agent_name=f"{platform}-Marketer",
         system_prompt=f"Generate a real estate marketing post for {platform}.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
     )
     for platform in platforms
 ]
@@ -42077,9 +42077,9 @@ Inspired by `einsum`, `AgentRearrange` lets you define complex, non-linear relat
 from swarms import Agent, AgentRearrange
 
 # Define agents
-researcher = Agent(agent_name="researcher", model_name="gpt-4o-mini")
-writer = Agent(agent_name="writer", model_name="gpt-4o-mini")
-editor = Agent(agent_name="editor", model_name="gpt-4o-mini")
+researcher = Agent(agent_name="researcher", model_name="gpt-5.4")
+writer = Agent(agent_name="writer", model_name="gpt-5.4")
+editor = Agent(agent_name="editor", model_name="gpt-5.4")
 
 # Define a flow: researcher sends work to both writer and editor simultaneously
 # This is a one-to-many relationship
@@ -42111,9 +42111,9 @@ from swarms import Agent
 from swarms.structs.swarm_router import SwarmRouter, SwarmType
 
 # Define a few generic agents
-writer = Agent(agent_name="Writer", system_prompt="You are a creative writer.", model_name="gpt-4o-mini")
-editor = Agent(agent_name="Editor", system_prompt="You are an expert editor for stories.", model_name="gpt-4o-mini")
-reviewer = Agent(agent_name="Reviewer", system_prompt="You are a final reviewer who gives a score.", model_name="gpt-4o-mini")
+writer = Agent(agent_name="Writer", system_prompt="You are a creative writer.", model_name="gpt-5.4")
+editor = Agent(agent_name="Editor", system_prompt="You are an expert editor for stories.", model_name="gpt-5.4")
+reviewer = Agent(agent_name="Reviewer", system_prompt="You are a final reviewer who gives a score.", model_name="gpt-5.4")
 
 # The agents and task will be the same for all examples
 agents = [writer, editor, reviewer]
@@ -42141,7 +42141,7 @@ print("Running a Mixture of Agents Workflow...")
 aggregator = Agent(
     agent_name="Aggregator",
     system_prompt="Combine the story, edits, and review into a final document.",
-    model_name="gpt-4o-mini"
+    model_name="gpt-5.4"
 )
 moa_router = SwarmRouter(
     swarm_type=SwarmType.MixtureOfAgents,
@@ -42165,15 +42165,15 @@ The `MixtureOfAgents` architecture processes tasks by feeding them to multiple "
 from swarms import Agent, MixtureOfAgents
 
 # Define expert agents
-financial_analyst = Agent(agent_name="FinancialAnalyst", system_prompt="Analyze financial data.", model_name="gpt-4o-mini")
-market_analyst = Agent(agent_name="MarketAnalyst", system_prompt="Analyze market trends.", model_name="gpt-4o-mini")
-risk_analyst = Agent(agent_name="RiskAnalyst", system_prompt="Analyze investment risks.", model_name="gpt-4o-mini")
+financial_analyst = Agent(agent_name="FinancialAnalyst", system_prompt="Analyze financial data.", model_name="gpt-5.4")
+market_analyst = Agent(agent_name="MarketAnalyst", system_prompt="Analyze market trends.", model_name="gpt-5.4")
+risk_analyst = Agent(agent_name="RiskAnalyst", system_prompt="Analyze investment risks.", model_name="gpt-5.4")
 
 # Define the aggregator agent
 aggregator = Agent(
     agent_name="InvestmentAdvisor",
     system_prompt="Synthesize the financial, market, and risk analyses to provide a final investment recommendation.",
-    model_name="gpt-4o-mini"
+    model_name="gpt-5.4"
 )
 
 # Create the MoA swarm
@@ -42197,8 +42197,8 @@ print(recommendation)
 from swarms import Agent, GroupChat
 
 # Define agents for a debate
-tech_optimist = Agent(agent_name="TechOptimist", system_prompt="Argue for the benefits of AI in society.", model_name="gpt-4o-mini")
-tech_critic = Agent(agent_name="TechCritic", system_prompt="Argue against the unchecked advancement of AI.", model_name="gpt-4o-mini")
+tech_optimist = Agent(agent_name="TechOptimist", system_prompt="Argue for the benefits of AI in society.", model_name="gpt-5.4")
+tech_critic = Agent(agent_name="TechCritic", system_prompt="Argue against the unchecked advancement of AI.", model_name="gpt-5.4")
 
 # Create the group chat
 chat = GroupChat(
@@ -43696,7 +43696,7 @@ agent1 = Agent(
     dashboard=False,
     verbose=True,
     saved_state_path="agent1_state.json",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
 )  
 
 agent2 = Agent(
@@ -43707,7 +43707,7 @@ agent2 = Agent(
     dashboard=False,
     verbose=True,
     saved_state_path="agent2_state.json",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
 ) 
 
 def sample_task():
@@ -43856,7 +43856,7 @@ pip install swarms
 | name | str | "swarm-router" | Name identifier for the router instance |
 | description | str | "Routes tasks..." | Description of the router's purpose |
 | agents | List[Agent] | [] | List of available specialized agents |
-| model | str | "gpt-4o-mini" | Base language model for the boss agent |
+| model | str | "gpt-5.4" | Base language model for the boss agent |
 | temperature | float | 0.1 | Temperature parameter for model outputs |
 | shared_memory_system | callable | None | Optional shared memory system |
 | output_type | Literal["json", "string"] | "json" | Format of agent outputs |
@@ -45808,7 +45808,7 @@ api_key = os.getenv("OPENAI_API_KEY")
 
 # Model
 model = OpenAIChat(
-    openai_api_key=api_key, model_name="gpt-4o-mini", temperature=0.1
+    openai_api_key=api_key, model_name="gpt-5.4", temperature=0.1
 )
 
 # Initialize your agents for different social media platforms
@@ -48124,7 +48124,7 @@ agents = [
     Agent(
         agent_name=f"Analysis-Agent-{i}",
         system_prompt="You are a financial analysis expert",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     )
     for i in range(5)
@@ -48511,7 +48511,7 @@ What actually happened.
 # Minimal code that reproduces the issue
 from swarms import Agent
 
-agent = Agent(model_name="gpt-4o-mini")
+agent = Agent(model_name="gpt-5.4")
 result = agent.run("Your task here")
 ```
 
@@ -52809,7 +52809,7 @@ The `AgentSpec` class defines the configuration for an individual agent.
 | `agent_name` | string | Required | Unique name identifying the agent and its functionality |
 | `description` | string | None | Detailed explanation of the agent's purpose and capabilities |
 | `system_prompt` | string | None | Initial instructions guiding the agent's behavior and responses |
-| `model_name` | string | "gpt-4o-mini" | The AI model used by the agent (e.g., gpt-4o, gpt-4o-mini, openai/o3-mini) |
+| `model_name` | string | "gpt-5.4" | The AI model used by the agent (e.g., gpt-4o, gpt-4o-mini, openai/o3-mini) |
 | `auto_generate_prompt` | boolean | false | Whether the agent should automatically create prompts based on task requirements |
 | `max_tokens` | integer | 8192 | Maximum number of tokens the agent can generate in its responses |
 | `temperature` | float | 0.5 | Controls output randomness (lower values = more deterministic responses) |
@@ -54588,7 +54588,7 @@ app = Flask(__name__)
 # Example Swarm agent
 agent = Agent(
     agent_name="Stock-Analysis-Agent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops="auto",
     interactive=True,
     streaming_on=True,
@@ -55013,7 +55013,7 @@ const swarmConfig = {
     {
       agent_name: "Risk Assessment Agent",
       system_prompt: "Analyze portfolio risk and provide recommendations...",
-      model_name: "gpt-4o-mini",
+      model_name: "gpt-5.4",
       max_tokens: 2000,  
       temperature: 0.1
     }
@@ -56409,7 +56409,7 @@ class AgentSpec(BaseModel):
         description="The initial instruction or context provided to the agent, guiding its behavior and responses during execution.",
     )
     model_name: Optional[str] = Field(
-        default="gpt-4o-mini",
+        default="gpt-5.4",
         description="The name of the AI model that the agent will utilize for processing tasks and generating outputs. For example: gpt-4o, gpt-4o-mini, openai/o3-mini",
     )
     auto_generate_prompt: Optional[bool] = Field(
@@ -58443,7 +58443,7 @@ The `agent_config` parameter can include the following fields:
 | `agent_name` | `str` | Required | Name of the agent |
 | `description` | `str` | `None` | Description of the agent's purpose |
 | `system_prompt` | `str` | `None` | System prompt to guide the agent's behavior |
-| `model_name` | `str` | `"gpt-4o-mini"` | Name of the model to use |
+| `model_name` | `str` | `"gpt-5.4"` | Name of the model to use |
 | `auto_generate_prompt` | `bool` | `False` | Whether to automatically generate a prompt |
 | `max_tokens` | `int` | `8192` | Maximum tokens in the response |
 | `temperature` | `float` | `0.5` | Temperature for sampling (0-1) |
@@ -58474,7 +58474,7 @@ responses = client.agent.create_batch([
     {
         "agent_config": {
             "agent_name": "Researcher",
-            "model_name": "gpt-4o-mini",
+            "model_name": "gpt-5.4",
             "temperature": 0.5
         },
         "task": "Summarize the latest quantum computing research"
@@ -58556,7 +58556,7 @@ async def main():
             {
                 "agent_config": {
                     "agent_name": "Researcher",
-                    "model_name": "gpt-4o-mini"
+                    "model_name": "gpt-5.4"
                 },
                 "task": "Summarize the latest quantum computing research"
             },
@@ -58610,7 +58610,7 @@ response = client.swarm.create(
         {
             "agent_name": "Critic",
             "description": "Evaluates arguments for flaws",
-            "model_name": "gpt-4o-mini",
+            "model_name": "gpt-5.4",
             "temperature": 0.3
         }
     ],
@@ -58677,7 +58677,7 @@ responses = client.swarm.create_batch([
         "task": "Write a blog post about AI safety",
         "agents": [
             {"agent_name": "Writer", "model_name": "gpt-4.1"},
-            {"agent_name": "Editor", "model_name": "gpt-4o-mini"}
+            {"agent_name": "Editor", "model_name": "gpt-5.4"}
         ]
     }
 ])
@@ -58769,7 +58769,7 @@ async def main():
                 {
                     "agent_name": "Critic",
                     "description": "Evaluates arguments for flaws",
-                    "model_name": "gpt-4o-mini"
+                    "model_name": "gpt-5.4"
                 }
             ]
         )
@@ -59058,7 +59058,7 @@ try:
     summarizer = {
         "agent_name": "Summarizer",
         "description": "Creates concise summaries of complex information",
-        "model_name": "gpt-4o-mini",
+        "model_name": "gpt-5.4",
         "temperature": 0.4,
         "system_prompt": "You specialize in distilling complex information into clear, concise summaries."
     }
@@ -60918,7 +60918,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         AgentCompletion {
             agent_config: AgentSpec {
                 agent_name: "Content Creator 1".to_string(),
-                model_name: "gpt-4o-mini".to_string(),
+                model_name: "gpt-5.4".to_string(),
                 temperature: 0.7,
                 max_tokens: 1000,
                 ..Default::default()
@@ -60929,7 +60929,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         AgentCompletion {
             agent_config: AgentSpec {
                 agent_name: "Content Creator 2".to_string(),
-                model_name: "gpt-4o-mini".to_string(),
+                model_name: "gpt-5.4".to_string(),
                 temperature: 0.8,
                 max_tokens: 1000,
                 ..Default::default()
@@ -61051,7 +61051,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .agent(|agent| {
             agent
                 .name("Performance Analyst")
-                .model("gpt-4o-mini")
+                .model("gpt-5.4")
         })
         .send()
         .await?;
@@ -61097,7 +61097,7 @@ async fn handle_swarm_request(client: &SwarmsClient, task: &str) -> Result<Strin
     match client.swarm()
         .completion()
         .task(task)
-        .agent(|agent| agent.name("Worker").model("gpt-4o-mini"))
+        .agent(|agent| agent.name("Worker").model("gpt-5.4"))
         .send()
         .await
     {
@@ -62488,7 +62488,7 @@ The `AgentSpec` model defines the configuration for an individual agent.
 | `agent_name` | string | None | The unique name assigned to the agent | Yes |
 | `description` | string | None | Detailed explanation of the agent's purpose | No |
 | `system_prompt` | string | None | Initial instruction provided to the agent | No |
-| `model_name` | string | "gpt-4o-mini" | Name of the AI model to use | No |
+| `model_name` | string | "gpt-5.4" | Name of the AI model to use | No |
 | `auto_generate_prompt` | boolean | false | Whether to auto-generate prompts | No |
 | `max_tokens` | integer | 8192 | Maximum tokens in response | No |
 | `temperature` | float | 0.5 | Controls randomness (0-1) | No |
@@ -65873,7 +65873,7 @@ payload = {
         "agent_name": "example_agent",
         "description": "Example agent for demonstration",
         "system_prompt": "You are a helpful assistant.",
-        "model_name": "gpt-4o-mini",
+        "model_name": "gpt-5.4",
         "auto_generate_prompt": false,
         "max_tokens": 8192,
         "temperature": 0.5,
@@ -68502,7 +68502,7 @@ medical_coder = Agent(
     - For ambiguous cases, provide a brief note with reasoning and flag for clarification.
     - Ensure the output format is clean, consistent, and ready for professional use.
     """,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_tokens=3000,
     max_loops=1,
     dynamic_temperature_enabled=True,

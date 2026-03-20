@@ -4,7 +4,7 @@ from typing import Optional
 from functools import lru_cache
 
 # Use consistent default model
-DEFAULT_MODEL = "gpt-4o-mini"
+DEFAULT_MODEL = "gpt-5.4"
 
 
 def count_tokens(
@@ -100,7 +100,7 @@ def get_supported_models() -> list:
 
 #     # Test with explicit fallback
 #     try:
-#         tokens = count_tokens(test_text, model="some-invalid-model", default_encoder="gpt-4o-mini")
+#         tokens = count_tokens(test_text, model="some-invalid-model", default_encoder="gpt-5.4")
 #         print(f"Fallback test tokens: {tokens}")
 #     except Exception as e:
 #         print(f"Fallback test failed: {e}")

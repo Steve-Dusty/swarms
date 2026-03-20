@@ -49,7 +49,7 @@ risk_metrics_agent = Agent(
     
     Provide clear, numerical results with brief explanations.""",
     max_loops=1,
-    # model_name="gpt-4o-mini",
+    # model_name="gpt-5.4",
     random_model_enabled=True,
     dynamic_temperature_enabled=True,
     output_type="str-all-except-first",
@@ -69,7 +69,7 @@ portfolio_risk_agent = Agent(
     
     Provide actionable insights for risk reduction.""",
     max_loops=1,
-    # model_name="gpt-4o-mini",
+    # model_name="gpt-5.4",
     random_model_enabled=True,
     dynamic_temperature_enabled=True,
     output_type="str-all-except-first",
@@ -89,7 +89,7 @@ market_risk_agent = Agent(
     
     Provide current risk alerts and trends.""",
     max_loops=1,
-    # model_name="gpt-4o-mini",
+    # model_name="gpt-5.4",
     random_model_enabled=True,
     dynamic_temperature_enabled=True,
     output_type="str-all-except-first",

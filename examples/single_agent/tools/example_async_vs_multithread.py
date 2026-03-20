@@ -23,7 +23,7 @@ agent = Agent(
     return_step_meta=False,
     output_type="string",
     streaming_on=False,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
 )
 
 

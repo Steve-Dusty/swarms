@@ -52,7 +52,7 @@ from swarms.structs.swarming_architectures import broadcast
 announcer = Agent(
     agent_name="Announcer",
     system_prompt="You are an announcer. You create clear, informative messages.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -60,21 +60,21 @@ announcer = Agent(
 researcher = Agent(
     agent_name="Researcher",
     system_prompt="You are a researcher. You analyze information.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 analyst = Agent(
     agent_name="Analyst",
     system_prompt="You are an analyst. You provide insights.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 writer = Agent(
     agent_name="Writer",
     system_prompt="You are a writer. You synthesize information.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 ```
@@ -117,7 +117,7 @@ coordinator = Agent(
     agent_name="Project-Coordinator",
     system_prompt="""You are a project coordinator. You create clear announcements 
     and coordinate team activities.""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -126,19 +126,19 @@ team_members = [
     Agent(
         agent_name="Developer",
         system_prompt="You are a developer. You evaluate technical feasibility.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="Designer",
         system_prompt="You are a designer. You evaluate design implications.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="Product-Manager",
         system_prompt="You are a product manager. You evaluate product strategy.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
 ]
@@ -262,12 +262,12 @@ from swarms.structs.swarming_architectures import broadcast
 manager = Agent(
     agent_name="Manager",
     system_prompt="You are a manager. You make announcements to your team.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 team = [
-    Agent(agent_name=f"Team-Member-{i}", system_prompt="Team member", model_name="gpt-4o-mini", max_loops=1)
+    Agent(agent_name=f"Team-Member-{i}", system_prompt="Team member", model_name="gpt-5.4", max_loops=1)
     for i in range(5)
 ]
 
@@ -293,14 +293,14 @@ from swarms.structs.swarming_architectures import broadcast
 researcher = Agent(
     agent_name="Lead-Researcher",
     system_prompt="You are a lead researcher. You present research findings.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 analysts = [
-    Agent(agent_name="Technical-Analyst", system_prompt="Technical analysis expert", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Business-Analyst", system_prompt="Business analysis expert", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Market-Analyst", system_prompt="Market analysis expert", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="Technical-Analyst", system_prompt="Technical analysis expert", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Business-Analyst", system_prompt="Business analysis expert", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Market-Analyst", system_prompt="Market analysis expert", model_name="gpt-5.4", max_loops=1),
 ]
 
 async def main():
@@ -325,14 +325,14 @@ from swarms.structs.swarming_architectures import broadcast
 presenter = Agent(
     agent_name="Presenter",
     system_prompt="You present proposals clearly and concisely.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 reviewers = [
-    Agent(agent_name="Reviewer-1", system_prompt="You provide detailed feedback", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Reviewer-2", system_prompt="You provide detailed feedback", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Reviewer-3", system_prompt="You provide detailed feedback", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="Reviewer-1", system_prompt="You provide detailed feedback", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Reviewer-2", system_prompt="You provide detailed feedback", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Reviewer-3", system_prompt="You provide detailed feedback", model_name="gpt-5.4", max_loops=1),
 ]
 
 async def main():

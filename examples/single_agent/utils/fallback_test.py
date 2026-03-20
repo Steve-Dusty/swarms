@@ -8,7 +8,7 @@ agent = Agent(
     dynamic_temperature_enabled=True,
     max_loops=1,
     fallback_models=[
-        "gpt-4o-mini",
+        "gpt-5.4",
     ],
     dynamic_context_window=True,
     streaming_on=False,

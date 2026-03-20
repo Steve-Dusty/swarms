@@ -118,7 +118,7 @@ class HierarchicalSwarmDashboard:
         # Swarm information
         self.swarm_description = ""
         self.director_name = "Director"
-        self.director_model_name = "gpt-4o-mini"
+        self.director_model_name = "gpt-5.4"
 
         # View mode for agents display
         self.detailed_view = False
@@ -684,9 +684,9 @@ class HierarchicalSwarm:
         agents: AgentListType = None,
         max_loops: int = 1,
         output_type: OutputType = "dict-all-except-first",
-        feedback_director_model_name: str = "gpt-4o-mini",
+        feedback_director_model_name: str = "gpt-5.4",
         director_name: str = "Director",
-        director_model_name: str = "gpt-4o-mini",
+        director_model_name: str = "gpt-5.4",
         add_collaboration_prompt: bool = True,
         director_feedback_on: bool = True,
         interactive: bool = False,
@@ -699,7 +699,7 @@ class HierarchicalSwarm:
         verbose: bool = False,
         parallel_execution: bool = True,
         agent_as_judge: bool = False,
-        judge_agent_model_name: str = "gpt-4o-mini",
+        judge_agent_model_name: str = "gpt-5.4",
         *args,
         **kwargs,
     ):

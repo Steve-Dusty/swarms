@@ -66,33 +66,33 @@ def example_custom_agents():
     # Create custom agents using the convenience aliases
     generator = TalkHierarchicalGenerator(
         agent_name="ContentCreator",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=True,
     )
 
     evaluator1 = TalkHierarchicalEvaluator(
         agent_name="AccuracyChecker",
         evaluation_criteria=["accuracy", "technical_correctness"],
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=True,
     )
 
     evaluator2 = TalkHierarchicalEvaluator(
         agent_name="ClarityChecker",
         evaluation_criteria=["clarity", "readability", "coherence"],
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=True,
     )
 
     refiner = TalkHierarchicalRefiner(
         agent_name="ContentImprover",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=True,
     )
 
     supervisor = TalkHierarchicalSupervisor(
         agent_name="WorkflowManager",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         verbose=True,
     )
 

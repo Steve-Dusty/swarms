@@ -1195,7 +1195,7 @@ class FairySwarm:
         >>> swarm = FairySwarm(
         ...     name="Design Team",
         ...     description="A team of fairies for UI design",
-        ...     model_name="gpt-4o-mini",
+        ...     model_name="gpt-5.4",
         ...     max_loops=3,
         ...     verbose=True
         ... )
@@ -1211,7 +1211,7 @@ class FairySwarm:
         description: str = "A collaborative swarm of fairy agents",
         orchestrator: Optional[Agent] = None,
         fairies: Optional[List[Agent]] = None,
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
         max_loops: int = 3,
         max_parallel_fairies: int = 4,
         output_type: OutputType = "dict",
@@ -1987,7 +1987,7 @@ if __name__ == "__main__":
     swarm = FairySwarm(
         name="Design Fairies",
         description="A team of fairies for collaborative design work",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=2,
         verbose=True,
     )

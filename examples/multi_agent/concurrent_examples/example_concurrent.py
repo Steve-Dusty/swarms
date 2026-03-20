@@ -14,7 +14,7 @@ from swarms.structs import ConcurrentWorkflow
 tech_analyst = Agent(
     agent_name="Tech-Analyst",
     agent_description="Expert in technology sector analysis",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     system_prompt="You are a technology sector analyst. Provide detailed analysis of tech market trends.",
 )
@@ -22,7 +22,7 @@ tech_analyst = Agent(
 finance_analyst = Agent(
     agent_name="Finance-Analyst",
     agent_description="Expert in financial sector analysis",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     system_prompt="You are a financial sector analyst. Provide detailed analysis of finance market trends.",
 )
@@ -30,7 +30,7 @@ finance_analyst = Agent(
 healthcare_analyst = Agent(
     agent_name="Healthcare-Analyst",
     agent_description="Expert in healthcare sector analysis",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     system_prompt="You are a healthcare sector analyst. Provide detailed analysis of healthcare market trends.",
 )

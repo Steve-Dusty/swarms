@@ -20,7 +20,7 @@ def create_multi_mcp_agent():
             "http://0.0.0.0:8001/mcp",  # OKX Crypto Server
             "http://0.0.0.0:8000/mcp",  # Agent Tools Server
         ],
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         output_type="all",
     )
 
@@ -100,7 +100,7 @@ def custom_system_prompt_example():
             "http://0.0.0.0:8001/mcp",  # OKX Crypto
             "http://0.0.0.0:8000/mcp",  # Agent Tools
         ],
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=2,
     )
 
@@ -126,7 +126,7 @@ def error_handling_example():
             "http://0.0.0.0:8002/mcp",  # Non-existent server (will fail)
             "http://0.0.0.0:8000/mcp",  # Agent Tools (should be running)
         ],
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 

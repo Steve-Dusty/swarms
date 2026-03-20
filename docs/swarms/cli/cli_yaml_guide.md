@@ -12,7 +12,7 @@ Create a file named `agents.yaml`:
 agents:
   - name: "Research-Agent"
     description: "AI research specialist"
-    model_name: "gpt-4o-mini"
+    model_name: "gpt-5.4"
     system_prompt: |
       You are an expert researcher. 
       Provide comprehensive, well-structured research summaries.
@@ -23,7 +23,7 @@ agents:
 
   - name: "Analysis-Agent"
     description: "Data analysis specialist"
-    model_name: "gpt-4o-mini"
+    model_name: "gpt-5.4"
     system_prompt: |
       You are a data analyst.
       Provide detailed statistical analysis and insights.
@@ -53,7 +53,7 @@ Results are displayed in the terminal with formatted output for each agent.
 agents:
   - name: "Agent-Name"                    # Required: Agent identifier
     description: "Agent description"       # Required: What the agent does
-    model_name: "gpt-4o-mini"             # Model to use
+    model_name: "gpt-5.4"             # Model to use
     system_prompt: "Your instructions"     # Agent's system prompt
     temperature: 0.5                       # Creativity (0.0-2.0)
     max_loops: 3                          # Maximum execution loops
@@ -80,7 +80,7 @@ agents:
 agents:
   - name: "Data-Collector"
     description: "Collects and organizes research data"
-    model_name: "gpt-4o-mini"
+    model_name: "gpt-5.4"
     system_prompt: |
       You are a research data collector.
       Gather comprehensive information on the given topic.
@@ -91,7 +91,7 @@ agents:
 
   - name: "Trend-Analyst"
     description: "Analyzes trends and patterns"
-    model_name: "gpt-4o-mini"
+    model_name: "gpt-5.4"
     system_prompt: |
       You are a trend analyst.
       Identify emerging patterns and trends from data.
@@ -164,7 +164,7 @@ agents:
 agents:
   - name: "Topic-Researcher"
     description: "Researches content topics"
-    model_name: "gpt-4o-mini"
+    model_name: "gpt-5.4"
     system_prompt: |
       You are a content researcher.
       Research topics thoroughly and identify key angles.
@@ -186,7 +186,7 @@ agents:
 
   - name: "Editor"
     description: "Edits and polishes content"
-    model_name: "gpt-4o-mini"
+    model_name: "gpt-5.4"
     system_prompt: |
       You are a professional editor.
       Review content for clarity, grammar, and style.

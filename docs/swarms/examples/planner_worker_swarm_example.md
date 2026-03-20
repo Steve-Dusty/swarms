@@ -16,7 +16,7 @@ workers = [
             "You are a research specialist. Provide thorough, factual "
             "information with specific details. Be concise but comprehensive."
         ),
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
@@ -26,7 +26,7 @@ workers = [
             "You are an analysis specialist. Analyze information critically, "
             "identify patterns, and provide structured conclusions."
         ),
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
@@ -36,7 +36,7 @@ workers = [
             "You are a writing specialist. Produce clear, well-organized "
             "content with good readability and logical flow."
         ),
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
 ]
@@ -70,25 +70,25 @@ workers = [
     Agent(
         agent_name="Research-Agent",
         agent_description="Gathers factual information and statistics",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="Analysis-Agent",
         agent_description="Analyzes data and identifies trends",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="Strategy-Agent",
         agent_description="Evaluates strategic implications and recommendations",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="Data-Agent",
         agent_description="Compiles statistics, comparisons, and quantitative data",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
 ]
@@ -124,19 +124,19 @@ workers = [
     Agent(
         agent_name="Backend-Dev",
         agent_description="Designs and implements backend systems and APIs",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="Frontend-Dev",
         agent_description="Designs and implements user interfaces",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="DevOps-Engineer",
         agent_description="Handles deployment, infrastructure, and CI/CD",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
 ]
@@ -170,13 +170,13 @@ workers = [
     Agent(
         agent_name="Analyst",
         agent_description="Financial analysis and valuation",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="Researcher",
         agent_description="Market research and data gathering",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
 ]
@@ -195,8 +195,8 @@ from swarms import Agent
 from swarms.structs.planner_worker_swarm import PlannerWorkerSwarm
 
 workers = [
-    Agent(agent_name="W1", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="W2", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="W1", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="W2", model_name="gpt-5.4", max_loops=1),
 ]
 
 swarm = PlannerWorkerSwarm(
@@ -229,9 +229,9 @@ from swarms import Agent
 from swarms.structs.planner_worker_swarm import PlannerWorkerSwarm
 
 workers = [
-    Agent(agent_name="Agent-1", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Agent-2", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Agent-3", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="Agent-1", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Agent-2", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Agent-3", model_name="gpt-5.4", max_loops=1),
 ]
 
 swarm = PlannerWorkerSwarm(
@@ -240,8 +240,8 @@ swarm = PlannerWorkerSwarm(
     max_workers=3,
     worker_timeout=120,     # 2 min max for worker phase per cycle
     task_timeout=30,        # 30s max per individual task
-    planner_model_name="gpt-4o-mini",
-    judge_model_name="gpt-4o-mini",
+    planner_model_name="gpt-5.4",
+    judge_model_name="gpt-5.4",
 )
 
 result = swarm.run(task="Summarize the top 5 AI research papers from 2025")

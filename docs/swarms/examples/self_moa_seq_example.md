@@ -44,7 +44,7 @@ from swarms import SelfMoASeq
 
 ```python
 self_moa = SelfMoASeq(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     temperature=0.7,
     window_size=6,
     reserved_slots=3,
@@ -120,7 +120,7 @@ self_moa = SelfMoASeq(
 ```python
 self_moa = SelfMoASeq(
     proposer_model_name="gpt-4o",  # Better model for generation
-    aggregator_model_name="gpt-4o-mini",  # Efficient model for aggregation
+    aggregator_model_name="gpt-5.4",  # Efficient model for aggregation
     num_samples=30,
 )
 ```

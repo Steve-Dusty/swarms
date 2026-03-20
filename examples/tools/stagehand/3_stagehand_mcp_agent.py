@@ -42,7 +42,7 @@ class StagehandMCPAgent:
         self,
         agent_name: str = "StagehandMCPAgent",
         mcp_server_url: str = "http://localhost:3000/mcp",
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
         max_loops: int = 1,
     ):
         """
@@ -123,7 +123,7 @@ class MultiSessionBrowserSwarm:
             name, specialization = agent_roles[i]
             agent = Agent(
                 agent_name=f"{name}_{i}",
-                model_name="gpt-4o-mini",
+                model_name="gpt-5.4",
                 max_loops=1,
                 mcp_url=mcp_server_url,
                 system_prompt=f"""You are a web browser automation specialist. {specialization}

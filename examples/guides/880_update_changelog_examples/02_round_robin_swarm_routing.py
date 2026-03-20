@@ -3,21 +3,21 @@ from swarms import Agent, SwarmRouter
 researcher = Agent(
     agent_name="Research-Specialist",
     system_prompt="You research and gather factual information on topics.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 analyst = Agent(
     agent_name="Data-Analyst",
     system_prompt="You analyze data and identify patterns and insights.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 strategist = Agent(
     agent_name="Business-Strategist",
     system_prompt="You develop strategic recommendations based on analysis.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

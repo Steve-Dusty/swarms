@@ -46,7 +46,7 @@ Create a DebateWithJudge system using preset agents (the simplest approach):
 debate = DebateWithJudge(
     preset_agents=True,      # Use built-in optimized agents
     max_loops=3,             # 3 rounds of debate
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     verbose=True
 )
 ```
@@ -85,7 +85,7 @@ from swarms import DebateWithJudge
 debate_system = DebateWithJudge(
     preset_agents=True,
     max_loops=3,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     output_type="str-all-except-first",
     verbose=True,
 )
@@ -126,7 +126,7 @@ pro_agent = Agent(
         "You present arguments focusing on economic growth, technological competitiveness, "
         "and the risks of over-regulation stifling progress."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -138,7 +138,7 @@ con_agent = Agent(
         "You present arguments focusing on public safety, ethical considerations, "
         "and the need for government oversight of powerful technologies."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -150,7 +150,7 @@ judge_agent = Agent(
         "You synthesize the strongest arguments from both sides and provide "
         "balanced, actionable policy recommendations."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -198,7 +198,7 @@ for topic, result in zip(topics, results):
 |-----------|---------|-------------|
 | `preset_agents` | `False` | Use built-in optimized agents |
 | `max_loops` | `3` | Number of debate rounds |
-| `model_name` | `"gpt-4o-mini"` | Model for preset agents |
+| `model_name` | `"gpt-5.4"` | Model for preset agents |
 | `output_type` | `"str-all-except-first"` | Output format |
 | `verbose` | `True` | Enable detailed logging |
 

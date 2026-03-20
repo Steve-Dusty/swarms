@@ -61,7 +61,7 @@ def test_llm_council_custom_initialization():
                 agent_name="TestAgent1",
                 agent_description="First test agent",
                 system_prompt="You are a helpful test agent.",
-                model_name="gpt-4o-mini",
+                model_name="gpt-5.4",
                 max_loops=1,
                 verbose=False,
             ),
@@ -69,7 +69,7 @@ def test_llm_council_custom_initialization():
                 agent_name="TestAgent2",
                 agent_description="Second test agent",
                 system_prompt="You are a helpful test agent.",
-                model_name="gpt-4o-mini",
+                model_name="gpt-5.4",
                 max_loops=1,
                 verbose=False,
             ),
@@ -78,7 +78,7 @@ def test_llm_council_custom_initialization():
         council = LLMCouncil(
             name="Custom Council",
             council_members=custom_members,
-            chairman_model="gpt-4o-mini",
+            chairman_model="gpt-5.4",
             verbose=False,
             output_type="string",
         )
@@ -118,7 +118,7 @@ def test_llm_council_run():
                 agent_name="TestAgent1",
                 agent_description="First test agent",
                 system_prompt="You are a helpful test agent. Provide concise answers.",
-                model_name="gpt-4o-mini",
+                model_name="gpt-5.4",
                 max_loops=1,
                 verbose=False,
             ),
@@ -126,7 +126,7 @@ def test_llm_council_run():
                 agent_name="TestAgent2",
                 agent_description="Second test agent",
                 system_prompt="You are a helpful test agent. Provide concise answers.",
-                model_name="gpt-4o-mini",
+                model_name="gpt-5.4",
                 max_loops=1,
                 verbose=False,
             ),
@@ -134,7 +134,7 @@ def test_llm_council_run():
 
         council = LLMCouncil(
             council_members=custom_members,
-            chairman_model="gpt-4o-mini",
+            chairman_model="gpt-5.4",
             verbose=False,
             output_type="dict-all-except-first",
         )
@@ -211,7 +211,7 @@ def test_llm_council_batched_run():
                 agent_name="TestAgent1",
                 agent_description="First test agent",
                 system_prompt="You are a helpful test agent. Provide concise answers.",
-                model_name="gpt-4o-mini",
+                model_name="gpt-5.4",
                 max_loops=1,
                 verbose=False,
             ),
@@ -219,7 +219,7 @@ def test_llm_council_batched_run():
                 agent_name="TestAgent2",
                 agent_description="Second test agent",
                 system_prompt="You are a helpful test agent. Provide concise answers.",
-                model_name="gpt-4o-mini",
+                model_name="gpt-5.4",
                 max_loops=1,
                 verbose=False,
             ),
@@ -227,7 +227,7 @@ def test_llm_council_batched_run():
 
         council = LLMCouncil(
             council_members=custom_members,
-            chairman_model="gpt-4o-mini",
+            chairman_model="gpt-5.4",
             verbose=False,
             output_type="dict-all-except-first",
         )
@@ -269,7 +269,7 @@ def test_llm_council_output_types():
                 agent_name="TestAgent1",
                 agent_description="First test agent",
                 system_prompt="You are a helpful test agent. Provide concise answers.",
-                model_name="gpt-4o-mini",
+                model_name="gpt-5.4",
                 max_loops=1,
                 verbose=False,
             ),
@@ -277,7 +277,7 @@ def test_llm_council_output_types():
                 agent_name="TestAgent2",
                 agent_description="Second test agent",
                 system_prompt="You are a helpful test agent. Provide concise answers.",
-                model_name="gpt-4o-mini",
+                model_name="gpt-5.4",
                 max_loops=1,
                 verbose=False,
             ),
@@ -290,7 +290,7 @@ def test_llm_council_output_types():
 
             council = LLMCouncil(
                 council_members=custom_members,
-                chairman_model="gpt-4o-mini",
+                chairman_model="gpt-5.4",
                 verbose=False,
                 output_type=output_type,
             )

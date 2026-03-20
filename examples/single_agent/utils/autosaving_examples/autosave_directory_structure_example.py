@@ -21,7 +21,7 @@ agents = []
 # Create 3 different agents
 for i in range(3):
     agent = Agent(
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         agent_name=f"demo-agent-{i+1}",
         max_loops=2,
         autosave=True,

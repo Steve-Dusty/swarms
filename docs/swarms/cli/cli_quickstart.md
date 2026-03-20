@@ -82,7 +82,7 @@ swarms agent \
     --description "A helpful AI assistant" \
     --system-prompt "You are a helpful assistant that provides clear, concise answers." \
     --task "What are the benefits of renewable energy?" \
-    --model-name "gpt-4o-mini"
+    --model-name "gpt-5.4"
 ```
 
 ### Run LLM Council

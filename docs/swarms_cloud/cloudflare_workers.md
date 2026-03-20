@@ -226,7 +226,7 @@ const swarmConfig = {
     {
       agent_name: "Risk Assessment Agent",
       system_prompt: "Analyze portfolio risk and provide recommendations...",
-      model_name: "gpt-4o-mini",
+      model_name: "gpt-5.4",
       max_tokens: 2000,  
       temperature: 0.1
     }

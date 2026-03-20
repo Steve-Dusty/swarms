@@ -31,7 +31,7 @@ load_dotenv()
 # Initialize agent with your chosen model
 agent = Agent(
     agent_name="Your-Agent-Name",
-    model_name="gpt-4o-mini",  # Varies by provider
+    model_name="gpt-5.4",  # Varies by provider
     system_prompt="Your system prompt here",
     agent_description="Description of what your agent does.",
 )
@@ -200,7 +200,7 @@ model_router = ModelRouter(
     models={
         "analysis": "claude-3-sonnet-20240229",
         "creative": "gpt-4.1", 
-        "fast": "gpt-4o-mini",
+        "fast": "gpt-5.4",
         "local": "ollama/llama2"
     }
 )

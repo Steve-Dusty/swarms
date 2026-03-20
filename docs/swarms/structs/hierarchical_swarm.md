@@ -64,13 +64,13 @@ Initializes a new HierarchicalSwarm instance.
 | `director` | `Optional[Union[Agent, Callable, Any]]` | `None` | No | The director agent that orchestrates tasks. If None, a default director will be created |
 | `max_loops` | `int` | `1` | No | Maximum number of feedback loops between director and agents (must be > 0) |
 | `output_type` | `OutputType` | `"dict-all-except-first"` | No | Format for output (dict, str, list) |
-| `director_model_name` | `str` | `"gpt-4o-mini"` | No | Model name for the main director agent |
+| `director_model_name` | `str` | `"gpt-5.4"` | No | Model name for the main director agent |
 | `director_name` | `str` | `"Director"` | No | Name identifier for the director agent |
 | `director_temperature` | `float` | `0.7` | No | Temperature setting for the director agent (controls randomness) |
 | `director_top_p` | `float` | `0.9` | No | Top-p (nucleus) sampling parameter for the director agent |
 | `director_system_prompt` | `str` | `HIEARCHICAL_SWARM_SYSTEM_PROMPT` | No | System prompt for the director agent |
 | `director_feedback_on` | `bool` | `True` | No | Whether director freeform feedback is enabled after each cycle |
-| `feedback_director_model_name` | `str` | `"gpt-4o-mini"` | No | Model name for the feedback director agent |
+| `feedback_director_model_name` | `str` | `"gpt-5.4"` | No | Model name for the feedback director agent |
 | `add_collaboration_prompt` | `bool` | `True` | No | Whether to add collaboration prompts to worker agents |
 | `multi_agent_prompt_improvements` | `bool` | `False` | No | Enable enhanced multi-agent collaboration prompts |
 | `interactive` | `bool` | `False` | No | Enable interactive mode with Hierarchical Swarms dashboard visualization |
@@ -79,7 +79,7 @@ Initializes a new HierarchicalSwarm instance.
 | `verbose` | `bool` | `False` | No | Whether to enable verbose logging |
 | `parallel_execution` | `bool` | `False` | No | Run all agents concurrently using `ThreadPoolExecutor`. Outputs are written to conversation in original submission order |
 | `agent_as_judge` | `bool` | `False` | No | After each cycle, spin up a judge agent that scores every worker output (0–10) using a structured `JudgeReport`. Takes priority over `director_feedback_on` |
-| `judge_agent_model_name` | `str` | `"gpt-4o-mini"` | No | Model used by the judge agent when `agent_as_judge=True` |
+| `judge_agent_model_name` | `str` | `"gpt-5.4"` | No | Model used by the judge agent when `agent_as_judge=True` |
 
 #### Returns
 
@@ -125,14 +125,14 @@ from swarms import Agent, HierarchicalSwarm
 research_agent = Agent(
     agent_name="Research-Specialist",
     agent_description="Expert in market research and analysis",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 financial_agent = Agent(
     agent_name="Financial-Analyst",
     agent_description="Specialist in financial analysis and valuation",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -140,7 +140,7 @@ swarm = HierarchicalSwarm(
     name="Financial-Analysis-Swarm",
     agents=[research_agent, financial_agent],
     max_loops=2,
-    director_model_name="gpt-4o-mini",
+    director_model_name="gpt-5.4",
 )
 
 result = swarm.run(task="Analyze the market potential for Tesla (TSLA) stock")
@@ -174,14 +174,14 @@ import asyncio
 from swarms import Agent, HierarchicalSwarm
 
 agents = [
-    Agent(agent_name="Researcher", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Analyst", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="Researcher", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Analyst", model_name="gpt-5.4", max_loops=1),
 ]
 
 swarm = HierarchicalSwarm(
     name="Async-Swarm",
     agents=agents,
-    director_model_name="gpt-4o-mini",
+    director_model_name="gpt-5.4",
 )
 
 result = asyncio.run(swarm.arun(task="Summarize recent AI research trends"))
@@ -221,7 +221,7 @@ swarm = HierarchicalSwarm(
         Agent(agent_name="Market-Analyst", model_name="gpt-4.1", max_loops=1),
         Agent(agent_name="Technical-Analyst", model_name="gpt-4.1", max_loops=1),
     ],
-    director_model_name="gpt-4o-mini",
+    director_model_name="gpt-5.4",
 )
 
 results = swarm.batched_run(tasks=[
@@ -284,11 +284,11 @@ from swarms import Agent, HierarchicalSwarm
 swarm = HierarchicalSwarm(
     name="Parallel-Swarm",
     agents=[
-        Agent(agent_name="Research-Analyst", model_name="gpt-4o-mini", max_loops=1),
-        Agent(agent_name="Data-Analyst", model_name="gpt-4o-mini", max_loops=1),
-        Agent(agent_name="Strategy-Consultant", model_name="gpt-4o-mini", max_loops=1),
+        Agent(agent_name="Research-Analyst", model_name="gpt-5.4", max_loops=1),
+        Agent(agent_name="Data-Analyst", model_name="gpt-5.4", max_loops=1),
+        Agent(agent_name="Strategy-Consultant", model_name="gpt-5.4", max_loops=1),
     ],
-    director_model_name="gpt-4o-mini",
+    director_model_name="gpt-5.4",
     director_feedback_on=False,
     parallel_execution=True,   # all 3 agents run at the same time
 )
@@ -336,14 +336,14 @@ from swarms import Agent, HierarchicalSwarm
 swarm = HierarchicalSwarm(
     name="Judged-Swarm",
     agents=[
-        Agent(agent_name="Research-Analyst", model_name="gpt-4o-mini", max_loops=1),
-        Agent(agent_name="Data-Analyst", model_name="gpt-4o-mini", max_loops=1),
-        Agent(agent_name="Strategy-Consultant", model_name="gpt-4o-mini", max_loops=1),
+        Agent(agent_name="Research-Analyst", model_name="gpt-5.4", max_loops=1),
+        Agent(agent_name="Data-Analyst", model_name="gpt-5.4", max_loops=1),
+        Agent(agent_name="Strategy-Consultant", model_name="gpt-5.4", max_loops=1),
     ],
-    director_model_name="gpt-4o-mini",
+    director_model_name="gpt-5.4",
     director_feedback_on=False,
     agent_as_judge=True,                    # enable structured scoring
-    judge_agent_model_name="gpt-4o-mini",   # model for the judge
+    judge_agent_model_name="gpt-5.4",   # model for the judge
 )
 
 result = swarm.run(task="Analyze AI infrastructure investment trends for 2025")
@@ -372,10 +372,10 @@ from swarms import Agent, HierarchicalSwarm
 swarm = HierarchicalSwarm(
     name="Async-Swarm",
     agents=[
-        Agent(agent_name="Researcher", model_name="gpt-4o-mini", max_loops=1),
-        Agent(agent_name="Analyst", model_name="gpt-4o-mini", max_loops=1),
+        Agent(agent_name="Researcher", model_name="gpt-5.4", max_loops=1),
+        Agent(agent_name="Analyst", model_name="gpt-5.4", max_loops=1),
     ],
-    director_model_name="gpt-4o-mini",
+    director_model_name="gpt-5.4",
 )
 
 # Works inside any async context
@@ -393,8 +393,8 @@ from swarms import Agent, HierarchicalSwarm
 
 app = FastAPI()
 swarm = HierarchicalSwarm(
-    agents=[Agent(agent_name="Analyst", model_name="gpt-4o-mini", max_loops=1)],
-    director_model_name="gpt-4o-mini",
+    agents=[Agent(agent_name="Analyst", model_name="gpt-5.4", max_loops=1)],
+    director_model_name="gpt-5.4",
 )
 
 @app.post("/analyze")
@@ -416,9 +416,9 @@ from swarms import Agent, HierarchicalSwarm
 swarm = HierarchicalSwarm(
     name="FullFeature-Swarm",
     agents=[
-        Agent(agent_name="Research-Analyst", model_name="gpt-4o-mini", max_loops=1),
-        Agent(agent_name="Data-Analyst", model_name="gpt-4o-mini", max_loops=1),
-        Agent(agent_name="Strategy-Consultant", model_name="gpt-4o-mini", max_loops=1),
+        Agent(agent_name="Research-Analyst", model_name="gpt-5.4", max_loops=1),
+        Agent(agent_name="Data-Analyst", model_name="gpt-5.4", max_loops=1),
+        Agent(agent_name="Strategy-Consultant", model_name="gpt-5.4", max_loops=1),
     ],
     director_model_name="gpt-4.1",
     director_feedback_on=False,
@@ -445,16 +445,16 @@ financial_analysis_swarm = HierarchicalSwarm(
         Agent(
             agent_name="Market-Research-Specialist",
             agent_description="Expert in market research, trend analysis, and competitive intelligence",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
         ),
         Agent(
             agent_name="Financial-Analysis-Expert",
             agent_description="Specialist in financial statement analysis, valuation, and investment research",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
         ),
     ],
     max_loops=2,
-    director_model_name="gpt-4o-mini",
+    director_model_name="gpt-5.4",
     planning_enabled=True,
     agent_as_judge=True,
 )
@@ -477,7 +477,7 @@ swarm = HierarchicalSwarm(
     agents=[research_agent, analysis_agent, strategy_agent],
     max_loops=2,
     interactive=True,
-    director_model_name="gpt-4o-mini",
+    director_model_name="gpt-5.4",
 )
 
 result = swarm.run("Conduct a research analysis on water stocks and ETFs")

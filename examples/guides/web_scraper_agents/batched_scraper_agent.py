@@ -6,7 +6,7 @@ from swarms import Agent
 
 agent = Agent(
     agent_name="Web Scraper Agent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     tools=[scrape_and_format_sync],
     dynamic_context_window=True,
     dynamic_temperature_enabled=True,

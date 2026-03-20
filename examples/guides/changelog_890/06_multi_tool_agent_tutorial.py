@@ -51,7 +51,7 @@ multi_tool_agent = Agent(
     Use the available tools strategically to gather information from diverse sources.
     Coordinate between web search, financial data, and cryptocurrency information to provide
     well-rounded analysis. Always cite your sources and explain your reasoning.""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     tools=(
         [

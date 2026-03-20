@@ -44,7 +44,7 @@ tools = [
 ]
 
 # Initialize LiteLLM with streaming enabled
-llm = LiteLLM(model_name="gpt-4o-mini", tools_list_dictionary=tools)
+llm = LiteLLM(model_name="gpt-5.4", tools_list_dictionary=tools)
 
 
 async def main():
@@ -155,7 +155,7 @@ def run_test_suite():
         llm = LiteLLM(
             tools_list_dictionary=tools,
             tool_choice="auto",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
         )
         assert llm.tools_list_dictionary == tools
         assert llm.tool_choice == "auto"

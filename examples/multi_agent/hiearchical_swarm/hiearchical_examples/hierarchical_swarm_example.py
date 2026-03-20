@@ -127,7 +127,7 @@ director_agent = Agent(
     
     You create detailed, specific task assignments that leverage each specialist's unique expertise
     while ensuring the overall analysis is comprehensive and actionable.""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     temperature=0.7,
 )

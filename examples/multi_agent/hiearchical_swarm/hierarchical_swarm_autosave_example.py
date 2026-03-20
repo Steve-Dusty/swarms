@@ -19,7 +19,7 @@ def main():
     writer = Agent(
         agent_name="Writer",
         agent_description="Content writer",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
     )
@@ -27,7 +27,7 @@ def main():
     editor = Agent(
         agent_name="Editor",
         agent_description="Content editor",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
     )

@@ -49,28 +49,28 @@ from swarms.structs.swarming_architectures import grid_swarm
 agent1 = Agent(
     agent_name="Agent-1",
     system_prompt="You are a research specialist.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 agent2 = Agent(
     agent_name="Agent-2",
     system_prompt="You are an analyst.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 agent3 = Agent(
     agent_name="Agent-3",
     system_prompt="You are a writer.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 agent4 = Agent(
     agent_name="Agent-4",
     system_prompt="You are an editor.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 ```
@@ -112,25 +112,25 @@ agents = [
     Agent(
         agent_name="Researcher",
         system_prompt="You research topics thoroughly.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="Analyst",
         system_prompt="You analyze information and identify patterns.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="Writer",
         system_prompt="You write clear and concise content.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="Reviewer",
         system_prompt="You review and provide feedback.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
 ]
@@ -232,10 +232,10 @@ result = grid_swarm(
 ```python
 # 4 agents for parallel research
 agents = [
-    Agent(agent_name="Researcher-1", system_prompt="Research expert", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Researcher-2", system_prompt="Research expert", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Researcher-3", system_prompt="Research expert", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Researcher-4", system_prompt="Research expert", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="Researcher-1", system_prompt="Research expert", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Researcher-2", system_prompt="Research expert", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Researcher-3", system_prompt="Research expert", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Researcher-4", system_prompt="Research expert", model_name="gpt-5.4", max_loops=1),
 ]
 
 tasks = [
@@ -253,7 +253,7 @@ result = grid_swarm(agents=agents, tasks=tasks)
 ```python
 # 9 agents for comprehensive review (3x3 grid)
 agents = [
-    Agent(agent_name=f"Reviewer-{i}", system_prompt="Content reviewer", model_name="gpt-4o-mini", max_loops=1)
+    Agent(agent_name=f"Reviewer-{i}", system_prompt="Content reviewer", model_name="gpt-5.4", max_loops=1)
     for i in range(9)  # 3x3 grid
 ]
 

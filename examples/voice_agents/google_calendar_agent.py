@@ -358,7 +358,7 @@ tts_callback = StreamingTTSCallback(
 agent = Agent(
     agent_name="Google-Calendar-Agent",
     agent_description="An agent that can create and read events in Google Calendar using the Google Calendar API",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=3,
     tools=[
         create_calendar_event,

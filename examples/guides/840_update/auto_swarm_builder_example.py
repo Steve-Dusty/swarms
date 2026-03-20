@@ -6,7 +6,7 @@ swarm = AutoSwarmBuilder(
     description="A swarm of agents",
     verbose=True,
     max_loops=1,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     execution_type="return-agents",
 )
 

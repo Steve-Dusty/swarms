@@ -18,7 +18,7 @@ code_agent = Agent(
         "You are an expert Python developer. Write clean, well-documented, "
         "production-ready code with proper error handling and type hints."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -29,7 +29,7 @@ writer_agent = Agent(
         "You are a technical writing specialist. Write clear, comprehensive "
         "documentation with examples, explanations, and proper formatting."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -40,7 +40,7 @@ researcher_agent = Agent(
         "You are a research analyst. Provide thorough, well-structured analysis "
         "with comparisons, trade-offs, and actionable recommendations."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -49,7 +49,7 @@ researcher_agent = Agent(
 orchestra = SkillOrchestra(
     name="DevTeamOrchestra",
     agents=[code_agent, writer_agent, researcher_agent],
-    model="gpt-4o-mini",
+    model="gpt-5.4",
     top_k_agents=1,  # Select the single best agent per task
     learning_enabled=False,  # Set True to update skill profiles after execution
     output_type="final",  # Return only the final agent output

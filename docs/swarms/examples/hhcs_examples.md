@@ -116,7 +116,7 @@ hybrid_hiearchical_swarm = HybridHierarchicalClusterSwarm(
         dispute_swarm,
     ],
     max_loops=1,
-    router_agent_model_name="gpt-4o-mini",
+    router_agent_model_name="gpt-5.4",
 )
 
 

@@ -546,7 +546,7 @@ class MassAgentTemplate:
         return Agent(
             agent_name=profile.name,
             system_prompt=system_prompt,
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=3,
             verbose=self.verbose,
         )

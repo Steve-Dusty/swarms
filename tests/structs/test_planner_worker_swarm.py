@@ -27,7 +27,7 @@ from swarms.structs.conversation import Conversation
 def _agent(name="W"):
     return Agent(
         agent_name=name, agent_description=name,
-        model_name="gpt-4o-mini", max_loops=1,
+        model_name="gpt-5.4", max_loops=1,
         verbose=False, print_on=False,
     )
 

@@ -35,7 +35,7 @@ from swarms import Agent
 # Enable real-time streaming
 agent = Agent(
     agent_name="StoryAgent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     streaming_on=True,  # 🔥 This enables real streaming!
     max_loops=1,
     print_on=True,  # By default, it's False for raw streaming!

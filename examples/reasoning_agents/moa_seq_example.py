@@ -2,7 +2,7 @@ from swarms.structs.self_moa_seq import SelfMoASeq
 
 # Initialize
 moa_seq = SelfMoASeq(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     temperature=0.7,
     window_size=6,
     verbose=True,

@@ -96,9 +96,9 @@ class SocialAlgorithms:
         ...     }
         >>>
         >>> # Create agents
-        >>> researcher = Agent(agent_name="Researcher", model_name="gpt-4o-mini")
-        >>> analyst = Agent(agent_name="Analyst", model_name="gpt-4o-mini")
-        >>> synthesizer = Agent(agent_name="Synthesizer", model_name="gpt-4o-mini")
+        >>> researcher = Agent(agent_name="Researcher", model_name="gpt-5.4")
+        >>> analyst = Agent(agent_name="Analyst", model_name="gpt-5.4")
+        >>> synthesizer = Agent(agent_name="Synthesizer", model_name="gpt-5.4")
         >>>
         >>> # Create social algorithm
         >>> social_alg = SocialAlgorithms(

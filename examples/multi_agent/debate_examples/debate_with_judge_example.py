@@ -3,7 +3,7 @@ from swarms import DebateWithJudge
 debate_system = DebateWithJudge(
     preset_agents=True,
     max_loops=3,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     output_type="str-all-except-first",
     verbose=True,
 )

@@ -116,7 +116,7 @@ class MultiAgentRouter:
         name: str = "swarm-router",
         description: str = "Routes tasks to specialized agents based on their capabilities",
         agents: List[Callable] = None,
-        model: str = "gpt-4o-mini",
+        model: str = "gpt-5.4",
         temperature: float = 0.1,
         shared_memory_system: callable = None,
         output_type: OutputType = "dict",
@@ -133,7 +133,7 @@ class MultiAgentRouter:
             name (str, optional): The name of the router. Defaults to "swarm-router".
             description (str, optional): A description of the router's purpose. Defaults to "Routes tasks to specialized agents based on their capabilities".
             agents (List[Agent], optional): A list of agents to be managed by the router. Defaults to an empty list.
-            model (str, optional): The model to use for the boss agent. Defaults to "gpt-4o-mini".
+            model (str, optional): The model to use for the boss agent. Defaults to "gpt-5.4".
             temperature (float, optional): The temperature for the boss agent's model. Defaults to 0.1.
             shared_memory_system (callable, optional): A shared memory system for agents to query. Defaults to None.
             output_type (OutputType, optional): The type of output expected from the agents. Defaults to "dict".

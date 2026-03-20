@@ -14,7 +14,7 @@ from swarms.structs import SequentialWorkflow
 research_agent = Agent(
     agent_name="Research-Agent",
     agent_description="Expert at researching topics and gathering information",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     system_prompt="You are a research specialist. Gather comprehensive information on the given topic and provide key findings.",
 )
@@ -22,7 +22,7 @@ research_agent = Agent(
 writer_agent = Agent(
     agent_name="Writer-Agent",
     agent_description="Expert at writing engaging content based on research",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     system_prompt="You are a professional writer. Transform research findings into engaging, well-structured content.",
 )
@@ -30,7 +30,7 @@ writer_agent = Agent(
 editor_agent = Agent(
     agent_name="Editor-Agent",
     agent_description="Expert at editing and refining content for quality",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     system_prompt="You are an experienced editor. Review and improve the content for clarity, grammar, and impact.",
 )

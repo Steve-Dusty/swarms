@@ -37,7 +37,7 @@ class SwarmTemplates:
         >>> # Create a research workflow
         >>> swarm = SwarmTemplates.create(
         ...     "research_analysis_synthesis",
-        ...     model_name="gpt-4o-mini"
+        ...     model_name="gpt-5.4"
         ... )
         >>> result = swarm.run("Analyze the impact of AI on healthcare")
         >>> print(result)
@@ -152,7 +152,7 @@ class SwarmTemplates:
     def create(
         cls,
         template_name: str,
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
         max_loops: int = 1,
         verbose: bool = True,
         custom_params: Optional[Dict[str, Any]] = None,
@@ -176,7 +176,7 @@ class SwarmTemplates:
         Example:
             >>> swarm = SwarmTemplates.create(
             ...     "research_analysis_synthesis",
-            ...     model_name="gpt-4o-mini",
+            ...     model_name="gpt-5.4",
             ...     max_loops=1
             ... )
             >>> result = swarm.run("Analyze quantum computing trends")
@@ -213,7 +213,7 @@ class SwarmTemplates:
     @classmethod
     def research_analysis_synthesis(
         cls,
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
         max_loops: int = 1,
         verbose: bool = True,
     ) -> SequentialWorkflow:
@@ -236,7 +236,7 @@ class SwarmTemplates:
 
         Example:
             >>> swarm = SwarmTemplates.research_analysis_synthesis(
-            ...     model_name="gpt-4o-mini"
+            ...     model_name="gpt-5.4"
             ... )
             >>> result = swarm.run("Research the latest trends in renewable energy")
             >>> print(result)
@@ -332,7 +332,7 @@ Guidelines:
     @classmethod
     def content_creation_pipeline(
         cls,
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
         max_loops: int = 1,
         verbose: bool = True,
     ) -> SequentialWorkflow:
@@ -474,7 +474,7 @@ Guidelines:
     @classmethod
     def code_development_team(
         cls,
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
         max_loops: int = 1,
         verbose: bool = True,
     ) -> SequentialWorkflow:
@@ -624,7 +624,7 @@ Guidelines:
     @classmethod
     def financial_analysis_team(
         cls,
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
         max_loops: int = 1,
         verbose: bool = True,
     ) -> SequentialWorkflow:
@@ -773,7 +773,7 @@ Guidelines:
     @classmethod
     def marketing_campaign_team(
         cls,
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
         max_loops: int = 1,
         verbose: bool = True,
     ) -> SequentialWorkflow:
@@ -924,7 +924,7 @@ Guidelines:
     @classmethod
     def customer_support_team(
         cls,
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
         max_loops: int = 1,
         verbose: bool = True,
     ) -> SequentialWorkflow:
@@ -1047,7 +1047,7 @@ Guidelines:
     @classmethod
     def legal_document_review(
         cls,
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
         max_loops: int = 1,
         verbose: bool = True,
     ) -> SequentialWorkflow:
@@ -1199,7 +1199,7 @@ Guidelines:
     @classmethod
     def data_science_pipeline(
         cls,
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
         max_loops: int = 1,
         verbose: bool = True,
     ) -> SequentialWorkflow:

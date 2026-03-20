@@ -114,14 +114,14 @@ from swarms import Agent, SequentialWorkflow
 researcher = Agent(
     agent_name="Researcher",
     system_prompt="Your job is to research the provided topic and provide a detailed summary.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
 )
 
 # Agent 2: The Writer
 writer = Agent(
     agent_name="Writer",
     system_prompt="Your job is to take the research summary and write a beautiful, engaging blog post about it.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
 )
 
 # Create a sequential workflow where the researcher's output feeds into the writer's input
@@ -143,7 +143,7 @@ from swarms import Agent, SequentialWorkflow
 litigation_agent = Agent(
     agent_name="Alex Johnson",
     system_prompt="As a Litigator, you specialize in navigating the complexities of lawsuits. Your role involves analyzing intricate facts, constructing compelling arguments, and devising effective case strategies to achieve favorable outcomes for your clients.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -151,7 +151,7 @@ litigation_agent = Agent(
 corporate_agent = Agent(
     agent_name="Emily Carter",
     system_prompt="As a Corporate Attorney, you provide expert legal advice on business law matters. You guide clients on corporate structure, governance, compliance, and transactions, ensuring their business operations align with legal requirements.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -159,7 +159,7 @@ corporate_agent = Agent(
 ip_agent = Agent(
     agent_name="Michael Smith",
     system_prompt="As an IP Attorney, your expertise lies in protecting intellectual property rights. You handle various aspects of IP law, including patents, trademarks, copyrights, and trade secrets, helping clients safeguard their innovations.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -184,21 +184,21 @@ from swarms import Agent, SequentialWorkflow
 idea_generator = Agent(
     agent_name="IdeaGenerator",
     system_prompt="Generate a unique startup idea.",
-    model_name="gpt-4o-mini"
+    model_name="gpt-5.4"
 )
 
 # 2. Validate the idea
 validator = Agent(
     agent_name="Validator",
     system_prompt="Take this startup idea and analyze its market viability.",
-    model_name="gpt-4o-mini"
+    model_name="gpt-5.4"
 )
 
 # 3. Create a pitch
 pitch_creator = Agent(
     agent_name="PitchCreator",
     system_prompt="Write a 3-sentence elevator pitch for this validated startup idea.",
-    model_name="gpt-4o-mini"
+    model_name="gpt-5.4"
 )
 
 # Create the sequential workflow
@@ -297,7 +297,7 @@ print(result)
 |-----------|-------------|---------|
 | `agent_name` | Human-readable name for the agent | Required |
 | `system_prompt` | Detailed role description and expertise | Required |
-| `model_name` | LLM model to use | "gpt-4o-mini" |
+| `model_name` | LLM model to use | "gpt-5.4" |
 | `max_loops` | Maximum number of processing loops | 1 |
 
 ### Workflow Parameters

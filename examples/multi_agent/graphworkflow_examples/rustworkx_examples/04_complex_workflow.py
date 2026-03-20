@@ -4,7 +4,7 @@ from swarms.structs.agent import Agent
 data_collector_1 = Agent(
     agent_name="Data-Collector-1",
     agent_description="Collects market data",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )
@@ -12,7 +12,7 @@ data_collector_1 = Agent(
 data_collector_2 = Agent(
     agent_name="Data-Collector-2",
     agent_description="Collects financial data",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )
@@ -20,7 +20,7 @@ data_collector_2 = Agent(
 technical_analyst = Agent(
     agent_name="Technical-Analyst",
     agent_description="Performs technical analysis",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )
@@ -28,7 +28,7 @@ technical_analyst = Agent(
 fundamental_analyst = Agent(
     agent_name="Fundamental-Analyst",
     agent_description="Performs fundamental analysis",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )
@@ -36,7 +36,7 @@ fundamental_analyst = Agent(
 risk_analyst = Agent(
     agent_name="Risk-Analyst",
     agent_description="Performs risk analysis",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )
@@ -44,7 +44,7 @@ risk_analyst = Agent(
 strategy_consultant = Agent(
     agent_name="Strategy-Consultant",
     agent_description="Develops strategic recommendations",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )
@@ -52,7 +52,7 @@ strategy_consultant = Agent(
 report_writer = Agent(
     agent_name="Report-Writer",
     agent_description="Writes comprehensive reports",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )

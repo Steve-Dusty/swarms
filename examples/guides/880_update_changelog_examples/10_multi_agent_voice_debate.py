@@ -15,7 +15,7 @@ from voice_agents import StreamingTTSCallback
 agent1 = Agent(
     agent_name="Socrates",
     system_prompt="You argue from a philosophical perspective, questioning assumptions.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     streaming_on=True,
     streaming_callback=StreamingTTSCallback(
@@ -26,7 +26,7 @@ agent1 = Agent(
 agent2 = Agent(
     agent_name="Simone",
     system_prompt="You argue from a practical perspective, focusing on real-world applications.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     streaming_on=True,
     streaming_callback=StreamingTTSCallback(

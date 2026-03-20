@@ -6,42 +6,42 @@ from swarms.structs.social_algorithms import SocialAlgorithms
 stakeholder1 = Agent(
     agent_name="Technical_Lead",
     system_prompt="You represent the technical team's perspective. You focus on technical feasibility, implementation complexity, and technical risks. You advocate for technically sound solutions.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 stakeholder2 = Agent(
     agent_name="Business_Manager",
     system_prompt="You represent the business perspective. You focus on ROI, market impact, customer value, and business strategy. You advocate for solutions that drive business value.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 stakeholder3 = Agent(
     agent_name="User_Advocate",
     system_prompt="You represent the end-user perspective. You focus on user experience, usability, accessibility, and user needs. You advocate for user-centric solutions.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 stakeholder4 = Agent(
     agent_name="Security_Expert",
     system_prompt="You represent the security and compliance perspective. You focus on security risks, compliance requirements, and risk mitigation. You advocate for secure and compliant solutions.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 facilitator = Agent(
     agent_name="Facilitator",
     system_prompt="You are a neutral facilitator focused on managing the consensus building process. You help identify common ground, mediate conflicts, and guide the group toward agreement. You remain neutral and objective.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 voting_coordinator = Agent(
     agent_name="Voting_Coordinator",
     system_prompt="You are a voting coordinator focused on managing the voting process, tallying votes, and ensuring fair and transparent decision-making. You handle the mechanics of voting and consensus measurement.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

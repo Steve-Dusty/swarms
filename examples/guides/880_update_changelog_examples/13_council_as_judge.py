@@ -10,7 +10,7 @@ from swarms import CouncilAsAJudge
 council = CouncilAsAJudge(
     name="Evaluation-Council",
     description="Evaluates responses across multiple dimensions",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

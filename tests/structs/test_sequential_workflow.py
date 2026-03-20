@@ -311,13 +311,13 @@ def test_sequential_workflow_autosave_creates_workspace_dir(
     agent1 = Agent(
         agent_name="Autosave-Agent-1",
         agent_description="Agent for autosave test",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
     agent2 = Agent(
         agent_name="Autosave-Agent-2",
         agent_description="Agent for autosave test",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     )
 
@@ -347,7 +347,7 @@ def test_sequential_workflow_autosave_saves_conversation_after_run(
     agent1 = Agent(
         agent_name="Autosave-Run-Agent-1",
         agent_description="Agent for autosave run test",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
@@ -355,7 +355,7 @@ def test_sequential_workflow_autosave_saves_conversation_after_run(
     agent2 = Agent(
         agent_name="Autosave-Run-Agent-2",
         agent_description="Agent for autosave run test",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,

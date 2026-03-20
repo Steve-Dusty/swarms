@@ -3,7 +3,7 @@ from swarms import Agent, GraphWorkflow
 coordinator = Agent(
     agent_name="Coordinator",
     agent_description="Coordinates and distributes tasks",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )
@@ -11,7 +11,7 @@ coordinator = Agent(
 tech_analyst = Agent(
     agent_name="Tech-Analyst",
     agent_description="Technical analysis specialist",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )
@@ -19,7 +19,7 @@ tech_analyst = Agent(
 fundamental_analyst = Agent(
     agent_name="Fundamental-Analyst",
     agent_description="Fundamental analysis specialist",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )
@@ -27,7 +27,7 @@ fundamental_analyst = Agent(
 sentiment_analyst = Agent(
     agent_name="Sentiment-Analyst",
     agent_description="Sentiment analysis specialist",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )
@@ -35,7 +35,7 @@ sentiment_analyst = Agent(
 synthesis_agent = Agent(
     agent_name="Synthesis-Agent",
     agent_description="Synthesizes multiple analyses into final report",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=False,
 )

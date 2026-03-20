@@ -10,21 +10,21 @@ from swarms import Agent, SwarmRouter
 agent1 = Agent(
     agent_name="Agent1",
     system_prompt="You are a research specialist.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 agent2 = Agent(
     agent_name="Agent2",
     system_prompt="You are an analysis specialist.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 agent3 = Agent(
     agent_name="Agent3",
     system_prompt="You are a synthesis specialist.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

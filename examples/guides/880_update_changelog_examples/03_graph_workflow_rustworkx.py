@@ -10,21 +10,21 @@ from swarms import Agent, GraphWorkflow
 
 research_agent = Agent(
     agent_name="ResearchAgent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     system_prompt="You are a research specialist. Gather and analyze information.",
     max_loops=1,
 )
 
 analysis_agent = Agent(
     agent_name="AnalysisAgent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     system_prompt="You are an analyst. Process research findings and extract insights.",
     max_loops=1,
 )
 
 synthesis_agent = Agent(
     agent_name="SynthesisAgent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     system_prompt="You synthesize information into comprehensive reports.",
     max_loops=1,
 )

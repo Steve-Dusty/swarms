@@ -9,7 +9,7 @@ from fairy_swarm import FairySwarm
 
 swarm = FairySwarm(
     name="Website Design Team",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=3,
     enable_context_refresh=True,
     verbose=True,

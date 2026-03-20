@@ -12,7 +12,7 @@ from fairy_swarm import FairySwarm
 swarm = FairySwarm(
     name="Design Team",
     description="A collaborative team of fairies for UI design",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=2,
     verbose=True,
 )

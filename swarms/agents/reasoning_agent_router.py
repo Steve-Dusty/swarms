@@ -77,7 +77,7 @@ class ReasoningAgentRouter:
         self,
         agent_name: str = "reasoning_agent",
         description: str = "A reasoning agent that can answer questions and help with tasks.",
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
         system_prompt: str = "You are a helpful assistant that can answer questions and help with tasks.",
         max_loops: int = 1,
         swarm_type: agent_types = "reasoning-duo",

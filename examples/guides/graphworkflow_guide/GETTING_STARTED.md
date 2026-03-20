@@ -69,8 +69,8 @@ from swarms import Agent
 from swarms.structs.graph_workflow import GraphWorkflow
 
 # 1. Create agents
-agent1 = Agent(agent_name="Researcher", model_name="gpt-4o-mini", max_loops=1)
-agent2 = Agent(agent_name="Writer", model_name="gpt-4o-mini", max_loops=1)
+agent1 = Agent(agent_name="Researcher", model_name="gpt-5.4", max_loops=1)
+agent2 = Agent(agent_name="Writer", model_name="gpt-5.4", max_loops=1)
 
 # 2. Create workflow
 workflow = GraphWorkflow(name="MyWorkflow", auto_compile=True)

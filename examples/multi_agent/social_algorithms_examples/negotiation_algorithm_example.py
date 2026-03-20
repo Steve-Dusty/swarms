@@ -6,35 +6,35 @@ from swarms.structs.social_algorithms import SocialAlgorithms
 party1 = Agent(
     agent_name="Company_Representative",
     system_prompt="You represent a company in negotiations. You focus on maximizing business value, protecting company interests, and achieving favorable terms. You are strategic and business-oriented.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 party2 = Agent(
     agent_name="Client_Representative",
     system_prompt="You represent a client in negotiations. You focus on getting the best value, ensuring quality, and protecting client interests. You are value-focused and quality-conscious.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 party3 = Agent(
     agent_name="Technical_Expert",
     system_prompt="You are a technical expert in negotiations. You focus on technical feasibility, implementation details, and technical risks. You provide objective technical assessments.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 mediator = Agent(
     agent_name="Mediator",
     system_prompt="You are a neutral mediator in negotiations. You help facilitate communication, identify common ground, suggest compromises, and guide parties toward agreement. You remain impartial and objective.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 legal_advisor = Agent(
     agent_name="Legal_Advisor",
     system_prompt="You are a legal advisor in negotiations. You focus on legal compliance, risk assessment, contract terms, and legal implications. You ensure all agreements are legally sound.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

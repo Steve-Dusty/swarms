@@ -14,7 +14,7 @@ def create_function_agent(name: str, system_prompt: str = None):
         agent_name=name,
         agent_description=f"Test agent {name}",
         system_prompt=system_prompt,
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
     )

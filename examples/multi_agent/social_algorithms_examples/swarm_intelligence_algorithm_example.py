@@ -7,42 +7,42 @@ import random
 explorer1 = Agent(
     agent_name="Explorer_1",
     system_prompt="You are an explorer in a swarm. You seek new information, discover opportunities, and share findings with nearby agents. You are curious and adaptive.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 explorer2 = Agent(
     agent_name="Explorer_2",
     system_prompt="You are an explorer in a swarm. You seek new information, discover opportunities, and share findings with nearby agents. You are curious and adaptive.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 explorer3 = Agent(
     agent_name="Explorer_3",
     system_prompt="You are an explorer in a swarm. You seek new information, discover opportunities, and share findings with nearby agents. You are curious and adaptive.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 exploiter1 = Agent(
     agent_name="Exploiter_1",
     system_prompt="You are an exploiter in a swarm. You focus on developing and refining promising solutions found by explorers. You are methodical and detail-oriented.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 exploiter2 = Agent(
     agent_name="Exploiter_2",
     system_prompt="You are an exploiter in a swarm. You focus on developing and refining promising solutions found by explorers. You are methodical and detail-oriented.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 coordinator = Agent(
     agent_name="Swarm_Coordinator",
     system_prompt="You are a swarm coordinator that observes emergent patterns and provides minimal guidance. You don't control the swarm but help identify collective insights.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

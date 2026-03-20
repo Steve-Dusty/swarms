@@ -331,7 +331,7 @@ class Agent:
 
     >>> # Fallback model example
     >>> agent = Agent(
-    ...     fallback_models=["gpt-4.1", "gpt-4o-mini", "gpt-3.5-turbo"],
+    ...     fallback_models=["gpt-4.1", "gpt-5.4", "gpt-3.5-turbo"],
     ...     max_loops=1
     ... )
     >>> response = agent.run("Generate a report on the financials.")
@@ -1103,7 +1103,7 @@ class Agent:
         """
 
         if self.model_name is None:
-            self.model_name = "gpt-4o-mini"
+            self.model_name = "gpt-5.4"
 
         # Use current model (which may be a fallback) only if fallbacks are configured
         if self.fallback_models:
@@ -5716,7 +5716,7 @@ Summary: {summary}
         if self.current_model_index < len(available_models):
             return available_models[self.current_model_index]
         return (
-            available_models[0] if available_models else "gpt-4o-mini"
+            available_models[0] if available_models else "gpt-5.4"
         )
 
     def switch_to_next_model(self) -> bool:

@@ -9,7 +9,7 @@ agent = Agent(
     system_prompt=FINANCIAL_AGENT_SYS_PROMPT,  # System prompt for financial tasks
     max_loops=1,
     mcp_url="http://0.0.0.0:8001/mcp",  # URL for the OKX crypto price MCP server
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     output_type="all",
 )
 

@@ -262,7 +262,7 @@ class SkillOrchestra:
         agents: List[Union[Agent, Callable]] = None,
         max_loops: int = 1,
         output_type: OutputType = "dict",
-        model: str = "gpt-4o-mini",
+        model: str = "gpt-5.4",
         temperature: float = 0.1,
         skill_handbook: Optional[SkillHandbook] = None,
         auto_generate_skills: bool = True,

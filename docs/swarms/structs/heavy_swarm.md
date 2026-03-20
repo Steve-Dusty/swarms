@@ -19,7 +19,7 @@ from swarms.structs.heavy_swarm import HeavySwarm
 swarm = HeavySwarm(
     name="Research Team",
     description="Multi-agent analysis system",
-    worker_model_name="gpt-4o-mini",
+    worker_model_name="gpt-5.4",
     show_dashboard=True
 )
 
@@ -63,8 +63,8 @@ HeavySwarm(
     timeout: int = 300,
     aggregation_strategy: str = "synthesis",
     loops_per_agent: int = 1,
-    question_agent_model_name: str = "gpt-4o-mini",
-    worker_model_name: str = "gpt-4o-mini",
+    question_agent_model_name: str = "gpt-5.4",
+    worker_model_name: str = "gpt-5.4",
     verbose: bool = False,
     max_workers: int = int(os.cpu_count() * 0.9),
     show_dashboard: bool = False,
@@ -85,8 +85,8 @@ HeavySwarm(
 | `timeout` | `int` | `300` | Maximum execution time per agent in seconds |
 | `aggregation_strategy` | `str` | `"synthesis"` | Strategy for result aggregation (currently only 'synthesis' is supported) |
 | `loops_per_agent` | `int` | `1` | Number of execution loops each agent should perform |
-| `question_agent_model_name` | `str` | `"gpt-4o-mini"` | Language model for question generation |
-| `worker_model_name` | `str` | `"gpt-4o-mini"` | Language model for specialized worker agents |
+| `question_agent_model_name` | `str` | `"gpt-5.4"` | Language model for question generation |
+| `worker_model_name` | `str` | `"gpt-5.4"` | Language model for specialized worker agents |
 | `verbose` | `bool` | `False` | Enable detailed logging and debug output |
 | `max_workers` | `int` | `int(os.cpu_count() * 0.9)` | Maximum concurrent workers for parallel execution |
 | `show_dashboard` | `bool` | `False` | Enable rich dashboard with progress visualization |
@@ -287,7 +287,7 @@ from swarms.structs.heavy_swarm import HeavySwarm
 swarm = HeavySwarm(
     name="Analysis Team",
     description="Multi-agent analysis system",
-    worker_model_name="gpt-4o-mini",
+    worker_model_name="gpt-5.4",
     show_dashboard=True
 )
 
@@ -306,8 +306,8 @@ from swarms_tools import exa_search
 swarm = HeavySwarm(
     name="Gold ETF Research Team",
     description="Financial research with web scraping",
-    worker_model_name="gpt-4o-mini",
-    question_agent_model_name="gpt-4o-mini",
+    worker_model_name="gpt-5.4",
+    question_agent_model_name="gpt-5.4",
     show_dashboard=True,
     worker_tools=[exa_search],
     timeout=300
@@ -367,7 +367,7 @@ from swarms.structs.heavy_swarm import HeavySwarm
 swarm = HeavySwarm(
     name="QuestionGenerator",
     question_agent_model_name="gpt-4.1",
-    worker_model_name="gpt-4o-mini",
+    worker_model_name="gpt-5.4",
     show_dashboard=False
 )
 
@@ -390,8 +390,8 @@ from swarms.structs.heavy_swarm import HeavySwarm
 # Configure for batch processing
 swarm = HeavySwarm(
     name="BatchProcessor",
-    worker_model_name="gpt-4o-mini",
-    question_agent_model_name="gpt-4o-mini",
+    worker_model_name="gpt-5.4",
+    question_agent_model_name="gpt-5.4",
     show_dashboard=False,  # Disable for batch efficiency
     loops_per_agent=1,
     timeout=300,
@@ -429,8 +429,8 @@ from swarms.structs.heavy_swarm import HeavySwarm
 try:
     swarm = HeavySwarm(
         name="TestSwarm",
-        worker_model_name="gpt-4o-mini",
-        question_agent_model_name="gpt-4o-mini"
+        worker_model_name="gpt-5.4",
+        question_agent_model_name="gpt-5.4"
     )
     print("✅ Configuration valid")
 except ValueError as e:
@@ -439,8 +439,8 @@ except ValueError as e:
 # Test question generation with error handling
 swarm = HeavySwarm(
     name="ErrorTest",
-    worker_model_name="gpt-4o-mini",
-    question_agent_model_name="gpt-4o-mini"
+    worker_model_name="gpt-5.4",
+    question_agent_model_name="gpt-5.4"
 )
 
 try:
@@ -524,7 +524,7 @@ swarm = HeavySwarm(
     name="DiverseAnalysis",
     description="Analysis with random iteration depth",
     worker_model_name="gpt-4.1",
-    question_agent_model_name="gpt-4o-mini",
+    question_agent_model_name="gpt-5.4",
     show_dashboard=True,
     loops_per_agent=1,  # Base loops
     random_loops_per_agent=True,  # Enable randomization (1-10 loops)

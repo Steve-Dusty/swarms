@@ -18,7 +18,7 @@ pro_agent = Agent(
         "You are persuasive and articulate, emphasizing the need for oversight "
         "to prevent harm and ensure responsible AI development."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -34,7 +34,7 @@ con_agent = Agent(
         "and ethical guidelines. You emphasize the importance of maintaining "
         "technological competitiveness."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -50,7 +50,7 @@ judge_agent = Agent(
         "answer that incorporates the best elements from both arguments, such as "
         "balanced regulatory frameworks that protect public interest while fostering innovation."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

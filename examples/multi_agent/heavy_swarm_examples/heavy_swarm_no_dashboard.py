@@ -2,7 +2,7 @@ from swarms.structs.heavy_swarm import HeavySwarm
 
 
 swarm = HeavySwarm(
-    worker_model_name="gpt-4o-mini",
+    worker_model_name="gpt-5.4",
     show_dashboard=False,
     question_agent_model_name="gpt-4.1",
     loops_per_agent=1,

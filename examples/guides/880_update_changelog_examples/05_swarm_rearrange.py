@@ -14,13 +14,13 @@ from swarms import (
 
 agent1 = Agent(
     agent_name="Agent1",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 agent2 = Agent(
     agent_name="Agent2",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -32,13 +32,13 @@ swarm1 = RoundRobinSwarm(
 
 agent3 = Agent(
     agent_name="Agent3",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 agent4 = Agent(
     agent_name="Agent4",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

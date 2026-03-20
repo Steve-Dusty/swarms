@@ -28,7 +28,7 @@ pip install swarms
 | name | str | "swarm-router" | Name identifier for the router instance |
 | description | str | "Routes tasks..." | Description of the router's purpose |
 | agents | List[Agent] | [] | List of available specialized agents |
-| model | str | "gpt-4o-mini" | Base language model for the boss agent |
+| model | str | "gpt-5.4" | Base language model for the boss agent |
 | temperature | float | 0.1 | Temperature parameter for model outputs |
 | shared_memory_system | callable | None | Optional shared memory system |
 | output_type | Literal["json", "string"] | "json" | Format of agent outputs |

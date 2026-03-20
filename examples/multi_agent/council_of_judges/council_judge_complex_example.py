@@ -14,7 +14,7 @@ def evaluate_technical_response():
     """
     council = CouncilAsAJudge(
         name="Technical Evaluation Council",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         output_type="all",
     )
 
@@ -33,7 +33,7 @@ def evaluate_creative_response():
     """
     council = CouncilAsAJudge(
         name="Creative Writing Council",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         output_type="all",
     )
 
@@ -52,7 +52,7 @@ def evaluate_problem_solving_response():
     """
     council = CouncilAsAJudge(
         name="Problem Solving Council",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         output_type="all",
     )
 

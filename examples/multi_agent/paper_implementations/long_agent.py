@@ -25,8 +25,8 @@ class LongAgent:
         description: str = "A long-form content processing agent",
         token_count_per_agent: int = 16000,
         output_type: str = "final",
-        model_name: str = "gpt-4o-mini",
-        aggregator_model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
+        aggregator_model_name: str = "gpt-5.4",
     ):
         """Initialize the LongAgent."""
         self.name = name

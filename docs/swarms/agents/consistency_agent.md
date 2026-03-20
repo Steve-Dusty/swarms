@@ -64,7 +64,7 @@ from swarms.agents.consistency_agent import SelfConsistencyAgent
 # Initialize the agent
 agent = SelfConsistencyAgent(
     name="Math-Reasoning-Agent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     num_samples=5
 )
@@ -87,7 +87,7 @@ from swarms.agents.consistency_agent import SelfConsistencyAgent
 # Initialize the agent with a custom majority voting prompt
 agent = SelfConsistencyAgent(
     name="Reasoning-Agent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     num_samples=5,
     majority_voting_prompt="Please provide the most common response."
@@ -111,7 +111,7 @@ from swarms.agents.consistency_agent import SelfConsistencyAgent
 # Initialize the agent with evaluation mode
 agent = SelfConsistencyAgent(
     name="Validation-Agent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     num_samples=3,
     eval=True
 )
@@ -132,7 +132,7 @@ from swarms.agents.consistency_agent import SelfConsistencyAgent
 # Initialize the agent with random model selection
 agent = SelfConsistencyAgent(
     name="Diverse-Reasoning-Agent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     num_samples=5,
     random_models_on=True
 )
@@ -150,7 +150,7 @@ from swarms.agents.consistency_agent import SelfConsistencyAgent
 # Initialize the agent
 agent = SelfConsistencyAgent(
     name="Batch-Processing-Agent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     num_samples=3
 )
 

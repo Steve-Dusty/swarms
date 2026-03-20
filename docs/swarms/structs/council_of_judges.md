@@ -125,7 +125,7 @@ class CouncilAsAJudge:
         id: str = swarm_id(),
         name: str = "CouncilAsAJudge",
         description: str = "Evaluates the model's response across multiple dimensions",
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
         output_type: str = "all",
         cache_size: int = 128,
         max_workers: int = None,

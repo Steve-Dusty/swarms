@@ -267,8 +267,8 @@ def load_markdown_agents(
 def run_heavy_swarm(
     task: str,
     loops_per_agent: int = 1,
-    question_agent_model_name: str = "gpt-4o-mini",
-    worker_model_name: str = "gpt-4o-mini",
+    question_agent_model_name: str = "gpt-5.4",
+    worker_model_name: str = "gpt-5.4",
     random_loops_per_agent: bool = False,
     verbose: bool = False,
 ) -> Optional[Any]:
@@ -283,9 +283,9 @@ def run_heavy_swarm(
         loops_per_agent: Number of execution loops each agent should perform.
             Defaults to 1. Higher values allow more iterative refinement.
         question_agent_model_name: Model name for the question generation agent.
-            Defaults to "gpt-4o-mini".
+            Defaults to "gpt-5.4".
         worker_model_name: Model name for specialized worker agents that process
-            the questions. Defaults to "gpt-4o-mini".
+            the questions. Defaults to "gpt-5.4".
         random_loops_per_agent: If True, enables random number of loops per agent
             in the range 1-10. Defaults to False.
         verbose: Whether to show verbose output during execution. Defaults to False.
@@ -1061,13 +1061,13 @@ def setup_argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--question-agent-model-name",
         type=str,
-        default="gpt-4o-mini",
+        default="gpt-5.4",
         help="Model name for question generation agent (default: gpt-4o-mini)",
     )
     parser.add_argument(
         "--worker-model-name",
         type=str,
-        default="gpt-4o-mini",
+        default="gpt-5.4",
         help="Model name for specialized worker agents (default: gpt-4o-mini)",
     )
     parser.add_argument(
@@ -1459,8 +1459,8 @@ def handle_heavy_swarm(args: argparse.Namespace) -> None:
             - task: Required task for HeavySwarm to process
             - loops_per_agent: Number of loops per agent (default: 1)
             - question_agent_model_name: Model for question generation
-                (default: "gpt-4o-mini")
-            - worker_model_name: Model for worker agents (default: "gpt-4o-mini")
+                (default: "gpt-5.4")
+            - worker_model_name: Model for worker agents (default: "gpt-5.4")
             - random_loops_per_agent: Enable random loops (1-10 range)
             - verbose: Optional boolean flag for verbose output
 

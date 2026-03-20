@@ -125,7 +125,7 @@ research_agent = Agent(
         "factual information. Has access to web search tools for "
         "finding up-to-date information."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     tools=[exa_search],
     system_prompt=(
@@ -145,7 +145,7 @@ code_agent = Agent(
         "multiple programming languages. Specializes in clean, "
         "maintainable, and well-documented code."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     system_prompt=(
         "You are a coding expert. Write, review, and explain code with "
@@ -164,7 +164,7 @@ writing_agent = Agent(
         "and editing. Specializes in creating well-structured reports, "
         "documentation, and written content."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     system_prompt=(
         "You are a writing specialist. Create, edit, and improve written "

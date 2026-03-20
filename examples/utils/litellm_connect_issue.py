@@ -1,6 +1,6 @@
 from swarms.utils import LiteLLM, NetworkConnectionError
 
-model = LiteLLM(model_name="gpt-4o-mini")
+model = LiteLLM(model_name="gpt-5.4")
 
 try:
     response = model.run(task="Your task here")

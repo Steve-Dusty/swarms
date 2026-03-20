@@ -17,7 +17,7 @@ def create_simple_agent():
     return Agent(
         agent_name="Simple-Analysis-Agent",
         system_prompt="You are a simple analysis agent. Provide brief insights on the given topic.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         print_on=False,
     )

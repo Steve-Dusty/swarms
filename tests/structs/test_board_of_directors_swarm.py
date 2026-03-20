@@ -55,7 +55,7 @@ def test_board_of_directors_swarm_basic_initialization(
     assert len(basic_board_swarm.agents) == 5
     assert basic_board_swarm.max_loops == 1
     assert basic_board_swarm.verbose is True
-    assert basic_board_swarm.board_model_name == "gpt-4o-mini"
+    assert basic_board_swarm.board_model_name == "gpt-5.4"
     assert basic_board_swarm.decision_threshold == 0.6
     assert basic_board_swarm.enable_voting is True
     assert basic_board_swarm.enable_consensus is True

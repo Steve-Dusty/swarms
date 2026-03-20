@@ -242,12 +242,12 @@ class CouncilAsAJudge:
         id: str = swarm_id(),
         name: str = "CouncilAsAJudge",
         description: str = "Evaluates task responses across multiple dimensions",
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
         output_type: str = "final",
         cache_size: int = 128,
         random_model_name: bool = True,
         max_loops: int = 1,
-        aggregation_model_name: str = "gpt-4o-mini",
+        aggregation_model_name: str = "gpt-5.4",
         judge_agent_model_name: Optional[str] = None,
     ):
         """

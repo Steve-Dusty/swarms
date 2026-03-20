@@ -60,7 +60,7 @@ Focus on collaborative patient care and safety."""
         agent_name=name,
         agent_description=f"{role} - {specialization}",
         system_prompt=system_prompt,
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         dynamic_temperature_enabled=True,
         output_type="str",
         streaming_on=False,

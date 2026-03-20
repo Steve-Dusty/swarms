@@ -12,21 +12,21 @@ from swarms import Agent, AgentRearrange
 researcher = Agent(
     agent_name="Researcher",
     system_prompt="You are a research specialist. Gather comprehensive information on given topics.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 writer = Agent(
     agent_name="Writer",
     system_prompt="You are a professional writer. Create clear, engaging content from research.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 reviewer = Agent(
     agent_name="Reviewer",
     system_prompt="You are a content reviewer. Provide feedback and improvement suggestions.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

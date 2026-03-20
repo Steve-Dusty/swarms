@@ -7,7 +7,7 @@ from swarms import Agent
 # FraudClassifier Class Definition
 ###############################################################################
 class FraudClassifier:
-    def __init__(self, model_name="gpt-4o-mini"):
+    def __init__(self, model_name="gpt-5.4"):
         """
         Initialize the system prompts and all agent instances.
         """

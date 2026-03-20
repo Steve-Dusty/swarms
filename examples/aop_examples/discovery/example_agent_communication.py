@@ -16,7 +16,7 @@ def simulate_agent_discovery():
         agent_name="ProjectCoordinator",
         agent_description="Coordinates projects and assigns tasks to other agents",
         system_prompt="You are a project coordinator who helps organize work and delegate tasks to the most appropriate team members. You can discover information about other agents to make better decisions.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         temperature=0.4,
     )
 

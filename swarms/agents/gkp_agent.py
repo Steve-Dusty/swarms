@@ -584,7 +584,7 @@ class GKPAgent:
 #     # Initialize the GKP Agent
 #     agent = GKPAgent(
 #         agent_name="gkp-agent",
-#         model_name="gpt-4o-mini",  # Using OpenAI's model
+#         model_name="gpt-5.4",  # Using OpenAI's model
 #         num_knowledge_items=10,  # Generate 2 knowledge items per query
 #     )
 

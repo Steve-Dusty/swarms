@@ -51,21 +51,21 @@ def peer_review_algorithm(
 researcher = Agent(
     agent_name="Researcher",
     system_prompt="You are a research specialist focused on gathering comprehensive information.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 analyst = Agent(
     agent_name="Analyst",
     system_prompt="You are an analytical specialist focused on interpreting and analyzing data.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 reviewer = Agent(
     agent_name="Reviewer",
     system_prompt="You are a quality reviewer focused on providing constructive feedback.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

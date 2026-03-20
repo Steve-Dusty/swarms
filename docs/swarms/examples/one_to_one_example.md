@@ -51,7 +51,7 @@ from swarms.structs.swarming_architectures import one_to_one
 sender = Agent(
     agent_name="Researcher",
     system_prompt="You are a researcher. You gather and present information.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -59,7 +59,7 @@ sender = Agent(
 receiver = Agent(
     agent_name="Analyst",
     system_prompt="You are an analyst. You analyze information and provide insights.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 ```
@@ -98,7 +98,7 @@ researcher = Agent(
     agent_name="Research-Specialist",
     system_prompt="""You are a research specialist. You conduct thorough research 
     and present findings in a clear, structured manner.""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -107,7 +107,7 @@ analyst = Agent(
     agent_name="Data-Analyst",
     system_prompt="""You are a data analyst. You analyze research findings, 
     identify patterns, and provide actionable insights.""",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -210,14 +210,14 @@ result = one_to_one(
 researcher = Agent(
     agent_name="Researcher",
     system_prompt="You conduct research and gather information.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 analyst = Agent(
     agent_name="Analyst",
     system_prompt="You analyze research findings and provide insights.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -235,14 +235,14 @@ result = one_to_one(
 writer = Agent(
     agent_name="Writer",
     system_prompt="You write content based on requirements.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 editor = Agent(
     agent_name="Editor",
     system_prompt="You review and improve written content.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -260,14 +260,14 @@ result = one_to_one(
 questioner = Agent(
     agent_name="Questioner",
     system_prompt="You ask thoughtful questions to explore topics.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 answerer = Agent(
     agent_name="Answerer",
     system_prompt="You provide comprehensive answers to questions.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -285,14 +285,14 @@ result = one_to_one(
 developer = Agent(
     agent_name="Developer",
     system_prompt="You write code and implement features.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 reviewer = Agent(
     agent_name="Code-Reviewer",
     system_prompt="You review code for quality, security, and best practices.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -314,14 +314,14 @@ For tasks requiring multiple rounds of refinement:
 creator = Agent(
     agent_name="Creator",
     system_prompt="You create initial drafts and content.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 refiner = Agent(
     agent_name="Refiner",
     system_prompt="You refine and improve content iteratively.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

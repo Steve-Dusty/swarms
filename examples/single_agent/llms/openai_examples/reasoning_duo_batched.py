@@ -3,7 +3,7 @@ from swarms.agents.reasoning_duo import ReasoningDuo
 if __name__ == "__main__":
     # Initialize the ReasoningDuo with two lightweight models
     duo = ReasoningDuo(
-        model_names=["gpt-4o-mini", "gpt-4o-mini"],
+        model_names=["gpt-5.4", "gpt-5.4"],
         # max_loops=1,  # Remove this line
     )
 

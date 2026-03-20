@@ -10,12 +10,12 @@ agents = [
     Agent(
         agent_name="Researcher",
         system_prompt="Answer questions briefly.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
     ),
     Agent(
         agent_name="Coder",
         system_prompt="Write small Python functions.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
     ),
 ]
 

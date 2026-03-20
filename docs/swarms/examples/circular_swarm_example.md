@@ -49,21 +49,21 @@ from swarms.structs.swarming_architectures import circular_swarm
 researcher = Agent(
     agent_name="Researcher",
     system_prompt="You are a research specialist. Gather and present factual information.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 analyst = Agent(
     agent_name="Analyst",
     system_prompt="You are an analyst. Interpret data and identify patterns.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 writer = Agent(
     agent_name="Writer",
     system_prompt="You synthesize information into clear, actionable insights.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 ```
@@ -102,21 +102,21 @@ from swarms.structs.swarming_architectures import circular_swarm
 researcher = Agent(
     agent_name="Research-Specialist",
     system_prompt="You research and gather factual information on topics.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 analyst = Agent(
     agent_name="Data-Analyst",
     system_prompt="You analyze data and identify patterns and insights.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 writer = Agent(
     agent_name="Content-Writer",
     system_prompt="You synthesize information into clear, actionable content.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -205,9 +205,9 @@ result = circular_swarm(
 
 ```python
 agents = [
-    Agent(agent_name="Researcher", system_prompt="Research expert", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Writer", system_prompt="Content writer", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Editor", system_prompt="Editor and proofreader", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="Researcher", system_prompt="Research expert", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Writer", system_prompt="Content writer", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Editor", system_prompt="Editor and proofreader", model_name="gpt-5.4", max_loops=1),
 ]
 
 tasks = [
@@ -222,9 +222,9 @@ result = circular_swarm(agents=agents, tasks=tasks)
 
 ```python
 agents = [
-    Agent(agent_name="Data-Collector", system_prompt="Collects data", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Analyzer", system_prompt="Analyzes data", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Reporter", system_prompt="Creates reports", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="Data-Collector", system_prompt="Collects data", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Analyzer", system_prompt="Analyzes data", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Reporter", system_prompt="Creates reports", model_name="gpt-5.4", max_loops=1),
 ]
 
 tasks = [

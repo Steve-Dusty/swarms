@@ -56,21 +56,21 @@ def hierarchical_decision_making_algorithm(
 leader = Agent(
     agent_name="Leader",
     system_prompt="You are a strategic leader focused on planning, coordination, and decision-making.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 worker1 = Agent(
     agent_name="Worker1",
     system_prompt="You are a specialized worker focused on executing assigned tasks efficiently.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 worker2 = Agent(
     agent_name="Worker2",
     system_prompt="You are a specialized worker focused on executing assigned tasks efficiently.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

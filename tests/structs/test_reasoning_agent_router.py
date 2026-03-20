@@ -23,7 +23,7 @@ def test_router_init_default():
         router.description
         == "A reasoning agent that can answer questions and help with tasks."
     )
-    assert router.model_name == "gpt-4o-mini"
+    assert router.model_name == "gpt-5.4"
     assert (
         router.system_prompt
         == "You are a helpful assistant that can answer questions and help with tasks."
@@ -143,7 +143,7 @@ def test_create_reasoning_duo():
     router = ReasoningAgentRouter(
         swarm_type="reasoning-duo",
         agent_name="rd",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         system_prompt="SP",
         max_loops=2,
         reasoning_model_name="gpt-4o",
@@ -166,7 +166,7 @@ def test_create_consistency_agent():
         swarm_type="self-consistency",
         agent_name="sc",
         description="Desc",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         system_prompt="SP",
         max_loops=3,
         num_samples=5,
@@ -178,7 +178,7 @@ def test_create_consistency_agent():
     assert isinstance(agent, SelfConsistencyAgent)
     assert agent.name == "sc"
     assert agent.description == "Desc"
-    assert agent.model_name == "gpt-4o-mini"
+    assert agent.model_name == "gpt-5.4"
     assert agent.system_prompt == "SP"
     assert agent.max_loops == 3
     assert agent.num_samples == 5
@@ -197,7 +197,7 @@ def test_create_ire_agent():
         swarm_type="ire",
         agent_name="ire",
         description="IRE desc",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         system_prompt="SP",
         num_samples=4,
     )
@@ -205,7 +205,7 @@ def test_create_ire_agent():
     assert isinstance(agent, IREAgent)
     assert agent.agent_name == "ire"
     assert agent.description == "IRE desc"
-    assert agent.model_name == "gpt-4o-mini"
+    assert agent.model_name == "gpt-5.4"
     assert agent.system_prompt == "SP"
     assert agent.max_loops == 4  # uses num_samples for IRE
 
@@ -217,14 +217,14 @@ def test_create_agent_judge():
     router = ReasoningAgentRouter(
         swarm_type="AgentJudge",
         agent_name="judge",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         system_prompt="SP",
         max_loops=2,
     )
     agent = router._create_agent_judge()
     assert isinstance(agent, AgentJudge)
     assert agent.agent_name == "judge"
-    assert agent.model_name == "gpt-4o-mini"
+    assert agent.model_name == "gpt-5.4"
     assert agent.system_prompt == "SP"
     assert agent.max_loops == 2
 
@@ -236,7 +236,7 @@ def test_create_reflexion_agent():
     router = ReasoningAgentRouter(
         swarm_type="ReflexionAgent",
         agent_name="reflex",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         system_prompt="SP",
         max_loops=2,
         memory_capacity=10,
@@ -244,7 +244,7 @@ def test_create_reflexion_agent():
     agent = router._create_reflexion_agent()
     assert isinstance(agent, ReflexionAgent)
     assert agent.agent_name == "reflex"
-    assert agent.model_name == "gpt-4o-mini"
+    assert agent.model_name == "gpt-5.4"
     assert agent.system_prompt == "SP"
     assert agent.max_loops == 2
     assert agent.memory_capacity == 10
@@ -257,13 +257,13 @@ def test_create_gkp_agent():
     router = ReasoningAgentRouter(
         swarm_type="GKPAgent",
         agent_name="gkp",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         num_knowledge_items=8,
     )
     agent = router._create_gkp_agent()
     assert isinstance(agent, GKPAgent)
     assert agent.agent_name == "gkp"
-    assert agent.model_name == "gpt-4o-mini"
+    assert agent.model_name == "gpt-5.4"
     assert agent.num_knowledge_items == 8
 
 

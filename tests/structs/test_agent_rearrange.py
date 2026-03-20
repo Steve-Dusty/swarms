@@ -14,7 +14,7 @@ def create_sample_agents():
             agent_name="ResearchAgent",
             agent_description="Specializes in researching topics",
             system_prompt="You are a research specialist. Provide concise answers.",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=True,
             streaming_on=True,
@@ -23,7 +23,7 @@ def create_sample_agents():
             agent_name="WriterAgent",
             agent_description="Expert in writing content",
             system_prompt="You are a writing expert. Provide concise answers.",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=True,
             streaming_on=True,
@@ -32,7 +32,7 @@ def create_sample_agents():
             agent_name="ReviewerAgent",
             agent_description="Expert in reviewing content",
             system_prompt="You are a review expert. Provide concise answers.",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=True,
             streaming_on=True,
@@ -117,7 +117,7 @@ def test_add_agent():
 
     new_agent = Agent(
         agent_name="EditorAgent",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         verbose=True,
         streaming_on=True,
@@ -158,14 +158,14 @@ def test_add_agents():
     new_agents = [
         Agent(
             agent_name="Agent4",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=True,
             streaming_on=True,
         ),
         Agent(
             agent_name="Agent5",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=True,
             streaming_on=True,

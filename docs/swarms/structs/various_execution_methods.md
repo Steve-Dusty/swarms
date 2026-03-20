@@ -55,7 +55,7 @@ from swarms.structs.multi_agent_exec import run_single_agent
 agent = Agent(
     agent_name="Financial-Analyst",
     system_prompt="You are a financial analysis expert",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1
 )
 
@@ -94,7 +94,7 @@ async def main():
     agent = Agent(
         agent_name="Researcher",
         system_prompt="You are a research assistant",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     )
 
@@ -142,7 +142,7 @@ async def main():
         Agent(
             agent_name=f"Analyst-{i}",
             system_prompt="You are a market analyst",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1
         )
         for i in range(3)
@@ -198,19 +198,19 @@ agents = [
     Agent(
         agent_name="Tech-Analyst",
         system_prompt="You are a technology analyst",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     ),
     Agent(
         agent_name="Finance-Analyst",
         system_prompt="You are a financial analyst",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     ),
     Agent(
         agent_name="Market-Strategist",
         system_prompt="You are a market strategist",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     )
 ]
@@ -270,7 +270,7 @@ agents = [
     Agent(
         agent_name=f"Research-Agent-{i}",
         system_prompt="You are a research specialist",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     )
     for i in range(5)
@@ -321,19 +321,19 @@ agents = [
     Agent(
         agent_name="Data-Scientist",
         system_prompt="You are a data science expert",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     ),
     Agent(
         agent_name="ML-Engineer",
         system_prompt="You are a machine learning engineer",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     ),
     Agent(
         agent_name="AI-Researcher",
         system_prompt="You are an AI researcher",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     )
 ]
@@ -385,19 +385,19 @@ agents = [
     Agent(
         agent_name="Content-Writer",
         system_prompt="You are a content writer",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     ),
     Agent(
         agent_name="Editor",
         system_prompt="You are an editor",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     ),
     Agent(
         agent_name="SEO-Specialist",
         system_prompt="You are an SEO specialist",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     )
 ]
@@ -465,7 +465,7 @@ agents = [
     Agent(
         agent_name="Performance-Analyst",
         system_prompt="You are a performance analyst",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     )
     for _ in range(5)
@@ -525,13 +525,13 @@ agents = [
     Agent(
         agent_name="Data-Analyst-1",
         system_prompt="You are a data analyst",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     ),
     Agent(
         agent_name="Data-Analyst-2",
         system_prompt="You are a data analyst",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     )
 ]
@@ -626,14 +626,14 @@ agents = [
     Agent(
         agent_name="Research-Agent",
         system_prompt="You are a research assistant",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=2,
         role="Researcher"
     ),
     Agent(
         agent_name="Analysis-Agent",
         system_prompt="You are a data analyst",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         role="Analyst"
     )
@@ -678,28 +678,28 @@ agents = [
     Agent(
         agent_name="Market-Researcher",
         system_prompt="You are a market research expert specializing in consumer behavior",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         role="Researcher"
     ),
     Agent(
         agent_name="Data-Analyst",
         system_prompt="You are a data analyst expert in statistical analysis",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         role="Analyst"
     ),
     Agent(
         agent_name="Strategy-Consultant",
         system_prompt="You are a strategy consultant specializing in business development",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         role="Consultant"
     ),
     Agent(
         agent_name="Financial-Advisor",
         system_prompt="You are a financial advisor specializing in investment strategies",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
         role="Advisor"
     )
@@ -786,19 +786,19 @@ agents = [
     Agent(
         agent_name="High-Perf-Analyst-1",
         system_prompt="You are a high-performance data analyst",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     ),
     Agent(
         agent_name="High-Perf-Analyst-2", 
         system_prompt="You are a high-performance data analyst",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     ),
     Agent(
         agent_name="High-Perf-Analyst-3",
         system_prompt="You are a high-performance data analyst", 
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     )
 ]
@@ -849,7 +849,7 @@ agents = [
     Agent(
         agent_name=f"Agent-{i}",
         system_prompt="You are a helpful assistant",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1
     )
     for i in range(5)

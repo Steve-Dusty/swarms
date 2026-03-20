@@ -69,7 +69,7 @@ tools = [
 #     system_prompt=PAPER_IDEA_AGENT_SYSTEM_PROMPT,
 #     tools_list_dictionary=tools,
 #     max_loops=1,
-#     model_name="gpt-4o-mini",
+#     model_name="gpt-5.4",
 #     output_type="final",
 # )
 def generate_paper_idea():
@@ -82,7 +82,7 @@ def generate_paper_idea():
             system_prompt=PAPER_IDEA_AGENT_SYSTEM_PROMPT,
             tools_list_dictionary=tools,
             max_loops=1,
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             output_type="final",
         )
 

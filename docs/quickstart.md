@@ -84,7 +84,7 @@ from swarms import Agent
 
 # Initialize a new agent
 agent = Agent(
-    model_name="gpt-4o-mini", # Specify the LLM
+    model_name="gpt-5.4", # Specify the LLM
     max_loops=1,              # Set the number of interactions
     interactive=True,         # Enable interactive mode for real-time feedback
 )
@@ -104,14 +104,14 @@ from swarms import Agent, SequentialWorkflow
 researcher = Agent(
     agent_name="Researcher",
     system_prompt="Your job is to research the provided topic and provide a detailed summary.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
 )
 
 # Agent 2: The Writer
 writer = Agent(
     agent_name="Writer",
     system_prompt="Your job is to take the research summary and write a beautiful, engaging blog post about it.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
 )
 
 # Create a sequential workflow where the researcher's output feeds into the writer's input
@@ -152,11 +152,11 @@ from swarms import Agent, SequentialWorkflow
 
 # Initialize agents for a 3-step process
 # 1. Generate an idea
-idea_generator = Agent(agent_name="IdeaGenerator", system_prompt="Generate a unique startup idea.", model_name="gpt-4o-mini")
+idea_generator = Agent(agent_name="IdeaGenerator", system_prompt="Generate a unique startup idea.", model_name="gpt-5.4")
 # 2. Validate the idea
-validator = Agent(agent_name="Validator", system_prompt="Take this startup idea and analyze its market viability.", model_name="gpt-4o-mini")
+validator = Agent(agent_name="Validator", system_prompt="Take this startup idea and analyze its market viability.", model_name="gpt-5.4")
 # 3. Create a pitch
-pitch_creator = Agent(agent_name="PitchCreator", system_prompt="Write a 3-sentence elevator pitch for this validated startup idea.", model_name="gpt-4o-mini")
+pitch_creator = Agent(agent_name="PitchCreator", system_prompt="Write a 3-sentence elevator pitch for this validated startup idea.", model_name="gpt-5.4")
 
 # Create the sequential workflow
 workflow = SequentialWorkflow(agents=[idea_generator, validator, pitch_creator])
@@ -184,7 +184,7 @@ agents = [
     Agent(
         agent_name=f"{platform}-Marketer",
         system_prompt=f"Generate a real estate marketing post for {platform}.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
     )
     for platform in platforms
 ]
@@ -212,9 +212,9 @@ Inspired by `einsum`, `AgentRearrange` lets you define complex, non-linear relat
 from swarms import Agent, AgentRearrange
 
 # Define agents
-researcher = Agent(agent_name="researcher", model_name="gpt-4o-mini")
-writer = Agent(agent_name="writer", model_name="gpt-4o-mini")
-editor = Agent(agent_name="editor", model_name="gpt-4o-mini")
+researcher = Agent(agent_name="researcher", model_name="gpt-5.4")
+writer = Agent(agent_name="writer", model_name="gpt-5.4")
+editor = Agent(agent_name="editor", model_name="gpt-5.4")
 
 # Define a flow: researcher sends work to both writer and editor simultaneously
 # This is a one-to-many relationship
@@ -245,8 +245,8 @@ print(outputs)
 from swarms import Agent, GraphWorkflow, Node, Edge, NodeType
 
 # Define agents and a simple python function as nodes
-code_generator = Agent(agent_name="CodeGenerator", system_prompt="Write Python code for the given task.", model_name="gpt-4o-mini")
-code_tester = Agent(agent_name="CodeTester", system_prompt="Test the given Python code and find bugs.", model_name="gpt-4o-mini")
+code_generator = Agent(agent_name="CodeGenerator", system_prompt="Write Python code for the given task.", model_name="gpt-5.4")
+code_tester = Agent(agent_name="CodeTester", system_prompt="Test the given Python code and find bugs.", model_name="gpt-5.4")
 
 # Create nodes for the graph
 node1 = Node(id="generator", agent=code_generator)
@@ -279,9 +279,9 @@ from swarms import Agent
 from swarms.structs.swarm_router import SwarmRouter, SwarmType
 
 # Define a few generic agents
-writer = Agent(agent_name="Writer", system_prompt="You are a creative writer.", model_name="gpt-4o-mini")
-editor = Agent(agent_name="Editor", system_prompt="You are an expert editor for stories.", model_name="gpt-4o-mini")
-reviewer = Agent(agent_name="Reviewer", system_prompt="You are a final reviewer who gives a score.", model_name="gpt-4o-mini")
+writer = Agent(agent_name="Writer", system_prompt="You are a creative writer.", model_name="gpt-5.4")
+editor = Agent(agent_name="Editor", system_prompt="You are an expert editor for stories.", model_name="gpt-5.4")
+reviewer = Agent(agent_name="Reviewer", system_prompt="You are a final reviewer who gives a score.", model_name="gpt-5.4")
 
 # The agents and task will be the same for all examples
 agents = [writer, editor, reviewer]
@@ -309,7 +309,7 @@ print("Running a Mixture of Agents Workflow...")
 aggregator = Agent(
     agent_name="Aggregator",
     system_prompt="Combine the story, edits, and review into a final document.",
-    model_name="gpt-4o-mini"
+    model_name="gpt-5.4"
 )
 moa_router = SwarmRouter(
     swarm_type="MixtureOfAgents",
@@ -333,15 +333,15 @@ The `MixtureOfAgents` architecture processes tasks by feeding them to multiple "
 from swarms import Agent, MixtureOfAgents
 
 # Define expert agents
-financial_analyst = Agent(agent_name="FinancialAnalyst", system_prompt="Analyze financial data.", model_name="gpt-4o-mini")
-market_analyst = Agent(agent_name="MarketAnalyst", system_prompt="Analyze market trends.", model_name="gpt-4o-mini")
-risk_analyst = Agent(agent_name="RiskAnalyst", system_prompt="Analyze investment risks.", model_name="gpt-4o-mini")
+financial_analyst = Agent(agent_name="FinancialAnalyst", system_prompt="Analyze financial data.", model_name="gpt-5.4")
+market_analyst = Agent(agent_name="MarketAnalyst", system_prompt="Analyze market trends.", model_name="gpt-5.4")
+risk_analyst = Agent(agent_name="RiskAnalyst", system_prompt="Analyze investment risks.", model_name="gpt-5.4")
 
 # Define the aggregator agent
 aggregator = Agent(
     agent_name="InvestmentAdvisor",
     system_prompt="Synthesize the financial, market, and risk analyses to provide a final investment recommendation.",
-    model_name="gpt-4o-mini"
+    model_name="gpt-5.4"
 )
 
 # Create the MoA swarm
@@ -365,8 +365,8 @@ print(recommendation)
 from swarms import Agent, GroupChat
 
 # Define agents for a debate
-tech_optimist = Agent(agent_name="TechOptimist", system_prompt="Argue for the benefits of AI in society.", model_name="gpt-4o-mini")
-tech_critic = Agent(agent_name="TechCritic", system_prompt="Argue against the unchecked advancement of AI.", model_name="gpt-4o-mini")
+tech_optimist = Agent(agent_name="TechOptimist", system_prompt="Argue for the benefits of AI in society.", model_name="gpt-5.4")
+tech_critic = Agent(agent_name="TechCritic", system_prompt="Argue against the unchecked advancement of AI.", model_name="gpt-5.4")
 
 # Create the group chat
 chat = GroupChat(

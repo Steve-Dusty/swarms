@@ -63,21 +63,21 @@ from swarms import Agent, MajorityVoting
 agent1 = Agent(
     agent_name="Financial-Analysis-Agent-1",
     system_prompt="You are a conservative financial advisor focused on risk management and long-term stability.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 agent2 = Agent(
     agent_name="Financial-Analysis-Agent-2",
     system_prompt="You are a growth-oriented financial advisor focused on high-potential opportunities.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 agent3 = Agent(
     agent_name="Financial-Analysis-Agent-3",
     system_prompt="You are a balanced financial advisor focused on diversification and risk-adjusted returns.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 ```
@@ -144,19 +144,19 @@ agents = [
     Agent(
         agent_name="Conservative-Analyst",
         system_prompt="You are a conservative financial advisor focused on risk management and long-term stability.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="Growth-Analyst",
         system_prompt="You are a growth-oriented financial advisor focused on high-potential opportunities.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="Balanced-Analyst",
         system_prompt="You are a balanced financial advisor focused on diversification and risk-adjusted returns.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
 ]
@@ -194,7 +194,7 @@ researchers = [
             "You are a medical research specialist focused on clinical evidence, "
             "safety profiles, and therapeutic efficacy. Always cite peer-reviewed sources."
         ),
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
@@ -203,7 +203,7 @@ researchers = [
             "You are a data scientist specialized in analyzing clinical trial data, "
             "statistical significance, and population health outcomes."
         ),
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
@@ -212,7 +212,7 @@ researchers = [
             "You are a bioethics specialist focused on patient autonomy, "
             "informed consent, equity in healthcare access, and ethical implications."
         ),
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
 ]
@@ -279,19 +279,19 @@ tech_agents = [
     Agent(
         agent_name="Backend-Architect",
         system_prompt="You are a backend architecture specialist focused on API design, database optimization, and server infrastructure.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="Frontend-Architect",
         system_prompt="You are a frontend architecture specialist focused on user experience, performance optimization, and accessibility.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="DevOps-Engineer",
         system_prompt="You are a DevOps specialist focused on CI/CD, infrastructure as code, monitoring, and deployment strategies.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
 ]
@@ -325,19 +325,19 @@ agents = [
     Agent(
         agent_name="Value-Investor",
         system_prompt="You follow value investing principles: focus on undervalued stocks, fundamental analysis, and margin of safety.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="Momentum-Trader",
         system_prompt="You follow momentum investing: identify trending stocks, technical analysis, and market psychology.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="Dividend-Investor",
         system_prompt="You focus on dividend investing: steady income, dividend growth, and sustainable payout ratios.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
 ]
@@ -356,19 +356,19 @@ agents = [
     Agent(
         agent_name="UX-Designer",
         system_prompt="You prioritize user experience, usability, and design aesthetics in product decisions.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="Product-Manager",
         system_prompt="You balance business goals, market fit, and customer needs in product decisions.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
     Agent(
         agent_name="Tech-Lead",
         system_prompt="You evaluate technical feasibility, scalability, and implementation complexity.",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         max_loops=1,
     ),
 ]

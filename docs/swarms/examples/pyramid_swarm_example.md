@@ -54,42 +54,42 @@ from swarms.structs.swarming_architectures import pyramid_swarm
 leader = Agent(
     agent_name="Leader",
     system_prompt="You are a leader. You coordinate and make strategic decisions.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 manager1 = Agent(
     agent_name="Manager-1",
     system_prompt="You are a manager. You oversee operations.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 manager2 = Agent(
     agent_name="Manager-2",
     system_prompt="You are a manager. You oversee operations.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 worker1 = Agent(
     agent_name="Worker-1",
     system_prompt="You are a worker. You execute tasks.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 worker2 = Agent(
     agent_name="Worker-2",
     system_prompt="You are a worker. You execute tasks.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 worker3 = Agent(
     agent_name="Worker-3",
     system_prompt="You are a worker. You execute tasks.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 ```
@@ -133,7 +133,7 @@ from swarms.structs.swarming_architectures import pyramid_swarm
 ceo = Agent(
     agent_name="CEO",
     system_prompt="You are the CEO. You make strategic decisions and set direction.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -141,14 +141,14 @@ ceo = Agent(
 vp1 = Agent(
     agent_name="VP-Engineering",
     system_prompt="You are VP of Engineering. You oversee technical operations.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 vp2 = Agent(
     agent_name="VP-Marketing",
     system_prompt="You are VP of Marketing. You oversee marketing operations.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -156,21 +156,21 @@ vp2 = Agent(
 engineer1 = Agent(
     agent_name="Engineer-1",
     system_prompt="You are an engineer. You implement technical solutions.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 engineer2 = Agent(
     agent_name="Engineer-2",
     system_prompt="You are an engineer. You implement technical solutions.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 marketer = Agent(
     agent_name="Marketer",
     system_prompt="You are a marketer. You execute marketing campaigns.",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
@@ -260,19 +260,19 @@ result = pyramid_swarm(
 # 10 agents for a 4-level pyramid
 agents = [
     # Level 1: CEO
-    Agent(agent_name="CEO", system_prompt="Strategic leader", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="CEO", system_prompt="Strategic leader", model_name="gpt-5.4", max_loops=1),
     # Level 2: VPs
-    Agent(agent_name="VP-1", system_prompt="VP operations", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="VP-2", system_prompt="VP operations", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="VP-1", system_prompt="VP operations", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="VP-2", system_prompt="VP operations", model_name="gpt-5.4", max_loops=1),
     # Level 3: Directors
-    Agent(agent_name="Director-1", system_prompt="Director operations", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Director-2", system_prompt="Director operations", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Director-3", system_prompt="Director operations", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="Director-1", system_prompt="Director operations", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Director-2", system_prompt="Director operations", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Director-3", system_prompt="Director operations", model_name="gpt-5.4", max_loops=1),
     # Level 4: Managers
-    Agent(agent_name="Manager-1", system_prompt="Manager operations", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Manager-2", system_prompt="Manager operations", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Manager-3", system_prompt="Manager operations", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Manager-4", system_prompt="Manager operations", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="Manager-1", system_prompt="Manager operations", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Manager-2", system_prompt="Manager operations", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Manager-3", system_prompt="Manager operations", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Manager-4", system_prompt="Manager operations", model_name="gpt-5.4", max_loops=1),
 ]
 
 tasks = [f"Task {i+1}" for i in range(10)]
@@ -286,14 +286,14 @@ result = pyramid_swarm(agents=agents, tasks=tasks)
 # 6 agents for a 3-level research pyramid
 agents = [
     # Principal Investigator
-    Agent(agent_name="PI", system_prompt="Principal investigator", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="PI", system_prompt="Principal investigator", model_name="gpt-5.4", max_loops=1),
     # Research Associates
-    Agent(agent_name="RA-1", system_prompt="Research associate", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="RA-2", system_prompt="Research associate", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="RA-1", system_prompt="Research associate", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="RA-2", system_prompt="Research associate", model_name="gpt-5.4", max_loops=1),
     # Research Assistants
-    Agent(agent_name="Assistant-1", system_prompt="Research assistant", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Assistant-2", system_prompt="Research assistant", model_name="gpt-4o-mini", max_loops=1),
-    Agent(agent_name="Assistant-3", system_prompt="Research assistant", model_name="gpt-4o-mini", max_loops=1),
+    Agent(agent_name="Assistant-1", system_prompt="Research assistant", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Assistant-2", system_prompt="Research assistant", model_name="gpt-5.4", max_loops=1),
+    Agent(agent_name="Assistant-3", system_prompt="Research assistant", model_name="gpt-5.4", max_loops=1),
 ]
 
 tasks = [

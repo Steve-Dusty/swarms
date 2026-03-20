@@ -61,7 +61,7 @@ app = Flask(__name__)
 # Example Swarm agent
 agent = Agent(
     agent_name="Stock-Analysis-Agent",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops="auto",
     interactive=True,
     streaming_on=True,

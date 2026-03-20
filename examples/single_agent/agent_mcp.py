@@ -11,7 +11,7 @@ agent = Agent(
     mcp_urls=[
         "http://0.0.0.0:5932/mcp",
     ],
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     output_type="all",
 )
 

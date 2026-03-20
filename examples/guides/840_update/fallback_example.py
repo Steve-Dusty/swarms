@@ -9,7 +9,7 @@ agent = Agent(
     max_loops=1,
     dynamic_context_window=True,
     streaming_on=True,
-    fallback_models=["gpt-4o-mini", "anthropic/claude-sonnet-4-5"],
+    fallback_models=["gpt-5.4", "anthropic/claude-sonnet-4-5"],
 )
 
 out = agent.run(

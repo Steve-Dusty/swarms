@@ -48,7 +48,7 @@ class StagehandAgent(SwarmsAgent):
         agent_name: str = "StagehandBrowserAgent",
         browserbase_api_key: Optional[str] = None,
         browserbase_project_id: Optional[str] = None,
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
         model_api_key: Optional[str] = None,
         env: str = "LOCAL",  # LOCAL or BROWSERBASE
         *args,
@@ -234,7 +234,7 @@ if __name__ == "__main__":
     # Create a Stagehand browser agent
     browser_agent = StagehandAgent(
         agent_name="WebScraperAgent",
-        model_name="gpt-4o-mini",
+        model_name="gpt-5.4",
         env="LOCAL",  # Use LOCAL for Playwright, BROWSERBASE for cloud
     )
 

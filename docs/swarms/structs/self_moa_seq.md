@@ -19,7 +19,7 @@ from swarms.structs.self_moa_seq import SelfMoASeq
 
 # Initialize
 moa_seq = SelfMoASeq(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     temperature=0.7,
     window_size=6,
     verbose=True,
@@ -48,7 +48,7 @@ Create a new `SelfMoASeq` instance.
 |---|---|---|---|---|
 | name | str | "SelfMoASeq" | No | Human-readable name for this orchestrator. |
 | description | str | "Self-MoA-Seq: Sequential Self-Mixture of Agents" | No | Short description of the orchestrator. |
-| model_name | str | "gpt-4o-mini" | No | Base model used when specific proposer/aggregator models are not provided. |
+| model_name | str | "gpt-5.4" | No | Base model used when specific proposer/aggregator models are not provided. |
 | temperature | float | 0.7 | No | Sampling temperature for the proposer; must be in [0, 2]. |
 | window_size | int | 6 | No | Total window size used during aggregation. Must be ≥ 2. |
 | reserved_slots | int | 3 | No | Number of slots reserved for the current best (and possibly other fixed items) in the window. Must be < `window_size`. |
@@ -284,14 +284,14 @@ from swarms.structs.self_moa_seq import SelfMoASeq
 
 # Initialize with different models for proposer and aggregator
 creative_moa = SelfMoASeq(
-    model_name="gpt-4o-mini",  # Base model (fallback)
+    model_name="gpt-5.4",  # Base model (fallback)
     temperature=1.2,  # High creativity for writing
     window_size=4,    # Smaller window for focused synthesis
     num_samples=6,    # Moderate number of samples
     max_loops=8,
     verbose=True,
     proposer_model_name="gpt-4o",      # Creative model for generation
-    aggregator_model_name="gpt-4o-mini", # Efficient model for synthesis
+    aggregator_model_name="gpt-5.4", # Efficient model for synthesis
     max_retries=2,
     retry_delay=0.5
 )

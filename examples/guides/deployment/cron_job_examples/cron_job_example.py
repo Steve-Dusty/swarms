@@ -229,7 +229,7 @@ def get_figma_stock_data(stock: str) -> str:
 
 #     """,
 #     max_loops=1,
-#     model_name="gpt-4o-mini",
+#     model_name="gpt-5.4",
 #     dynamic_temperature_enabled=True,
 #     output_type="str-all-except-first",
 #     streaming_on=True,

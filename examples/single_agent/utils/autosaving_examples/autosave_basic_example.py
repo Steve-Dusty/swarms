@@ -14,7 +14,7 @@ import json
 
 # Create an agent with autosave enabled
 agent = Agent(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     agent_name="autosave-demo",
     max_loops=3,
     autosave=True,  # Enable autosave

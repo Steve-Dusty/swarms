@@ -9,7 +9,7 @@ a sliding window approach.
 from swarms import SelfMoASeq
 
 self_moa = SelfMoASeq(
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     temperature=0.7,
     window_size=6,
     reserved_slots=3,

@@ -9,43 +9,43 @@ from swarms import Agent, GraphWorkflow
 
 data_collector_1 = Agent(
     agent_name="Data-Collector-1",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 data_collector_2 = Agent(
     agent_name="Data-Collector-2",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 data_collector_3 = Agent(
     agent_name="Data-Collector-3",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 analyst_1 = Agent(
     agent_name="Analyst-1",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 analyst_2 = Agent(
     agent_name="Analyst-2",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 analyst_3 = Agent(
     agent_name="Analyst-3",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 
 synthesis = Agent(
     agent_name="Synthesis",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
 )
 

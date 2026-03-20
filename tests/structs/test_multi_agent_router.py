@@ -12,7 +12,7 @@ def real_agents():
             agent_name="ResearchAgent",
             agent_description="Specializes in researching topics and providing detailed, factual information",
             system_prompt="You are a research specialist. Provide detailed, well-researched information about any topic, citing sources when possible.",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -21,7 +21,7 @@ def real_agents():
             agent_name="CodeExpertAgent",
             agent_description="Expert in writing, reviewing, and explaining code across multiple programming languages",
             system_prompt="You are a coding expert. Write, review, and explain code with a focus on best practices and clean code principles.",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -30,7 +30,7 @@ def real_agents():
             agent_name="WritingAgent",
             agent_description="Skilled in creative and technical writing, content creation, and editing",
             system_prompt="You are a writing specialist. Create, edit, and improve written content while maintaining appropriate tone and style.",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -39,7 +39,7 @@ def real_agents():
             agent_name="MathAgent",
             agent_description="Expert in mathematical calculations and problem solving",
             system_prompt="You are a math expert. Solve mathematical problems and explain solutions clearly.",
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             max_loops=1,
             verbose=False,
             print_on=False,
@@ -61,7 +61,7 @@ def test_multi_agent_router_initialization_default():
         router.description
         == "Routes tasks to specialized agents based on their capabilities"
     )
-    assert router.model == "gpt-4o-mini"
+    assert router.model == "gpt-5.4"
     assert router.temperature == 0.1
     assert router.output_type == "dict"
     assert router.print_on is True

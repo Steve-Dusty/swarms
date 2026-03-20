@@ -26,7 +26,7 @@ swarms agent \
     --description "Expert code review assistant" \
     --system-prompt "You are a senior software engineer. Review code for best practices, bugs, and improvements." \
     --task "Review this Python function for efficiency: def fib(n): return fib(n-1) + fib(n-2) if n > 1 else n" \
-    --model-name "gpt-4o-mini" \
+    --model-name "gpt-5.4" \
     --temperature 0.1 \
     --max-loops 3
 ```
@@ -150,7 +150,7 @@ swarms agent \
     --description "Academic research summarization specialist" \
     --system-prompt "You are an academic researcher. Summarize research topics with key findings, methodologies, and implications. Cite sources when available." \
     --task "Summarize recent advances in CRISPR gene editing technology" \
-    --model-name "gpt-4o-mini" \
+    --model-name "gpt-5.4" \
     --temperature 0.3 \
     --verbose \
     --autosave
@@ -172,7 +172,7 @@ swarms agent \
     --description "Research specialist" \
     --system-prompt "You are a researcher. Gather comprehensive information on topics." \
     --task "Research the impact of AI on healthcare" \
-    --model-name "gpt-4o-mini" \
+    --model-name "gpt-5.4" \
     --output-type "json" > research_output.json
 
 # Analysis phase
@@ -181,7 +181,7 @@ swarms agent \
     --description "Data analyst" \
     --system-prompt "You are an analyst. Analyze data and provide insights." \
     --task "Analyze the research findings from: $(cat research_output.json)" \
-    --model-name "gpt-4o-mini" \
+    --model-name "gpt-5.4" \
     --output-type "json" > analysis_output.json
 
 echo "Pipeline complete!"
@@ -202,7 +202,7 @@ for topic in "${TOPICS[@]}"; do
         --description "Topic analysis specialist" \
         --system-prompt "You are an expert analyst. Provide concise analysis of topics." \
         --task "Analyze current trends in: $topic" \
-        --model-name "gpt-4o-mini" \
+        --model-name "gpt-5.4" \
         >> "analysis_results.txt"
     echo "---" >> "analysis_results.txt"
 done

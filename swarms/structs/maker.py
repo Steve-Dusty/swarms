@@ -93,7 +93,7 @@ class MAKER:
         >>> # Create MAKER instance
         >>> maker = MAKER(
         ...     name="MyTaskSolver",
-        ...     model_name="gpt-4o-mini",
+        ...     model_name="gpt-5.4",
         ...     system_prompt="You solve tasks step by step.",
         ...     format_prompt=format_prompt,
         ...     parse_response=parse_response,
@@ -117,7 +117,7 @@ class MAKER:
         id: str = None,
         name: str = "MAKER",
         description: str = "Massively decomposed Agentic processes with Error correction and Red-flagging",
-        model_name: str = "gpt-4o-mini",
+        model_name: str = "gpt-5.4",
         system_prompt: str = "You are a precise assistant that solves tasks step by step. Follow instructions exactly and provide clear, structured outputs.",
         k: int = 3,
         max_tokens: int = 1024,
@@ -140,7 +140,7 @@ class MAKER:
             id: Unique identifier for the MAKER instance. Auto-generated if not provided.
             name: Human-readable name for the system.
             description: Description of the system's purpose.
-            model_name: Name of the LLM model to use (e.g., "gpt-4o-mini", "gpt-4.1-mini").
+            model_name: Name of the LLM model to use (e.g., "gpt-5.4", "gpt-4.1-mini").
             system_prompt: System prompt for the microagents. Should describe the task domain
                 and expected output format.
             k: Vote threshold - a candidate must be k votes ahead of all others to win.

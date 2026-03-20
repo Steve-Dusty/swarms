@@ -39,7 +39,7 @@ Main class for routing tasks to different swarm types.
 | `heavy_swarm_worker_model_name` | str | Model name for worker agents in HeavySwarm (default: "gpt-4.1") |
 | `heavy_swarm_swarm_show_output` | bool | Flag to show output for HeavySwarm (default: True) |
 | `telemetry_enabled` | bool | Flag to enable/disable telemetry logging (default: False) |
-| `council_judge_model_name` | str | Model name for the judge in CouncilAsAJudge (default: "gpt-4o-mini") |
+| `council_judge_model_name` | str | Model name for the judge in CouncilAsAJudge (default: "gpt-5.4") |
 | `verbose` | bool | Flag to enable/disable verbose logging (default: False) |
 | `worker_tools` | List[Callable] | List of tools available to worker agents |
 | `aggregation_strategy` | str | Aggregation strategy for HeavySwarm (default: "synthesis") |

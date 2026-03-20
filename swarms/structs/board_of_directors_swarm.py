@@ -100,7 +100,7 @@ class BoardConfigModel(BaseModel):
 
     # Model settings
     default_board_model: str = Field(
-        default="gpt-4o-mini",
+        default="gpt-5.4",
         description="Default model for board member agents.",
     )
 
@@ -487,7 +487,7 @@ def create_default_config_file(
         "decision_threshold": 0.6,
         "enable_voting": True,
         "enable_consensus": True,
-        "default_board_model": "gpt-4o-mini",
+        "default_board_model": "gpt-5.4",
         "verbose_logging": False,
         "max_board_meeting_duration": 300,
         "auto_fallback_to_director": True,
@@ -843,7 +843,7 @@ class BoardOfDirectorsSwarm:
         agents: Optional[List[Union[Agent, Callable, Any]]] = None,
         max_loops: int = 1,
         output_type: OutputType = "dict-all-except-first",
-        board_model_name: str = "gpt-4o-mini",
+        board_model_name: str = "gpt-5.4",
         verbose: bool = False,
         add_collaboration_prompt: bool = True,
         board_feedback_on: bool = True,

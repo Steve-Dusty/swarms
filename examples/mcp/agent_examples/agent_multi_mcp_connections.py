@@ -35,7 +35,7 @@ agent = Agent(
     
     You communicate in precise, technical terms while maintaining clarity for stakeholders.""",
     max_loops=1,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     dynamic_temperature_enabled=True,
     output_type="all",
     mcp_urls=[

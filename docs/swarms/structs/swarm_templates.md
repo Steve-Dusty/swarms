@@ -34,7 +34,7 @@ SwarmTemplates provides instant access to enterprise-grade multi-agent systems t
 from swarms import SwarmTemplates
 
 swarm = SwarmTemplates.research_analysis_synthesis(
-    model_name="gpt-4o-mini"
+    model_name="gpt-5.4"
 )
 
 result = swarm.run("Analyze the impact of AI on healthcare")
@@ -60,7 +60,7 @@ print(result)
 from swarms import SwarmTemplates
 
 swarm = SwarmTemplates.content_creation_pipeline(
-    model_name="gpt-4o-mini"
+    model_name="gpt-5.4"
 )
 
 result = swarm.run("Create a blog post about AI agents in customer service")
@@ -86,7 +86,7 @@ print(result)
 from swarms import SwarmTemplates
 
 swarm = SwarmTemplates.code_development_team(
-    model_name="gpt-4o-mini"
+    model_name="gpt-5.4"
 )
 
 result = swarm.run("Create a REST API for user authentication")
@@ -112,7 +112,7 @@ print(result)
 from swarms import SwarmTemplates
 
 swarm = SwarmTemplates.financial_analysis_team(
-    model_name="gpt-4o-mini"
+    model_name="gpt-5.4"
 )
 
 result = swarm.run("Analyze Tesla's Q4 2024 financial performance")
@@ -138,7 +138,7 @@ print(result)
 from swarms import SwarmTemplates
 
 swarm = SwarmTemplates.marketing_campaign_team(
-    model_name="gpt-4o-mini"
+    model_name="gpt-5.4"
 )
 
 result = swarm.run("Create a product launch campaign for an AI fitness app")
@@ -164,7 +164,7 @@ print(result)
 from swarms import SwarmTemplates
 
 swarm = SwarmTemplates.customer_support_team(
-    model_name="gpt-4o-mini"
+    model_name="gpt-5.4"
 )
 
 result = swarm.run("Customer reports login issues after password reset")
@@ -190,7 +190,7 @@ print(result)
 from swarms import SwarmTemplates
 
 swarm = SwarmTemplates.legal_document_review(
-    model_name="gpt-4o-mini"
+    model_name="gpt-5.4"
 )
 
 result = swarm.run("Review this SaaS service agreement")
@@ -216,7 +216,7 @@ print(result)
 from swarms import SwarmTemplates
 
 swarm = SwarmTemplates.data_science_pipeline(
-    model_name="gpt-4o-mini"
+    model_name="gpt-5.4"
 )
 
 result = swarm.run("Analyze customer churn data and identify key factors")
@@ -295,7 +295,7 @@ Universal method to create any swarm template.
 
 **Parameters:**
 - `template_name` (str): Name of the template to create
-- `model_name` (str): LLM model to use for all agents (default: "gpt-4o-mini")
+- `model_name` (str): LLM model to use for all agents (default: "gpt-5.4")
 - `max_loops` (int): Maximum loops for agent execution (default: 1)
 - `verbose` (bool): Enable verbose logging (default: True)
 - `custom_params` (Optional[Dict[str, Any]]): Additional custom parameters
@@ -314,7 +314,7 @@ from swarms import SwarmTemplates
 # Create a template by name
 swarm = SwarmTemplates.create(
     template_name="research_analysis_synthesis",
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops=1,
     verbose=True
 )
@@ -334,7 +334,7 @@ Each template also has its own dedicated method:
 ```python
 @classmethod
 def research_analysis_synthesis(
-    model_name: str = "gpt-4o-mini",
+    model_name: str = "gpt-5.4",
     max_loops: int = 1,
     verbose: bool = True,
 ) -> SequentialWorkflow:
@@ -342,7 +342,7 @@ def research_analysis_synthesis(
 
 @classmethod
 def content_creation_pipeline(
-    model_name: str = "gpt-4o-mini",
+    model_name: str = "gpt-5.4",
     max_loops: int = 1,
     verbose: bool = True,
 ) -> SequentialWorkflow:
@@ -425,7 +425,7 @@ financial_swarm = SwarmTemplates.financial_analysis_team(
 
 # Cost-effective model for routine tasks
 content_swarm = SwarmTemplates.content_creation_pipeline(
-    model_name="gpt-4o-mini"  # Economy model
+    model_name="gpt-5.4"  # Economy model
 )
 ```
 
@@ -564,7 +564,7 @@ financial_swarm = SwarmTemplates.financial_analysis_team(
 
 # Routine tasks → Economy model
 support_swarm = SwarmTemplates.customer_support_team(
-    model_name="gpt-4o-mini"
+    model_name="gpt-5.4"
 )
 ```
 
@@ -625,7 +625,7 @@ def run_swarm_safely(template_name, task):
     try:
         swarm = SwarmTemplates.create(
             template_name=template_name,
-            model_name="gpt-4o-mini",
+            model_name="gpt-5.4",
             verbose=True
         )
         
