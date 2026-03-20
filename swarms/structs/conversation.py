@@ -94,6 +94,7 @@ class Conversation:
         export_method: str = "json",
         dynamic_context_window: bool = True,
         caching: bool = True,
+        cache_enabled: bool = True,
         output_metadata: bool = False,
     ):
 
@@ -117,7 +118,7 @@ class Conversation:
         self.token_count = token_count
         self.export_method = export_method
         self.dynamic_context_window = dynamic_context_window
-        self.caching = caching
+        self.caching = caching or cache_enabled
         self.output_metadata = output_metadata
 
         if self.name is None:
@@ -125,6 +126,8 @@ class Conversation:
 
         self.conversation_history = []
         self._str_cache: Optional[str] = None
+        self._cache_hits: int = 0
+        self._cache_misses: int = 0
 
         self.setup_file_path()
         self.setup()
@@ -538,8 +541,34 @@ class Conversation:
             str: The conversation history.
         """
         if self._str_cache is None:
+            self._cache_misses += 1
             self._str_cache = self.return_history_as_string()
+        else:
+            self._cache_hits += 1
         return self._str_cache
+
+    def get_cache_stats(self) -> Dict[str, Any]:
+        """Return cache performance statistics for get_str().
+
+        Returns:
+            Dict[str, Any]: A dictionary with hits, misses, cached_tokens,
+                            total_tokens, and hit_rate.
+        """
+        total_calls = self._cache_hits + self._cache_misses
+        cached_tokens = (
+            count_tokens(self._str_cache, self.tokenizer_model_name)
+            if self._str_cache
+            else 0
+        )
+        return {
+            "hits": self._cache_hits,
+            "misses": self._cache_misses,
+            "cached_tokens": cached_tokens,
+            "total_tokens": total_calls * cached_tokens,
+            "hit_rate": (
+                self._cache_hits / total_calls if total_calls > 0 else 0.0
+            ),
+        }
 
     def to_dict(self) -> Dict[Any, Any]:
         """
@@ -921,6 +950,14 @@ class Conversation:
         """
         return json.dumps(self.conversation_history)
 
+    def to_yaml(self):
+        """Convert the conversation history to a YAML string.
+
+        Returns:
+            str: The conversation history as a YAML string.
+        """
+        return yaml.dump(self.conversation_history)
+
     def to_list(self):
         """Convert the conversation history to a list.
 
@@ -1184,6 +1221,23 @@ class Conversation:
         return sorted(
             conversations, key=lambda x: x["created_at"], reverse=True
         )
+
+    @classmethod
+    def list_cached_conversations(
+        cls, conversations_dir: Optional[str] = None
+    ) -> List[str]:
+        """List names of all saved conversations.
+
+        Args:
+            conversations_dir (Optional[str]): Directory containing conversations.
+
+        Returns:
+            List[str]: List of conversation names.
+        """
+        return [
+            c["name"]
+            for c in cls.list_conversations(conversations_dir)
+        ]
 
     def clear_memory(self):
         """Clear the memory of the conversation."""
