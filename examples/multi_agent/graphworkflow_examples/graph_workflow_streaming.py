@@ -1,8 +1,9 @@
 """
-GraphWorkflow Streaming Callback Example
+GraphWorkflow Token Streaming Example
 
-Demonstrates the on_node_complete callback that fires in real-time
-as each agent finishes, before the full workflow completes.
+Demonstrates real token-by-token streaming from multiple agents.
+You'll see tokens appear in the terminal as each agent generates
+them, with color-coded labels showing which agent is "speaking".
 
 Architecture:
     Coordinator (Layer 0)
@@ -10,25 +11,40 @@ Architecture:
         -> Tech-Analyst     (Layer 1, parallel)
         -> Risk-Analyst     (Layer 1, parallel)
             -> Synthesizer  (Layer 2)
-
-Watch the terminal -- you'll see each agent's result stream in
-as it completes, with timestamps showing the real-time behavior.
 """
 
+import sys
+import threading
 import time
 
 from swarms.structs.agent import Agent
 from swarms.structs.graph_workflow import GraphWorkflow
+
+# ANSI colors for each agent
+COLORS = {
+    "Coordinator": "\033[96m",    # cyan
+    "Market-Analyst": "\033[93m", # yellow
+    "Tech-Analyst": "\033[92m",   # green
+    "Risk-Analyst": "\033[91m",   # red
+    "Synthesizer": "\033[95m",    # magenta
+}
+RESET = "\033[0m"
+BOLD = "\033[1m"
+
+# Lock to avoid garbled output from parallel agents
+print_lock = threading.Lock()
 
 
 def create_agent(name: str, description: str) -> Agent:
     return Agent(
         agent_name=name,
         agent_description=description,
+        system_prompt=f"You are {name}. {description} Keep your response to 2-3 sentences.",
         model_name="gpt-5.4",
         max_loops=1,
         verbose=False,
         print_on=False,
+        streaming_on=True,
     )
 
 
@@ -60,43 +76,54 @@ def main():
     for agent in [coordinator, market_analyst, tech_analyst, risk_analyst, synthesizer]:
         workflow.add_node(agent)
 
-    # Coordinator fans out to three parallel analysts
     workflow.add_edges_from_source(
         "Coordinator",
         ["Market-Analyst", "Tech-Analyst", "Risk-Analyst"],
     )
-    # All three analysts converge into the synthesizer
     workflow.add_edges_to_target(
         ["Market-Analyst", "Tech-Analyst", "Risk-Analyst"],
         "Synthesizer",
     )
 
-    # -- Define the streaming callback --
-    start_time = time.time()
+    # -- Token-by-token streaming callback --
+    # Track which agents have printed their header
+    active_agents = {}
 
-    def on_node_complete(node_id: str, output) -> None:
-        elapsed = time.time() - start_time
-        preview = str(output)[:120].replace("\n", " ")
-        print(f"\n  [{elapsed:6.2f}s] {node_id} completed:")
-        print(f"           {preview}...")
-        print()
+    def on_token(node_id: str, token: str) -> None:
+        color = COLORS.get(node_id, "")
+        with print_lock:
+            if node_id not in active_agents:
+                active_agents[node_id] = True
+                sys.stdout.write(f"\n{color}{BOLD}[{node_id}]{RESET}{color} ")
+            sys.stdout.write(f"{color}{token}{RESET}")
+            sys.stdout.flush()
 
-    # -- Run with streaming --
+    def on_complete(node_id: str, output) -> None:
+        with print_lock:
+            sys.stdout.write("\n")
+            sys.stdout.flush()
+        # Clear so next run of same agent gets a new header
+        active_agents.pop(node_id, None)
+
+    # -- Run --
     task = "Evaluate the feasibility of launching an AI-powered personal finance assistant."
 
-    print("=" * 60)
-    print("  GraphWorkflow Streaming Demo")
-    print("=" * 60)
+    print(f"{BOLD}{'=' * 60}")
+    print("  GraphWorkflow Token Streaming Demo")
+    print(f"{'=' * 60}{RESET}")
     print(f"\n  Task: {task}\n")
-    print("  Waiting for agents to complete...\n")
 
-    result = workflow.run(task, on_node_complete=on_node_complete)
+    start = time.time()
+    result = workflow.run(
+        task,
+        streaming_callback=on_token,
+        on_node_complete=on_complete,
+    )
+    elapsed = time.time() - start
 
-    total = time.time() - start_time
-    print("=" * 60)
-    print(f"  All agents done in {total:.2f}s")
-    print(f"  Agents completed: {list(result.keys())}")
-    print("=" * 60)
+    print(f"\n{BOLD}{'=' * 60}")
+    print(f"  Done in {elapsed:.1f}s  |  Agents: {list(result.keys())}")
+    print(f"{'=' * 60}{RESET}")
 
 
 if __name__ == "__main__":
