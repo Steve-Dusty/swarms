@@ -70,12 +70,16 @@ def test_init_invalid_k():
 
 
 def test_init_invalid_max_tokens():
-    with pytest.raises(ValueError, match="max_tokens must be at least 10"):
+    with pytest.raises(
+        ValueError, match="max_tokens must be at least 10"
+    ):
         MAKER(k=1, max_tokens=5, verbose=False)
 
 
 def test_init_invalid_temperature():
-    with pytest.raises(ValueError, match="temperature must be between"):
+    with pytest.raises(
+        ValueError, match="temperature must be between"
+    ):
         MAKER(k=1, temperature=3.0, verbose=False)
 
 
@@ -110,7 +114,9 @@ def test_make_hashable_nested_no_llm():
 
 def test_estimate_cost_structure():
     m = MAKER(k=2, verbose=False)
-    est = m.estimate_cost(total_steps=10, target_success_probability=0.9)
+    est = m.estimate_cost(
+        total_steps=10, target_success_probability=0.9
+    )
     assert "current_k" in est
     assert "expected_total_samples" in est
     assert est["current_k"] == 2
@@ -197,12 +203,12 @@ def test_maker_update_state_with_real_run():
 @requires_openai
 def test_maker_custom_parse_integer():
     agents = [_vote_agent("n")]
-    system_prompt = (
-        "Reply with a single digit only: output exactly one character 7 and nothing else."
-    )
+    system_prompt = "Reply with a single digit only: output exactly one character 7 and nothing else."
 
     def format_prompt(task, state, step_idx, previous_result):
-        return f"{task}\nOutput one digit only for step {step_idx + 1}."
+        return (
+            f"{task}\nOutput one digit only for step {step_idx + 1}."
+        )
 
     maker = MAKER(
         k=1,
@@ -234,7 +240,9 @@ def test_maker_two_agent_pool():
 def test_maker_k2_strict_consensus():
     """Higher k needs repeated agreement; strict STEP token keeps votes aligned."""
     agents = [_vote_agent("k2")]
-    maker = _strict_step_maker(k=2, agents=agents, max_retries_per_step=60)
+    maker = _strict_step_maker(
+        k=2, agents=agents, max_retries_per_step=60
+    )
     out = maker.run(task="Consensus test with k=2.", max_steps=1)
     assert len(out) == 1
 

@@ -1,6 +1,6 @@
 # MAKER
 
-**MAKER** (**M**aximal **A**gentic decomposition, first-to-ahead-by-**K** **E**rror correction, and **R**ed-flagging) is a task-agnostic orchestrator for long-horizon problems. It decomposes work into many small steps; at each step it samples LLM outputs, discards bad ones (red-flagging), and commits only when one parsed answer leads the next-best by `k` votes (“first-to-ahead-by-k”).
+MAKER (M aximal Agentic decomposition, first-to-ahead-by-K Error correction, and Red-flagging) is a task-agnostic orchestrator for long-horizon problems. It decomposes work into many small steps; at each step it samples LLM outputs, discards bad ones (red-flagging), and commits only when one parsed answer leads the next-best by `k` votes (“first-to-ahead-by-k”).
 
 This implementation follows the framework described in *Solving a Million-Step LLM Task with Zero Errors* (Meyerson et al., 2025) — [arXiv:2511.09030](https://arxiv.org/abs/2511.09030).
 
