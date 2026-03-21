@@ -566,7 +566,9 @@ class Conversation:
             "cached_tokens": cached_tokens,
             "total_tokens": total_calls * cached_tokens,
             "hit_rate": (
-                self._cache_hits / total_calls if total_calls > 0 else 0.0
+                self._cache_hits / total_calls
+                if total_calls > 0
+                else 0.0
             ),
         }
 
