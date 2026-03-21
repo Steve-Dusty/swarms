@@ -1693,6 +1693,9 @@ class GraphWorkflow:
         on_node_complete: Optional[
             Callable[[str, Any], None]
         ] = None,
+        streaming_callback: Optional[
+            Callable[[str, str], None]
+        ] = None,
         *args: Any,
         **kwargs: Any,
     ) -> Dict[str, Any]:
@@ -1707,16 +1710,20 @@ class GraphWorkflow:
                 completes. Receives ``(node_id, output)``. A callback passed
                 here takes precedence over the instance-level callback set in
                 ``__init__``.
+            streaming_callback (Optional[Callable[[str, str], None]]): Callback
+                fired for every token as agents generate output in real-time.
+                Receives ``(node_id, token)``.
             *args: Additional positional arguments.
             **kwargs: Additional keyword arguments.
 
         Returns:
             Dict[str, Any]: Execution results from all nodes.
         """
-        # Resolve callback: run-level overrides instance-level
+        # Resolve callbacks: run-level overrides instance-level
         _on_node_complete = (
             on_node_complete or self.on_node_complete
         )
+        _streaming_callback = streaming_callback
         run_start_time = time.time()
 
         if task is not None:
@@ -1816,12 +1823,21 @@ class GraphWorkflow:
                         # Submit all tasks
                         for node_id, agent, prompt in layer_data:
                             try:
+                                # Build per-agent kwargs, injecting
+                                # streaming_callback if provided.
+                                submit_kwargs = dict(kwargs)
+                                if _streaming_callback is not None:
+                                    _nid = node_id  # capture for closure
+                                    submit_kwargs["streaming_callback"] = (
+                                        lambda token, _nid=_nid: _streaming_callback(_nid, token)
+                                    )
+
                                 future = executor.submit(
                                     agent.run,
                                     prompt,
                                     img,
                                     *args,
-                                    **kwargs,
+                                    **submit_kwargs,
                                 )
                                 future_to_data[future] = (
                                     node_id,
