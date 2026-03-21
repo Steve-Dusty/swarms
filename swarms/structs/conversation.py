@@ -118,7 +118,9 @@ class Conversation:
         self.token_count = token_count
         self.export_method = export_method
         self.dynamic_context_window = dynamic_context_window
-        self.caching = caching or cache_enabled
+        # Ensure an explicit `caching=False` is respected; only fall back to
+        # `cache_enabled` when `caching` is not explicitly set (i.e., is None).
+        self.caching = cache_enabled if caching is None else caching
         self.output_metadata = output_metadata
 
         if self.name is None:
