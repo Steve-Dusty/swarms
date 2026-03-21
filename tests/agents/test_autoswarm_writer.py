@@ -472,6 +472,36 @@ class TestFileOutput:
             finally:
                 os.chdir(orig)
 
+    def test_output_dir_creates_file_in_directory(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            target_dir = os.path.join(tmpdir, "my_swarms")
+            result = write_autoswarm_file(
+                config=SAMPLE_CONFIG, task=TASK, output_dir=target_dir
+            )
+            assert os.path.dirname(result) == os.path.abspath(target_dir)
+            assert os.path.basename(result) == "autoswarm_research_pipeline.py"
+            assert os.path.exists(result)
+
+    def test_output_dir_creates_missing_directories(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            nested = os.path.join(tmpdir, "a", "b", "c")
+            result = write_autoswarm_file(
+                config=SAMPLE_CONFIG, task=TASK, output_dir=nested
+            )
+            assert os.path.exists(result)
+            assert os.path.dirname(result) == os.path.abspath(nested)
+
+    def test_output_path_takes_precedence_over_output_dir(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            explicit = os.path.join(tmpdir, "explicit.py")
+            other_dir = os.path.join(tmpdir, "other")
+            result = write_autoswarm_file(
+                config=SAMPLE_CONFIG, task=TASK,
+                output_path=explicit, output_dir=other_dir,
+            )
+            assert result == os.path.abspath(explicit)
+            assert not os.path.exists(other_dir)
+
     def test_valid_python_syntax(self):
         _, source = _generate_file()
         # ast.parse raises SyntaxError if invalid
@@ -515,6 +545,24 @@ class TestCLIAutoswarmArgs:
         )
         assert args.no_run is True
 
+    def test_output_dir_flag_short(self):
+        from swarms.cli.main import setup_argument_parser
+
+        parser = setup_argument_parser()
+        args = parser.parse_args(
+            ["autoswarm", "--task", "test", "--model", "gpt-4", "-d", "/tmp/out"]
+        )
+        assert args.output_dir == "/tmp/out"
+
+    def test_output_dir_flag_long(self):
+        from swarms.cli.main import setup_argument_parser
+
+        parser = setup_argument_parser()
+        args = parser.parse_args(
+            ["autoswarm", "--task", "test", "--model", "gpt-4", "--output-dir", "/tmp/out"]
+        )
+        assert args.output_dir == "/tmp/out"
+
     def test_defaults(self):
         from swarms.cli.main import setup_argument_parser
 
@@ -523,6 +571,7 @@ class TestCLIAutoswarmArgs:
             ["autoswarm", "--task", "test", "--model", "gpt-4"]
         )
         assert args.output is None
+        assert args.output_dir is None
         assert args.no_run is False
 
     def test_all_flags_combined(self):
@@ -531,11 +580,12 @@ class TestCLIAutoswarmArgs:
         parser = setup_argument_parser()
         args = parser.parse_args(
             ["autoswarm", "--task", "do stuff", "--model", "gpt-4",
-             "-o", "my_file.py", "--no-run"]
+             "-o", "my_file.py", "-d", "/tmp/out", "--no-run"]
         )
         assert args.task == "do stuff"
         assert args.model == "gpt-4"
         assert args.output == "my_file.py"
+        assert args.output_dir == "/tmp/out"
         assert args.no_run is True
 
 

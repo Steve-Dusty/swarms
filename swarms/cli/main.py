@@ -56,6 +56,7 @@ def run_autoswarm(
     task: str,
     model: str,
     output_path: str = None,
+    output_dir: str = None,
     no_run: bool = False,
 ) -> None:
     """
@@ -69,6 +70,7 @@ def run_autoswarm(
         model: The model name to use for swarm generation (e.g., 'gpt-4').
             Must be non-empty.
         output_path: Optional file path for the generated Python script.
+        output_dir: Optional directory to create the generated file in.
         no_run: If True, only write the file without executing the swarm.
 
     Raises:
@@ -118,6 +120,7 @@ def run_autoswarm(
             config=config,
             task=task,
             output_path=output_path,
+            output_dir=output_dir,
         )
         console.print(
             f"[white]✓ Written to: {written_path}[/white]"
@@ -1129,6 +1132,13 @@ def setup_argument_parser() -> argparse.ArgumentParser:
         help="Output file path for the generated Python script (autoswarm command)",
     )
     parser.add_argument(
+        "-d",
+        "--output-dir",
+        type=str,
+        default=None,
+        help="Directory to create the generated Python script in (autoswarm command)",
+    )
+    parser.add_argument(
         "--no-run",
         action="store_true",
         help="Only write the generated Python file, do not execute the swarm (autoswarm command)",
@@ -1476,6 +1486,7 @@ def handle_autoswarm(args: argparse.Namespace) -> None:
         task=args.task,
         model=args.model,
         output_path=getattr(args, "output", None),
+        output_dir=getattr(args, "output_dir", None),
         no_run=getattr(args, "no_run", False),
     )
 

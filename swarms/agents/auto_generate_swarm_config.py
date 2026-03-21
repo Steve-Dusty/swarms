@@ -270,6 +270,7 @@ def write_autoswarm_file(
     config: dict,
     task: str,
     output_path: Optional[str] = None,
+    output_dir: Optional[str] = None,
 ) -> str:
     """Render a parsed swarm config dict as a ready-to-run Python file.
 
@@ -277,6 +278,8 @@ def write_autoswarm_file(
         config: Parsed YAML config dict with 'agents' and optional 'swarm_architecture'.
         task: The original task string.
         output_path: Optional file path. Auto-generated from swarm name if not provided.
+        output_dir: Optional directory to create the file in. Used when output_path
+            is not provided. The directory is created if it does not exist.
 
     Returns:
         The resolved file path that was written.
@@ -287,7 +290,12 @@ def write_autoswarm_file(
     # Determine output path
     if not output_path:
         swarm_name = swarm_arch.get("name", "output")
-        output_path = f"autoswarm_{_slugify(swarm_name)}.py"
+        filename = f"autoswarm_{_slugify(swarm_name)}.py"
+        if output_dir:
+            os.makedirs(output_dir, exist_ok=True)
+            output_path = os.path.join(output_dir, filename)
+        else:
+            output_path = filename
 
     # Render agent blocks
     agent_vars = []
