@@ -284,6 +284,7 @@ nav:
 
         - DebateWithJudge: "swarms/structs/debate_with_judge.md"
         - MajorityVoting: "swarms/structs/majorityvoting.md"
+        - MAKER: "swarms/structs/maker.md"
         - RoundRobin: "swarms/structs/round_robin_swarm.md"
         - Mixture of Agents: "swarms/structs/moa.md"
         - SelfMoASeq: "swarms/structs/self_moa_seq.md"

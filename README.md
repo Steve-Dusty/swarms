@@ -242,6 +242,7 @@ This feature is perfect for rapid prototyping, complex task decomposition, and c
 | **[ForestSwarm](https://docs.swarms.world/en/latest/swarms/structs/forest_swarm/)** | Dynamically selects the most suitable agent or tree of agents for a given task. | Task routing, optimizing for expertise, and complex decision-making trees. |
 | **[HierarchicalSwarm](https://docs.swarms.world/en/latest/swarms/structs/hierarchical_swarm/)** | Orchestrates agents with a director who creates plans and distributes tasks to specialized worker agents. | Complex project management, team coordination, and hierarchical decision-making with feedback loops. |
 | **[HeavySwarm](https://docs.swarms.world/en/latest/swarms/structs/heavy_swarm/)** | Implements a five-phase workflow with specialized agents (Research, Analysis, Alternatives, Verification) for comprehensive task analysis. | Complex research and analysis tasks, financial analysis, strategic planning, and comprehensive reporting. |
+| **[MAKER](https://docs.swarms.world/en/latest/swarms/structs/maker/)** | Long-horizon tasks decomposed into steps; each step uses first-to-ahead-by-k voting and red-flagging on micro-agent samples (from Meyerson et al., 2025). | Extremely long or fragile pipelines where you want statistical agreement and validation on every atomic step—not a hand-designed multi-agent graph. |
 | **[SwarmRouter](https://docs.swarms.world/en/latest/swarms/structs/swarm_router/)** | A universal orchestrator that provides a single interface to run any type of swarm with dynamic selection. | Simplifying complex workflows, switching between swarm strategies, and unified multi-agent management. |
 
 -----
@@ -610,6 +611,31 @@ The `HeavySwarm` provides:
 - **Structured Output**: Well-organized and actionable results
 
 This architecture is perfect for financial analysis, strategic planning, research reports, and any task requiring deep, multi-faceted analysis. [Learn more about HeavySwarm](https://docs.swarms.world/en/latest/swarms/structs/heavy_swarm/)
+
+---
+
+### MAKER
+
+`MAKER` implements **maximal agentic decomposition** with **first-to-ahead-by-k voting** and **red-flagging**: you supply `format_prompt`, `parse_response`, and optional `validate_response` / `update_state`, then run for a fixed number of steps (or until a stop condition). Each step spins up a focused one-shot `Agent` (or cycles a pool you provide) until one parsed answer leads all others by `k` votes. This matches the error-correction story in [Solving a Million-Step LLM Task with Zero Errors](https://arxiv.org/abs/2511.09030). [Full documentation](https://docs.swarms.world/en/latest/swarms/structs/maker/)
+
+```python
+from swarms.structs.maker import MAKER
+
+maker = MAKER(
+    model_name="gpt-4.1-mini",
+    system_prompt="You solve tasks in one clear line per step.",
+    k=3,
+)
+
+# Optional: override format_prompt / parse_response / validate_response for your domain.
+results = maker.run(
+    task="List three concise benefits of typed APIs, one per step.",
+    max_steps=3,
+)
+print(results)
+```
+
+For lower latency when `k` is large, use `run_parallel_voting` with the same `task` and `max_steps`.
 
 ---
 

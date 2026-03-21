@@ -1,6 +1,6 @@
 # Multi-Agent Architectures
 
-### What is a Multi-Agent Architecture?
+*What are Multi-Agent Architectures?*
 
 A multi-agent architecture refers to a group of more than two agents working collaboratively to achieve a common goal. These agents can be software entities, such as LLMs that interact with each other to perform complex tasks. The concept of multi-agent architectures is inspired by how humans communicate and work together in teams, organizations, and communities, where individual contributions combine to create sophisticated collaborative problem-solving capabilities.
 
@@ -13,10 +13,6 @@ Multi-agent architectures are designed to establish and manage communication bet
 2. **Concurrent Communication**: In concurrent architectures, agents operate independently and simultaneously on different tasks. This architecture is suitable for tasks that can be processed concurrently without dependencies, allowing for faster execution and scalability.
 
 3. **Sequential Communication**: Sequential architectures process tasks in a linear order, where each agent's output becomes the input for the next agent. This ensures that tasks with dependencies are handled in the correct sequence, maintaining the integrity of the workflow.
-
-4. **Mesh Communication**: In mesh architectures, agents are fully connected, allowing any agent to communicate with any other agent. This setup provides high flexibility and redundancy, making it ideal for complex systems requiring dynamic interactions.
-
-5. **Federated Communication**: Federated architectures involve multiple independent systems that collaborate by sharing information and results. Each system operates autonomously but can contribute to a larger task, enabling distributed problem-solving across different nodes.
 
 Multi-agent architectures leverage these communication patterns to ensure that agents work together efficiently, adapting to the specific requirements of the task at hand. By defining clear communication protocols and interaction models, multi-agent architectures enable the seamless orchestration of multiple agents, leading to enhanced performance and problem-solving capabilities.
 
@@ -37,6 +33,7 @@ Multi-agent architectures leverage these communication patterns to ensure that a
 | Heavy                             | High-performance architecture for handling intensive computational tasks with multiple agents.                                                                         | [Learn More](https://docs.swarms.world/en/latest/swarms/structs/heavy_swarm/)                       | Large-scale data processing, intensive computational workflows                                    |
 | Council as Judge                  | Multiple agents act as a council to evaluate and judge outputs or decisions.                                                                                           | [Learn More](https://docs.swarms.world/en/latest/swarms/structs/council_of_judges/)                     | Quality assessment, decision validation, peer review processes                                    |
 | Majority Voting                   | Agents vote on decisions with the majority determining the final outcome.                                                                                              | [Learn More](https://docs.swarms.world/en/latest/swarms/structs/majorityvoting/)                   | Democratic decision-making, consensus building, error reduction                                   |
+| MAKER                             | Decomposes work into sequential steps; each step uses repeated micro-agent samples, red-flagging, and first-to-ahead-by-k voting before committing.                     | [Learn More](https://docs.swarms.world/en/latest/swarms/structs/maker/)                             | Very long or high-precision pipelines where every atomic step should be statistically validated      |
 | Round Robin                       | Tasks are distributed cyclically among agents in a rotating order.                                                                                                     | [Learn More](https://docs.swarms.world/en/latest/swarms/structs/round_robin_swarm/)                       | Load balancing, fair task distribution, resource optimization                                     |
 | Auto-Builder                      | Automatically constructs and configures multi-agent systems based on requirements.                                                                                    | [Learn More](https://docs.swarms.world/en/latest/swarms/structs/auto_swarm_builder/)                | Dynamic system creation, adaptive architectures, rapid prototyping                               |
 | Hybrid Hierarchical Cluster      | Combines hierarchical and peer-to-peer communication patterns for complex workflows.                                                                                   | [Learn More](https://docs.swarms.world/en/latest/swarms/structs/hhcs/)     | Complex enterprise workflows, multi-department coordination                                       |
@@ -764,6 +761,37 @@ graph TD
     I --> J[Majority Calculator]
     J --> K[Final Decision]
     K --> L[Decision Rationale]
+```
+
+---
+
+### MAKER
+
+**Overview:**
+MAKER (**M**aximal **A**gentic decomposition, first-to-ahead-by-**K** **E**rror correction, and **R**ed-flagging) breaks a task into many sequential steps. At each step, one-shot micro-agents sample answers; invalid outputs are discarded (red-flagging), and the framework only commits when one parsed result leads every other candidate by `k` votes. It is task-agnostic: you supply prompt formatting, parsing, and optional validation and state updates. Based on Meyerson et al. (2025); see the [paper](https://arxiv.org/abs/2511.09030).
+
+**Use Cases:**
+
+- Very long-horizon workflows where each atomic step must be reliable
+
+- Pipelines where correlated failures are reduced by voting and response validation
+
+- Domains where you can decompose work into explicit steps with clear per-step I/O
+
+**[Learn More](https://docs.swarms.world/en/latest/swarms/structs/maker/)**
+
+```mermaid
+graph TD
+    T[Task + step budget] --> S[Step loop]
+    S --> P[format_prompt → Agent.run]
+    P --> R{Valid sample?}
+    R -->|red-flag| P
+    R -->|ok| V[parse → vote tally]
+    V --> W{Leader ahead by k?}
+    W -->|no| P
+    W -->|yes| U[update_state, record result]
+    U --> S
+    S --> D[Final trajectory]
 ```
 
 ---
