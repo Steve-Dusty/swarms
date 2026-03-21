@@ -130,6 +130,7 @@ class Conversation:
         self._str_cache: Optional[str] = None
         self._cache_hits: int = 0
         self._cache_misses: int = 0
+        self._last_cached_tokens: int = 0
 
         self.setup_file_path()
         self.setup()
@@ -542,9 +543,14 @@ class Conversation:
         Returns:
             str: The conversation history.
         """
+        if not self.caching:
+            return self.return_history_as_string()
         if self._str_cache is None:
             self._cache_misses += 1
             self._str_cache = self.return_history_as_string()
+            self._last_cached_tokens = count_tokens(
+                self._str_cache, self.tokenizer_model_name
+            )
         else:
             self._cache_hits += 1
         return self._str_cache
@@ -557,16 +563,16 @@ class Conversation:
                             total_tokens, and hit_rate.
         """
         total_calls = self._cache_hits + self._cache_misses
-        cached_tokens = (
-            count_tokens(self._str_cache, self.tokenizer_model_name)
-            if self._str_cache
-            else 0
+        cached_tokens = self._last_cached_tokens
+        total_tokens = (
+            self._cache_misses * cached_tokens
+            + self._cache_hits * cached_tokens
         )
         return {
             "hits": self._cache_hits,
             "misses": self._cache_misses,
             "cached_tokens": cached_tokens,
-            "total_tokens": total_calls * cached_tokens,
+            "total_tokens": total_tokens,
             "hit_rate": (
                 self._cache_hits / total_calls
                 if total_calls > 0
@@ -1230,7 +1236,7 @@ class Conversation:
     def list_cached_conversations(
         cls, conversations_dir: Optional[str] = None
     ) -> List[str]:
-        """List names of all saved conversations.
+        """List names of all saved conversations (JSON and YAML).
 
         Args:
             conversations_dir (Optional[str]): Directory containing conversations.
@@ -1238,10 +1244,15 @@ class Conversation:
         Returns:
             List[str]: List of conversation names.
         """
-        return [
-            c["name"]
-            for c in cls.list_conversations(conversations_dir)
-        ]
+        conv_dir = conversations_dir or get_conversation_dir()
+        if not os.path.exists(conv_dir):
+            return []
+        names = []
+        for filename in os.listdir(conv_dir):
+            if filename.endswith((".json", ".yaml", ".yml")):
+                name = os.path.splitext(filename)[0]
+                names.append(name)
+        return sorted(names)
 
     def clear_memory(self):
         """Clear the memory of the conversation."""
