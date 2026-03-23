@@ -5,6 +5,7 @@ import os
 import time
 import traceback
 import uuid
+from pathlib import Path
 from enum import Enum
 from typing import (
     Any,
@@ -738,6 +739,7 @@ class GraphWorkflow:
         auto_compile: bool = True,
         verbose: bool = False,
         backend: str = "networkx",
+        checkpoint_dir: Optional[str] = None,
     ):
         self.id = id
         self.verbose = verbose
@@ -774,6 +776,9 @@ class GraphWorkflow:
         self.name = name
         self.description = description
         self.auto_compile = auto_compile
+
+        # Checkpoint configuration
+        self.checkpoint_dir = checkpoint_dir
 
         # Private optimization attributes
         self._compiled = False
@@ -1747,10 +1752,43 @@ class GraphWorkflow:
                 execution_results = {}
                 prev_outputs = {}
 
+                # Derive a stable key for this task so checkpoints from
+                # different tasks never collide.
+                task_hash = hash(task)
+
                 for layer_idx, layer in enumerate(
                     self._sorted_layers
                 ):
                     layer_start_time = time.time()
+
+                    # ----------------------------------------------------------
+                    # Checkpoint resume: if this layer already has a saved result
+                    # for the current task, load it and skip re-execution.
+                    # ----------------------------------------------------------
+                    if self.checkpoint_dir:
+                        checkpoint_path = (
+                            Path(self.checkpoint_dir)
+                            / f"{task_hash}_layer_{layer_idx}.json"
+                        )
+                        if checkpoint_path.exists():
+                            try:
+                                saved = json.loads(
+                                    checkpoint_path.read_text(
+                                        encoding="utf-8"
+                                    )
+                                )
+                                prev_outputs.update(saved)
+                                execution_results.update(saved)
+                                logger.info(
+                                    f"Checkpoint found — skipping layer {layer_idx + 1} "
+                                    f"({len(saved)} agents restored from {checkpoint_path})"
+                                )
+                                continue
+                            except Exception as cp_err:
+                                logger.warning(
+                                    f"Failed to load checkpoint {checkpoint_path}, "
+                                    f"re-executing layer: {cp_err}"
+                                )
 
                     if self.verbose:
                         logger.info(
@@ -1880,6 +1918,40 @@ class GraphWorkflow:
                     layer_execution_time = (
                         time.time() - layer_start_time
                     )
+
+                    # ----------------------------------------------------------
+                    # Checkpoint save: persist this layer's outputs so a crash
+                    # on a later layer doesn't force re-running this one.
+                    # ----------------------------------------------------------
+                    if self.checkpoint_dir:
+                        try:
+                            cp_dir = Path(self.checkpoint_dir)
+                            cp_dir.mkdir(parents=True, exist_ok=True)
+                            checkpoint_path = (
+                                cp_dir
+                                / f"{task_hash}_layer_{layer_idx}.json"
+                            )
+                            layer_outputs = {
+                                nid: prev_outputs[nid]
+                                for nid in layer
+                                if nid in prev_outputs
+                            }
+                            checkpoint_path.write_text(
+                                json.dumps(
+                                    layer_outputs,
+                                    indent=2,
+                                    default=str,
+                                ),
+                                encoding="utf-8",
+                            )
+                            if self.verbose:
+                                logger.info(
+                                    f"Checkpoint saved for layer {layer_idx + 1} → {checkpoint_path}"
+                                )
+                        except Exception as cp_err:
+                            logger.warning(
+                                f"Failed to save checkpoint for layer {layer_idx + 1}: {cp_err}"
+                            )
 
                     if self.verbose:
                         logger.success(
@@ -2300,6 +2372,53 @@ class GraphWorkflow:
                 f"Error in GraphWorkflow.visualize_simple: {e}"
             )
             raise e
+
+    def clear_checkpoints(self, task: str) -> int:
+        """
+        Delete all checkpoint files written for a specific task.
+
+        Call this after a workflow run completes successfully to reclaim disk
+        space and prevent stale checkpoints from being picked up on future runs
+        with the same task string.
+
+        Args:
+            task (str): The task string whose checkpoints should be removed.
+                Must match the string passed to :meth:`run` exactly.
+
+        Returns:
+            int: Number of checkpoint files deleted.
+
+        Raises:
+            ValueError: If ``checkpoint_dir`` was not set on this workflow.
+
+        Example::
+
+            workflow.run("Analyse quarterly earnings")
+            workflow.clear_checkpoints("Analyse quarterly earnings")
+        """
+        if not self.checkpoint_dir:
+            raise ValueError(
+                "checkpoint_dir is not set on this GraphWorkflow instance."
+            )
+        cp_dir = Path(self.checkpoint_dir)
+        if not cp_dir.exists():
+            return 0
+        task_hash = hash(task)
+        prefix = f"{task_hash}_layer_"
+        deleted = 0
+        for cp_file in cp_dir.glob(f"{prefix}*.json"):
+            try:
+                cp_file.unlink()
+                deleted += 1
+            except Exception as e:
+                logger.warning(
+                    f"Failed to delete checkpoint file {cp_file}: {e}"
+                )
+        if self.verbose:
+            logger.info(
+                f"Cleared {deleted} checkpoint file(s) for task hash {task_hash}"
+            )
+        return deleted
 
     def to_json(
         self,
