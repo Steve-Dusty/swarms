@@ -94,6 +94,7 @@ class Conversation:
         export_method: str = "json",
         dynamic_context_window: bool = True,
         caching: bool = True,
+        cache_enabled: bool = True,
         output_metadata: bool = False,
     ):
 
@@ -117,13 +118,19 @@ class Conversation:
         self.token_count = token_count
         self.export_method = export_method
         self.dynamic_context_window = dynamic_context_window
-        self.caching = caching
+        # Ensure an explicit `caching=False` is respected; only fall back to
+        # `cache_enabled` when `caching` is not explicitly set (i.e., is None).
+        self.caching = cache_enabled if caching is None else caching
         self.output_metadata = output_metadata
 
         if self.name is None:
             self.name = id
 
         self.conversation_history = []
+        self._str_cache: Optional[str] = None
+        self._cache_hits: int = 0
+        self._cache_misses: int = 0
+        self._last_cached_tokens: int = 0
 
         self.setup_file_path()
         self.setup()
@@ -264,6 +271,7 @@ class Conversation:
 
         # Add message to conversation history
         self.conversation_history.append(message)
+        self._str_cache = None
 
         # Handle token counting in a separate thread if enabled
         if self.token_count is True:
@@ -413,6 +421,7 @@ class Conversation:
     def delete(self, index: str):
         """Delete a message from the conversation history."""
         self.conversation_history.pop(int(index))
+        self._str_cache = None
 
     def update(self, index: str, role, content):
         """Update a message in the conversation history.
@@ -425,6 +434,7 @@ class Conversation:
         if 0 <= int(index) < len(self.conversation_history):
             self.conversation_history[int(index)]["role"] = role
             self.conversation_history[int(index)]["content"] = content
+            self._str_cache = None
         else:
             logger.warning(f"Invalid index: {index}")
 
@@ -533,7 +543,42 @@ class Conversation:
         Returns:
             str: The conversation history.
         """
-        return self.return_history_as_string()
+        if not self.caching:
+            return self.return_history_as_string()
+        if self._str_cache is None:
+            self._cache_misses += 1
+            self._str_cache = self.return_history_as_string()
+            self._last_cached_tokens = count_tokens(
+                self._str_cache, self.tokenizer_model_name
+            )
+        else:
+            self._cache_hits += 1
+        return self._str_cache
+
+    def get_cache_stats(self) -> Dict[str, Any]:
+        """Return cache performance statistics for get_str().
+
+        Returns:
+            Dict[str, Any]: A dictionary with hits, misses, cached_tokens,
+                            total_tokens, and hit_rate.
+        """
+        total_calls = self._cache_hits + self._cache_misses
+        cached_tokens = self._last_cached_tokens
+        total_tokens = (
+            self._cache_misses * cached_tokens
+            + self._cache_hits * cached_tokens
+        )
+        return {
+            "hits": self._cache_hits,
+            "misses": self._cache_misses,
+            "cached_tokens": cached_tokens,
+            "total_tokens": total_tokens,
+            "hit_rate": (
+                self._cache_hits / total_calls
+                if total_calls > 0
+                else 0.0
+            ),
+        }
 
     def to_dict(self) -> Dict[Any, Any]:
         """
@@ -693,6 +738,7 @@ class Conversation:
                 self.conversation_history = data.get(
                     "conversation_history", []
                 )
+                self._str_cache = None
 
                 logger.info(
                     f"Successfully loaded conversation from {filename}"
@@ -725,6 +771,7 @@ class Conversation:
                 self.conversation_history = data.get(
                     "conversation_history", []
                 )
+                self._str_cache = None
 
                 logger.info(
                     f"Successfully loaded conversation from {filename}"
@@ -841,6 +888,7 @@ class Conversation:
 
         # Update conversation history
         self.conversation_history = truncated_history
+        self._str_cache = None
 
     def _binary_search_truncate(
         self, text, target_tokens, model_name
@@ -902,6 +950,7 @@ class Conversation:
     def clear(self):
         """Clear the conversation history."""
         self.conversation_history = []
+        self._str_cache = None
 
     def to_json(self):
         """Convert the conversation history to a JSON string.
@@ -910,6 +959,14 @@ class Conversation:
             str: The conversation history as a JSON string.
         """
         return json.dumps(self.conversation_history)
+
+    def to_yaml(self):
+        """Convert the conversation history to a YAML string.
+
+        Returns:
+            str: The conversation history as a YAML string.
+        """
+        return yaml.dump(self.conversation_history)
 
     def to_list(self):
         """Convert the conversation history to a list.
@@ -1050,6 +1107,7 @@ class Conversation:
             messages (List[dict]): List of messages to add.
         """
         self.conversation_history.extend(messages)
+        self._str_cache = None
 
     @classmethod
     def load_conversation(
@@ -1174,9 +1232,32 @@ class Conversation:
             conversations, key=lambda x: x["created_at"], reverse=True
         )
 
+    @classmethod
+    def list_cached_conversations(
+        cls, conversations_dir: Optional[str] = None
+    ) -> List[str]:
+        """List names of all saved conversations (JSON and YAML).
+
+        Args:
+            conversations_dir (Optional[str]): Directory containing conversations.
+
+        Returns:
+            List[str]: List of conversation names.
+        """
+        conv_dir = conversations_dir or get_conversation_dir()
+        if not os.path.exists(conv_dir):
+            return []
+        names = []
+        for filename in os.listdir(conv_dir):
+            if filename.endswith((".json", ".yaml", ".yml")):
+                name = os.path.splitext(filename)[0]
+                names.append(name)
+        return sorted(names)
+
     def clear_memory(self):
         """Clear the memory of the conversation."""
         self.conversation_history = []
+        self._str_cache = None
 
     def _dynamic_auto_chunking_worker(self):
         """
