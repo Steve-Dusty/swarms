@@ -2313,7 +2313,7 @@ class GraphWorkflow:
         Returns:
             Dict[str, Any]: A dictionary containing:
                 - ``name``, ``description``, ``max_loops`` — workflow metadata.
-                - ``nodes`` — list of ``{"id": ..., "agent_name": ...}`` dicts.
+                - ``nodes`` — list of ``{"id": ..., "agent_name": ..., "metadata": ...}`` dicts.
                 - ``edges`` — list of ``{"source": ..., "target": ..., "metadata": ...}`` dicts.
                 - ``entry_points`` — list of entry-point node IDs.
                 - ``end_points`` — list of end-point node IDs.
@@ -2365,8 +2365,11 @@ class GraphWorkflow:
 
             workflow.save_spec("my_workflow.json")
         """
-        with open(path, "w") as f:
-            json.dump(self.to_spec(), f, indent=2)
+        dir_name = os.path.dirname(path)
+        if dir_name:
+            os.makedirs(dir_name, exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(self.to_spec(), f, indent=2, default=str)
         if self.verbose:
             logger.info(f"Workflow spec saved to {path}")
 
