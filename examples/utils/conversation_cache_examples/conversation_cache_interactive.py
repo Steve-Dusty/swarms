@@ -17,7 +17,9 @@ def main() -> None:
     )
 
     print("\n=== Conversation Cache Interactive Test ===")
-    print("Type your messages. After each response, cache stats are shown.")
+    print(
+        "Type your messages. After each response, cache stats are shown."
+    )
     print("Type 'quit' to exit.\n")
 
     while True:
@@ -30,18 +32,19 @@ def main() -> None:
         response = agent.run(user_input)
         print(f"\nAgent: {response}\n")
 
-        # Call get_str() multiple times to exercise the cache
-        agent.short_memory.get_str()
-        agent.short_memory.get_str()
-        agent.short_memory.get_str()
-
         stats = agent.short_memory.get_cache_stats()
-        print(f"--- Cache Stats ---")
-        print(f"  Hits:     {stats['hits']}  (get_str() returned cached string)")
-        print(f"  Misses:   {stats['misses']}  (get_str() rebuilt the string)")
-        print(f"  Hit rate: {stats['hit_rate']:.0%}")
-        print(f"  Cached tokens: {stats['cached_tokens']}")
-        print(f"-------------------\n")
+        total_calls = stats["hits"] + stats["misses"]
+        print("--- Cache Stats ---")
+        print(f"  Total calls: {total_calls}")
+        print(
+            f"  Hits:        {stats['hits']}  (returned cached string)"
+        )
+        print(
+            f"  Misses:      {stats['misses']}  (rebuilt the string)"
+        )
+        print(f"  Hit rate:    {stats['hit_rate']:.0%}")
+        print(f"  Tokens in current cache: {stats['cached_tokens']}")
+        print("-------------------\n")
 
 
 if __name__ == "__main__":
