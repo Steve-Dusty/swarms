@@ -25,6 +25,7 @@ Simulated crash scenario
 5. Clean up checkpoints after a confirmed successful run.
 """
 
+import hashlib
 import shutil
 from pathlib import Path
 
@@ -99,9 +100,9 @@ for f in sorted(cp_dir.glob("*.json")):
 # 4. Simulate a mid-run crash: delete the Writer checkpoint so only that
 #    layer needs to re-execute on the next run.
 # ---------------------------------------------------------------------------
-task_hash = hash(TASK)
+task_key = hashlib.sha256(TASK.encode("utf-8")).hexdigest()[:16]
 writer_layer_idx = 2  # layer 0=Researcher, 1=Analyst, 2=Writer
-writer_cp = cp_dir / f"{task_hash}_layer_{writer_layer_idx}.json"
+writer_cp = cp_dir / f"{task_key}_layer_{writer_layer_idx}.json"
 
 if writer_cp.exists():
     writer_cp.unlink()

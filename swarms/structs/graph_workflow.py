@@ -1,5 +1,6 @@
 import asyncio
 import concurrent.futures
+import hashlib
 import json
 import os
 import time
@@ -1752,9 +1753,12 @@ class GraphWorkflow:
                 execution_results = {}
                 prev_outputs = {}
 
-                # Derive a stable key for this task so checkpoints from
-                # different tasks never collide.
-                task_hash = hash(task)
+                # Derive a deterministic key for this task so checkpoints
+                # survive process restarts (Python's hash() is salted and
+                # is NOT stable across runs).
+                task_key = hashlib.sha256(
+                    task.encode("utf-8")
+                ).hexdigest()[:16]
 
                 for layer_idx, layer in enumerate(
                     self._sorted_layers
@@ -1768,7 +1772,7 @@ class GraphWorkflow:
                     if self.checkpoint_dir:
                         checkpoint_path = (
                             Path(self.checkpoint_dir)
-                            / f"{task_hash}_layer_{layer_idx}.json"
+                            / f"{task_key}_layer_{layer_idx}.json"
                         )
                         if checkpoint_path.exists():
                             try:
@@ -1779,8 +1783,27 @@ class GraphWorkflow:
                                 )
                                 prev_outputs.update(saved)
                                 execution_results.update(saved)
+                                # Replay into conversation so workflow state
+                                # is identical to a non-checkpoint run.
+                                for node_id, output in saved.items():
+                                    agent_name = (
+                                        getattr(
+                                            self.nodes[node_id].agent,
+                                            "agent_name",
+                                            node_id,
+                                        )
+                                        if node_id in self.nodes
+                                        else node_id
+                                    )
+                                    try:
+                                        self.conversation.add(
+                                            role=agent_name,
+                                            content=output,
+                                        )
+                                    except Exception:
+                                        pass
                                 logger.info(
-                                    f"Checkpoint found — skipping layer {layer_idx + 1} "
+                                    f"Checkpoint found - skipping layer {layer_idx + 1} "
                                     f"({len(saved)} agents restored from {checkpoint_path})"
                                 )
                                 continue
@@ -1929,7 +1952,7 @@ class GraphWorkflow:
                             cp_dir.mkdir(parents=True, exist_ok=True)
                             checkpoint_path = (
                                 cp_dir
-                                / f"{task_hash}_layer_{layer_idx}.json"
+                                / f"{task_key}_layer_{layer_idx}.json"
                             )
                             layer_outputs = {
                                 nid: prev_outputs[nid]
@@ -2403,8 +2426,10 @@ class GraphWorkflow:
         cp_dir = Path(self.checkpoint_dir)
         if not cp_dir.exists():
             return 0
-        task_hash = hash(task)
-        prefix = f"{task_hash}_layer_"
+        task_key = hashlib.sha256(task.encode("utf-8")).hexdigest()[
+            :16
+        ]
+        prefix = f"{task_key}_layer_"
         deleted = 0
         for cp_file in cp_dir.glob(f"{prefix}*.json"):
             try:
@@ -2416,7 +2441,7 @@ class GraphWorkflow:
                 )
         if self.verbose:
             logger.info(
-                f"Cleared {deleted} checkpoint file(s) for task hash {task_hash}"
+                f"Cleared {deleted} checkpoint file(s) for task key {task_key}"
             )
         return deleted
 
