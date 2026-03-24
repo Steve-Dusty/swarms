@@ -183,7 +183,7 @@ Deliverables:
 Style and guardrails:
 - Transparent chain-of-evidence
 - Highlight uncertainty explicitly
-- If data is missing, state what’s needed and propose next steps
+- If data is missing, state what's needed and propose next steps
 """
 
 SYNTHESIS_AGENT_PROMPT = """
@@ -216,7 +216,177 @@ Deliverables:
 Style and guardrails:
 - Executive-focused summary, technical appendix for implementers
 - Transparent about uncertainty
-- Include “what could break this plan” with mitigation steps
+- Include "what could break this plan" with mitigation steps
+"""
+
+# ── Grok 4.20 Heavy Architecture Agent Prompts ──────────────
+
+CAPTAIN_SWARM_PROMPT = """
+You are Captain Swarm, the leader and orchestrator of a multi-agent analysis system inspired by the Grok Heavy architecture. Your mission is to coordinate specialist agents, resolve conflicts between their outputs, and deliver unified, decision-grade results.
+
+Objective:
+- Orchestrate multi-agent analysis by decomposing tasks, coordinating specialists, mediating conflicts, and synthesizing outputs into a single coherent response.
+
+Core responsibilities:
+- Decompose complex tasks into parallelizable sub-tasks for specialist agents
+- Coordinate and route work to Harper (Research & Facts), Benjamin (Logic, Math & Code), and Lucas (Creative & Divergent Thinking)
+- Mediate conflicts between agent outputs through structured debate resolution
+- Synthesize the strongest elements from all agents into a unified response
+- Surface genuine uncertainties rather than forcing false consensus
+
+Process:
+1. Analyze the incoming task for complexity and required expertise
+2. Decompose into granular, non-overlapping sub-tasks for each specialist
+3. After receiving specialist outputs, identify points of agreement and conflict
+4. Mediate conflicts by weighing evidence quality, logical rigor, and creative merit
+5. Resolve contradictions or explicitly surface them as genuine uncertainty
+6. Aggregate results into a coherent, prioritized final response
+
+Deliverables:
+1. Executive summary (key conclusions in 2-3 sentences)
+2. Integrated findings from all specialist agents
+3. Conflict resolution notes (how disagreements were resolved)
+4. Prioritized recommendations with confidence levels
+5. Risks, uncertainties, and mitigation strategies
+6. Actionable next steps
+
+Style and guardrails:
+- Act as a moderator at a meeting table of experts
+- Weight evidence quality over agent consensus
+- Explicitly flag when agents disagree and explain resolution rationale
+- Present conservative conclusions when evidence is mixed
+- Maintain objectivity and balance across all specialist perspectives
+"""
+
+HARPER_PROMPT = """
+You are Harper, the Research and Facts specialist in a multi-agent analysis system. Your mission is to deliver fast, trustworthy, and comprehensive factual research that grounds the team's analysis in evidence.
+
+Objective:
+- Provide well-sourced, verified, and actionable research that serves as the factual foundation for decision-making.
+
+Core responsibilities:
+- Conduct systematic, comprehensive information gathering
+- Verify facts against primary and high-credibility sources
+- Integrate real-time data and current information
+- Flag factual claims from other analyses with supporting or contradicting evidence
+- Organize raw data into structured, accessible formats
+
+Process:
+1. Frame the research scope and state assumptions
+2. Design a systematic search strategy (keywords, domains, time range)
+3. Collect and prioritize sources by credibility and recency
+4. Extract key claims, data points, and figures with full provenance
+5. Cross-reference and triangulate across independent sources
+6. Score source credibility and reconcile conflicting data
+7. Synthesize into structured, evidence-backed findings
+
+Scoring rubric (0-5 scale for each):
+- Credibility
+- Recency
+- Methodological transparency
+- Relevance
+- Consistency with other sources
+
+Deliverables:
+1. Concise factual summary (1-2 sentences)
+2. Key findings with evidence strength ratings
+3. Evidence table (source, claim, support level, credibility score)
+4. Data points and statistics with provenance
+5. Conflicting evidence with reconciliation notes
+6. Information gaps and suggestions for obtaining missing data
+7. Confidence score with justification
+
+Citation rules:
+- Number citations inline [1], [2] with full metadata
+- Explicitly label assumptions vs. verified facts
+- Include provenance for all paraphrased content
+- Prioritize primary sources over secondary ones
+
+Style and guardrails:
+- Empirical, evidence-based language
+- Present conflicting evidence fairly without bias
+- Distinguish between verified facts, likely facts, and speculation
+- If evidence is insufficient, clearly state what is missing
+"""
+
+BENJAMIN_PROMPT = """
+You are Benjamin, the Logic, Math, and Code specialist in a multi-agent analysis system. Your mission is to apply rigorous analytical reasoning, mathematical verification, and computational thinking to validate and strengthen the team's analysis.
+
+Objective:
+- Deliver logically sound, mathematically verified, and computationally validated analysis with quantified confidence.
+
+Core responsibilities:
+- Apply rigorous step-by-step logical reasoning to complex problems
+- Perform numerical and computational verification of claims and data
+- Stress-test strategies, assumptions, and logic chains
+- Write and analyze code, algorithms, and formal proofs when needed
+- Validate statistical claims and mathematical models
+- Check internal consistency across all analytical components
+
+Process:
+1. Identify logical claims, mathematical assertions, and computational requirements
+2. Decompose complex reasoning into verifiable logical steps
+3. Apply formal logic and mathematical frameworks to validate claims
+4. Run calculations, sanity checks, and numerical verification
+5. Stress-test assumptions under different conditions and edge cases
+6. Assess computational feasibility and resource requirements
+7. Produce verification scorecard with confidence levels
+
+Deliverables:
+1. Logical analysis summary with key conclusions
+2. Step-by-step reasoning chains for critical claims
+3. Mathematical verification results with worked calculations
+4. Code snippets or pseudocode for computational validation
+5. Stress-test results showing robustness under varied assumptions
+6. Internal consistency assessment across all inputs
+7. Quantified confidence scores with methodological justification
+
+Style and guardrails:
+- Rigorous, precise, and methodical language
+- Show all work for mathematical claims
+- Clearly distinguish between proven, likely, and unverified claims
+- Flag logical fallacies and unsupported leaps in reasoning
+- Present worst-case and best-case bounds where applicable
+"""
+
+LUCAS_PROMPT = """
+You are Lucas, the Creative and Divergent Thinking specialist in a multi-agent analysis system. Your mission is to challenge assumptions, identify blind spots, generate novel perspectives, and ensure the team's analysis is robust against unconsidered angles.
+
+Objective:
+- Deliver creative, contrarian, and laterally-derived insights that strengthen analysis by exposing hidden assumptions, biases, and unexplored opportunities.
+
+Core responsibilities:
+- Generate novel hypotheses and unconventional perspectives
+- Identify blind spots, biases, and overconfidence in other analyses
+- Challenge group consensus with well-reasoned contrarian views
+- Propose creative solutions and approaches others might miss
+- Ensure outputs remain human-relevant, balanced, and practical
+- Question whether conclusions hold under different constraints or timelines
+
+Process:
+1. Review the task from multiple unconventional angles
+2. Identify implicit assumptions and hidden constraints
+3. Generate divergent hypotheses and alternative framings
+4. Challenge the most confident conclusions with contrarian analysis
+5. Propose creative solutions that cross traditional domain boundaries
+6. Assess which novel perspectives add genuine value vs. noise
+7. Synthesize creative insights into actionable recommendations
+
+Deliverables:
+1. Contrarian analysis of key assumptions and conclusions
+2. Blind spot identification with potential impact assessment
+3. Novel hypotheses and alternative framings of the problem
+4. Creative solution proposals with feasibility notes
+5. Bias detection report (confirmation bias, anchoring, etc.)
+6. "What if" scenarios exploring edge cases and unlikely outcomes
+7. Balanced perspective ensuring human relevance and practicality
+
+Style and guardrails:
+- Bold but grounded creative thinking
+- Distinguish between productive contrarianism and mere disagreement
+- Ensure creative proposals have a plausible path to implementation
+- Flag when conventional wisdom may be wrong, with supporting reasoning
+- Keep outputs practical and decision-relevant, not abstract
 """
 
 
@@ -279,6 +449,72 @@ schema = {
 }
 
 schema = [schema]
+
+grok_schema = [
+    {
+        "type": "function",
+        "function": {
+            "name": "generate_grok_questions",
+            "description": (
+                "Generate 3 specialized questions for "
+                "the Grok Heavy architecture agents "
+                "(Harper, Benjamin, Lucas) to "
+                "comprehensively analyze a given task"
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "thinking": {
+                        "type": "string",
+                        "description": (
+                            "Captain Swarm's reasoning "
+                            "for how to decompose this "
+                            "task into 3 specialized "
+                            "questions for each agent"
+                        ),
+                    },
+                    "harper_question": {
+                        "type": "string",
+                        "description": (
+                            "A research and facts "
+                            "question for Harper to "
+                            "gather comprehensive "
+                            "evidence-based data and "
+                            "verify factual claims"
+                        ),
+                    },
+                    "benjamin_question": {
+                        "type": "string",
+                        "description": (
+                            "A logic, math, and code "
+                            "question for Benjamin to "
+                            "verify and validate "
+                            "through rigorous "
+                            "step-by-step reasoning"
+                        ),
+                    },
+                    "lucas_question": {
+                        "type": "string",
+                        "description": (
+                            "A creative and contrarian "
+                            "question for Lucas to "
+                            "explore divergent "
+                            "perspectives, identify "
+                            "blind spots, and "
+                            "challenge assumptions"
+                        ),
+                    },
+                },
+                "required": [
+                    "thinking",
+                    "harper_question",
+                    "benjamin_question",
+                    "lucas_question",
+                ],
+            },
+        },
+    }
+]
 
 
 class HeavySwarm:
@@ -361,6 +597,7 @@ class HeavySwarm:
         worker_tools: Optional[tool_type] = None,
         random_loops_per_agent: bool = False,
         max_loops: int = 1,
+        use_grok_agents: bool = False,
     ) -> None:
         """
         Initialize the HeavySwarm with configuration parameters.
@@ -423,6 +660,7 @@ class HeavySwarm:
         self.worker_tools = worker_tools
         self.random_loops_per_agent = random_loops_per_agent
         self.max_loops = max_loops
+        self.use_grok_agents = use_grok_agents
 
         self.conversation = Conversation()
         self.console = Console()
@@ -756,10 +994,21 @@ class HeavySwarm:
                     # Agent execution phase
                     try:
                         if self.show_dashboard:
+                            agent_count = (
+                                3
+                                if self.use_grok_agents
+                                else 4
+                            )
+                            agent_label = (
+                                "Grok agents (Harper, "
+                                "Benjamin, Lucas)"
+                                if self.use_grok_agents
+                                else "agents"
+                            )
                             self.console.print(
                                 Panel(
-                                    "[bold red]⚡ LAUNCHING SPECIALIZED AGENTS[/bold red]\n"
-                                    "[white]Executing 4 agents in parallel for comprehensive analysis[/white]",
+                                    f"[bold red]⚡ LAUNCHING SPECIALIZED AGENTS[/bold red]\n"
+                                    f"[white]Executing {agent_count} {agent_label} in parallel for comprehensive analysis[/white]",
                                     title="[bold red]AGENT EXECUTION PHASE[/bold red]",
                                     border_style="red",
                                 )
@@ -960,10 +1209,17 @@ class HeavySwarm:
         if self.worker_tools is not None:
             tools = self.worker_tools
 
-        # Research Agent - Deep information gathering and data collection
+        if self.use_grok_agents:
+            return self._create_grok_agents(tools)
+
+        # Research Agent
         research_agent = Agent(
             agent_name="Research-Agent",
-            agent_description="Expert research agent specializing in comprehensive information gathering and data collection",
+            agent_description=(
+                "Expert research agent specializing in "
+                "comprehensive information gathering "
+                "and data collection"
+            ),
             system_prompt=RESEARCH_AGENT_PROMPT,
             max_loops=self.handle_worker_agent_loops(),
             model_name=self.worker_model_name,
@@ -974,10 +1230,14 @@ class HeavySwarm:
             tools=tools,
         )
 
-        # Analysis Agent - Pattern recognition and deep analytical insights
+        # Analysis Agent
         analysis_agent = Agent(
             agent_name="Analysis-Agent",
-            agent_description="Expert analytical agent specializing in pattern recognition, data analysis, and insight generation",
+            agent_description=(
+                "Expert analytical agent specializing "
+                "in pattern recognition, data analysis, "
+                "and insight generation"
+            ),
             system_prompt=ANALYSIS_AGENT_PROMPT,
             max_loops=self.handle_worker_agent_loops(),
             model_name=self.worker_model_name,
@@ -988,10 +1248,14 @@ class HeavySwarm:
             tools=tools,
         )
 
-        # Alternatives Agent - Strategic options and creative solutions
+        # Alternatives Agent
         alternatives_agent = Agent(
             agent_name="Alternatives-Agent",
-            agent_description="Expert strategic agent specializing in alternative approaches, creative solutions, and option generation",
+            agent_description=(
+                "Expert strategic agent specializing "
+                "in alternative approaches, creative "
+                "solutions, and option generation"
+            ),
             system_prompt=ALTERNATIVES_AGENT_PROMPT,
             max_loops=self.handle_worker_agent_loops(),
             model_name=self.worker_model_name,
@@ -1002,10 +1266,14 @@ class HeavySwarm:
             tools=tools,
         )
 
-        # Verification Agent - Validation, feasibility assessment, and quality assurance
+        # Verification Agent
         verification_agent = Agent(
             agent_name="Verification-Agent",
-            agent_description="Expert verification agent specializing in validation, feasibility assessment, and quality assurance",
+            agent_description=(
+                "Expert verification agent specializing "
+                "in validation, feasibility assessment, "
+                "and quality assurance"
+            ),
             system_prompt=VERIFICATION_AGENT_PROMPT,
             max_loops=self.handle_worker_agent_loops(),
             model_name=self.worker_model_name,
@@ -1016,10 +1284,14 @@ class HeavySwarm:
             tools=tools,
         )
 
-        # Synthesis Agent - Integration and comprehensive analysis
+        # Synthesis Agent
         synthesis_agent = Agent(
             agent_name="Synthesis-Agent",
-            agent_description="Expert synthesis agent specializing in integration, comprehensive analysis, and final recommendations",
+            agent_description=(
+                "Expert synthesis agent specializing "
+                "in integration, comprehensive analysis, "
+                "and final recommendations"
+            ),
             system_prompt=SYNTHESIS_AGENT_PROMPT,
             max_loops=1,
             model_name=self.worker_model_name,
@@ -1038,6 +1310,86 @@ class HeavySwarm:
             "synthesis": synthesis_agent,
         }
         return agents
+
+    def _create_grok_agents(self, tools):
+        """
+        Create the Grok 4.20 Heavy architecture agents:
+        Captain Swarm (leader), Harper (research/facts),
+        Benjamin (logic/math/code), Lucas (creative).
+        """
+        captain = Agent(
+            agent_name="Captain-Swarm",
+            agent_description=(
+                "Leader and orchestrator of the Grok "
+                "Heavy multi-agent system"
+            ),
+            system_prompt=CAPTAIN_SWARM_PROMPT,
+            max_loops=1,
+            model_name=self.worker_model_name,
+            streaming_on=False,
+            verbose=False,
+            dynamic_temperature_enabled=True,
+            print_on=True,
+            tools=tools,
+        )
+
+        harper = Agent(
+            agent_name="Harper",
+            agent_description=(
+                "Research and Facts specialist for "
+                "evidence-based data gathering and "
+                "fact verification"
+            ),
+            system_prompt=HARPER_PROMPT,
+            max_loops=self.handle_worker_agent_loops(),
+            model_name=self.worker_model_name,
+            streaming_on=False,
+            verbose=False,
+            dynamic_temperature_enabled=True,
+            print_on=self.agent_prints_on,
+            tools=tools,
+        )
+
+        benjamin = Agent(
+            agent_name="Benjamin",
+            agent_description=(
+                "Logic, Math, and Code specialist for "
+                "rigorous reasoning and computational "
+                "verification"
+            ),
+            system_prompt=BENJAMIN_PROMPT,
+            max_loops=self.handle_worker_agent_loops(),
+            model_name=self.worker_model_name,
+            streaming_on=False,
+            verbose=False,
+            dynamic_temperature_enabled=True,
+            print_on=self.agent_prints_on,
+            tools=tools,
+        )
+
+        lucas = Agent(
+            agent_name="Lucas",
+            agent_description=(
+                "Creative and Divergent Thinking "
+                "specialist for contrarian analysis "
+                "and blind-spot detection"
+            ),
+            system_prompt=LUCAS_PROMPT,
+            max_loops=self.handle_worker_agent_loops(),
+            model_name=self.worker_model_name,
+            streaming_on=False,
+            verbose=False,
+            dynamic_temperature_enabled=True,
+            print_on=self.agent_prints_on,
+            tools=tools,
+        )
+
+        return {
+            "captain": captain,
+            "harper": harper,
+            "benjamin": benjamin,
+            "lucas": lucas,
+        }
 
     def _execute_agents_parallel(
         self, questions: Dict, agents: Dict, img: Optional[str] = None
@@ -1120,28 +1472,61 @@ class HeavySwarm:
                 return agent_type, f"Error: {str(e)}"
 
         # Prepare agent tasks
-        agent_tasks = [
-            (
-                "Research",
-                agents["research"],
-                questions.get("research_question", ""),
-            ),
-            (
-                "Analysis",
-                agents["analysis"],
-                questions.get("analysis_question", ""),
-            ),
-            (
-                "Alternatives",
-                agents["alternatives"],
-                questions.get("alternatives_question", ""),
-            ),
-            (
-                "Verification",
-                agents["verification"],
-                questions.get("verification_question", ""),
-            ),
-        ]
+        if self.use_grok_agents:
+            agent_tasks = [
+                (
+                    "Harper",
+                    agents["harper"],
+                    questions.get(
+                        "harper_question", ""
+                    ),
+                ),
+                (
+                    "Benjamin",
+                    agents["benjamin"],
+                    questions.get(
+                        "benjamin_question", ""
+                    ),
+                ),
+                (
+                    "Lucas",
+                    agents["lucas"],
+                    questions.get(
+                        "lucas_question", ""
+                    ),
+                ),
+            ]
+        else:
+            agent_tasks = [
+                (
+                    "Research",
+                    agents["research"],
+                    questions.get(
+                        "research_question", ""
+                    ),
+                ),
+                (
+                    "Analysis",
+                    agents["analysis"],
+                    questions.get(
+                        "analysis_question", ""
+                    ),
+                ),
+                (
+                    "Alternatives",
+                    agents["alternatives"],
+                    questions.get(
+                        "alternatives_question", ""
+                    ),
+                ),
+                (
+                    "Verification",
+                    agents["verification"],
+                    questions.get(
+                        "verification_question", ""
+                    ),
+                ),
+            ]
 
         # Execute agents in parallel using ThreadPoolExecutor
         results = {}
@@ -1228,32 +1613,61 @@ class HeavySwarm:
         """
 
         # Agent configurations with professional styling
-        agent_configs = [
-            (
-                "Agent 1",
-                "research",
-                "white",
-                "Gathering comprehensive research data",
-            ),
-            (
-                "Agent 2",
-                "analysis",
-                "white",
-                "Analyzing patterns and generating insights",
-            ),
-            (
-                "Agent 3",
-                "alternatives",
-                "white",
-                "Exploring creative solutions and alternatives",
-            ),
-            (
-                "Agent 4",
-                "verification",
-                "white",
-                "Validating findings and checking feasibility",
-            ),
-        ]
+        if self.use_grok_agents:
+            agent_configs = [
+                (
+                    "Harper",
+                    "harper",
+                    "white",
+                    "Gathering evidence and "
+                    "verifying facts",
+                ),
+                (
+                    "Benjamin",
+                    "benjamin",
+                    "white",
+                    "Applying rigorous logic "
+                    "and verification",
+                ),
+                (
+                    "Lucas",
+                    "lucas",
+                    "white",
+                    "Exploring creative angles "
+                    "and blind spots",
+                ),
+            ]
+        else:
+            agent_configs = [
+                (
+                    "Agent 1",
+                    "research",
+                    "white",
+                    "Gathering comprehensive "
+                    "research data",
+                ),
+                (
+                    "Agent 2",
+                    "analysis",
+                    "white",
+                    "Analyzing patterns and "
+                    "generating insights",
+                ),
+                (
+                    "Agent 3",
+                    "alternatives",
+                    "white",
+                    "Exploring creative solutions "
+                    "and alternatives",
+                ),
+                (
+                    "Agent 4",
+                    "verification",
+                    "white",
+                    "Validating findings and "
+                    "checking feasibility",
+                ),
+            ]
 
         results = {}
 
@@ -1335,32 +1749,70 @@ class HeavySwarm:
                     return agent_type, f"Error: {str(e)}"
 
             # Prepare agent tasks with keys
-            agent_tasks = [
-                (
-                    "Agent 1",
-                    "research",
-                    agents["research"],
-                    questions.get("research_question", ""),
-                ),
-                (
-                    "Agent 2",
-                    "analysis",
-                    agents["analysis"],
-                    questions.get("analysis_question", ""),
-                ),
-                (
-                    "Agent 3",
-                    "alternatives",
-                    agents["alternatives"],
-                    questions.get("alternatives_question", ""),
-                ),
-                (
-                    "Agent 4",
-                    "verification",
-                    agents["verification"],
-                    questions.get("verification_question", ""),
-                ),
-            ]
+            if self.use_grok_agents:
+                agent_tasks = [
+                    (
+                        "Harper",
+                        "harper",
+                        agents["harper"],
+                        questions.get(
+                            "harper_question", ""
+                        ),
+                    ),
+                    (
+                        "Benjamin",
+                        "benjamin",
+                        agents["benjamin"],
+                        questions.get(
+                            "benjamin_question", ""
+                        ),
+                    ),
+                    (
+                        "Lucas",
+                        "lucas",
+                        agents["lucas"],
+                        questions.get(
+                            "lucas_question", ""
+                        ),
+                    ),
+                ]
+            else:
+                agent_tasks = [
+                    (
+                        "Agent 1",
+                        "research",
+                        agents["research"],
+                        questions.get(
+                            "research_question", ""
+                        ),
+                    ),
+                    (
+                        "Agent 2",
+                        "analysis",
+                        agents["analysis"],
+                        questions.get(
+                            "analysis_question", ""
+                        ),
+                    ),
+                    (
+                        "Agent 3",
+                        "alternatives",
+                        agents["alternatives"],
+                        questions.get(
+                            "alternatives_question",
+                            "",
+                        ),
+                    ),
+                    (
+                        "Agent 4",
+                        "verification",
+                        agents["verification"],
+                        questions.get(
+                            "verification_question",
+                            "",
+                        ),
+                    ),
+                ]
 
             # Execute agents in parallel
             with concurrent.futures.ThreadPoolExecutor(
@@ -1406,10 +1858,18 @@ class HeavySwarm:
                         results[agent_key] = f"Exception: {str(e)}"
 
         # Show completion summary
+        agent_count = (
+            3 if self.use_grok_agents else 4
+        )
+        synth_label = (
+            "Captain Swarm"
+            if self.use_grok_agents
+            else "synthesis"
+        )
         self.console.print(
             Panel(
                 "[bold red]⚡ ALL AGENTS COMPLETED SUCCESSFULLY![/bold red]\n"
-                "[white]Results from all 4 specialized agents are ready for synthesis[/white]",
+                f"[white]Results from all {agent_count} specialized agents are ready for {synth_label}[/white]",
                 title="[bold red]EXECUTION COMPLETE[/bold red]",
                 border_style="red",
             )
@@ -1434,17 +1894,58 @@ class HeavySwarm:
         """
         # Get the cached agents
         agents = self.create_agents()
-        synthesis_agent = agents["synthesis"]
 
-        agents_names = [
-            "Research Agent",
-            "Analysis Agent",
-            "Alternatives Agent",
-            "Verification Agent",
-        ]
+        if self.use_grok_agents:
+            synthesis_agent = agents["captain"]
+            agents_names = [
+                "Harper (Research & Facts)",
+                "Benjamin (Logic, Math & Code)",
+                "Lucas (Creative & Divergent)",
+            ]
 
-        # Create comprehensive synthesis prompt
-        synthesis_prompt = f"""
+            synthesis_prompt = f"""
+        As Captain Swarm, produce a unified report from your three specialist agents. Mediate any conflicts between their outputs and deliver a coherent, decision-grade response.
+
+        Original Task:
+        {original_task}
+
+        Your objectives:
+        - Integrate findings from {", ".join(agents_names)}, highlighting how each specialist's perspective contributes.
+        - Mediate conflicts: where Harper's facts conflict with Benjamin's logic or Lucas's contrarian view, weigh evidence quality and explain your resolution.
+        - Surface genuine uncertainties rather than forcing false consensus.
+        - Provide prioritized, actionable recommendations with confidence levels.
+        - Identify risks, blind spots flagged by Lucas, and mitigation strategies.
+
+        Conversation history for context:
+
+        \n\n
+
+        {self.conversation.return_history_as_string()}
+
+        \n\n
+
+        Present your synthesis as:
+        1. Executive Summary
+        2. Harper's Key Findings (facts & evidence)
+        3. Benjamin's Verification (logic & validation)
+        4. Lucas's Perspectives (creative & contrarian)
+        5. Conflict Resolution & Integrated Analysis
+        6. Prioritized Recommendations
+        7. Risks, Blind Spots & Mitigation
+        8. Next Steps
+
+        Be thorough, objective, and balance all perspectives.
+        """
+        else:
+            synthesis_agent = agents["synthesis"]
+            agents_names = [
+                "Research Agent",
+                "Analysis Agent",
+                "Alternatives Agent",
+                "Verification Agent",
+            ]
+
+            synthesis_prompt = f"""
         You are an expert synthesis agent tasked with producing a clear, actionable, and executive-ready report based on the following task and the results from four specialized agents (Research, Analysis, Alternatives, Verification).
 
         Original Task:
@@ -1526,25 +2027,16 @@ class HeavySwarm:
 
         try:
             # Parse the JSON arguments
-            arguments = json.loads(tool_call.function.arguments)
+            arguments = json.loads(
+                tool_call.function.arguments
+            )
 
-            return {
-                "thinking": arguments.get("thinking", ""),
-                "research_question": arguments.get(
-                    "research_question", ""
-                ),
-                "analysis_question": arguments.get(
-                    "analysis_question", ""
-                ),
-                "alternatives_question": arguments.get(
-                    "alternatives_question", ""
-                ),
-                "verification_question": arguments.get(
-                    "verification_question", ""
-                ),
-                "tool_call_id": tool_call.id,
-                "function_name": tool_call.function.name,
-            }
+            result = dict(arguments)
+            result["tool_call_id"] = tool_call.id
+            result["function_name"] = (
+                tool_call.function.name
+            )
+            return result
 
         except json.JSONDecodeError as e:
             return {
@@ -1568,7 +2060,28 @@ class HeavySwarm:
         """
 
         # Create the prompt for question generation
-        prompt = f"""
+        if self.use_grok_agents:
+            prompt = f"""
+        System: Captain Swarm task decomposer. Generate 3 non-overlapping specialized questions via function tool.
+
+        Agents:
+        - Harper (Research & Facts): real-time search, data gathering, evidence integration, fact-verification, source triangulation
+        - Benjamin (Logic, Math & Code): rigorous step-by-step reasoning, numerical verification, computational validation, stress-testing
+        - Lucas (Creative & Divergent): divergent thinking, novel angles, blind-spot detection, contrarian analysis, bias identification
+
+        Requirements:
+        - Each question ≤30 words, technically precise, action-oriented
+        - No duplication across agents. No meta text in questions
+        - Ambiguity notes only in "thinking" field (≤40 words)
+        - Each question must leverage the agent's unique specialization
+
+        Task: {task}
+
+        Use generate_grok_questions function only.
+        """
+            active_schema = grok_schema
+        else:
+            prompt = f"""
         System: Technical task analyzer. Generate 4 non-overlapping analytical questions via function tool.
 
         Roles:
@@ -1587,11 +2100,12 @@ class HeavySwarm:
 
         Use generate_specialized_questions function only.
         """
+            active_schema = schema
 
         question_agent = LiteLLM(
             system_prompt=prompt,
             model=self.question_agent_model_name,
-            tools_list_dictionary=schema,
+            tools_list_dictionary=active_schema,
             max_tokens=3000,
             temperature=0.7,
             top_p=1,
@@ -1650,9 +2164,26 @@ class HeavySwarm:
         if "error" in result:
             return {"error": result["error"]}
 
+        if self.use_grok_agents:
+            return {
+                "harper_question": result.get(
+                    "harper_question", ""
+                ),
+                "benjamin_question": result.get(
+                    "benjamin_question", ""
+                ),
+                "lucas_question": result.get(
+                    "lucas_question", ""
+                ),
+            }
+
         return {
-            "research_question": result.get("research_question", ""),
-            "analysis_question": result.get("analysis_question", ""),
+            "research_question": result.get(
+                "research_question", ""
+            ),
+            "analysis_question": result.get(
+                "analysis_question", ""
+            ),
             "alternatives_question": result.get(
                 "alternatives_question", ""
             ),
@@ -1704,9 +2235,22 @@ class HeavySwarm:
         if "error" in questions:
             return [f"Error: {questions['error']}"]
 
+        if self.use_grok_agents:
+            return [
+                questions.get("harper_question", ""),
+                questions.get(
+                    "benjamin_question", ""
+                ),
+                questions.get("lucas_question", ""),
+            ]
+
         return [
             questions.get("research_question", ""),
             questions.get("analysis_question", ""),
-            questions.get("alternatives_question", ""),
-            questions.get("verification_question", ""),
+            questions.get(
+                "alternatives_question", ""
+            ),
+            questions.get(
+                "verification_question", ""
+            ),
         ]

@@ -1,8 +1,11 @@
 # HeavySwarm
 
-HeavySwarm is a sophisticated multi-agent orchestration system that decomposes complex tasks into specialized questions and executes them using four specialized agents: Research, Analysis, Alternatives, and Verification. The results are then synthesized into a comprehensive response.
+HeavySwarm is a sophisticated multi-agent orchestration system that decomposes complex tasks into specialized questions and executes them using specialized agents in parallel. The results are then synthesized into a comprehensive response.
 
-Inspired by X.AI's Grok 4 heavy implementation, HeavySwarm provides robust task analysis through intelligent question generation, parallel execution, and comprehensive synthesis with real-time progress monitoring.
+HeavySwarm supports two agent architectures:
+
+- **Default mode** — 5 task-phase agents (Research, Analysis, Alternatives, Verification, Synthesis)
+- **Grok mode** (`use_grok_agents=True`) — 4 thinking-style agents inspired by the [Grok 4.20 Heavy architecture](https://x.com/elonmusk/status/2034710771075273177) (Captain Swarm, Harper, Benjamin, Lucas)
 
 ## Installation
 
@@ -30,15 +33,17 @@ print(result)
 
 ## Architecture
 
-The HeavySwarm follows a structured 5-phase workflow:
+The HeavySwarm follows a structured workflow:
 
 1. **Task Decomposition**: Complex tasks are broken down into specialized questions
 2. **Question Generation**: AI-powered generation of role-specific questions
-3. **Parallel Execution**: Four specialized agents work concurrently
+3. **Parallel Execution**: Specialized agents work concurrently
 4. **Result Collection**: Outputs are gathered and validated
 5. **Synthesis**: Integration into a comprehensive final response
 
-### Agent Specialization
+### Default Mode — Task-Phase Agents
+
+The default mode decomposes work by **task phase** — each agent handles a different stage of analysis.
 
 | Agent | Role/Function |
 |-------|---------------|
@@ -47,6 +52,31 @@ The HeavySwarm follows a structured 5-phase workflow:
 | **Alternatives Agent** | Creative problem-solving and strategic options |
 | **Verification Agent** | Validation, feasibility assessment, and quality assurance |
 | **Synthesis Agent** | Multi-perspective integration and executive reporting |
+
+**Flow:** LiteLLM question generator → 4 workers in parallel → Synthesis Agent
+
+### Grok Mode — Thinking-Style Agents (`use_grok_agents=True`)
+
+The Grok mode is inspired by the [Grok 4.20 Heavy architecture](https://x.com/elonmusk/status/2034710771075273177) and decomposes work by **thinking style** — each agent applies a fundamentally different cognitive approach.
+
+| Agent | Specialization | Thinking Style |
+|-------|---------------|----------------|
+| **Captain Swarm** | Orchestration, task decomposition, conflict resolution, final synthesis | Structured, managerial |
+| **Harper** | Research and facts, evidence gathering, source verification, data grounding | Empirical, evidence-based |
+| **Benjamin** | Logic, math, and code — rigorous reasoning, numerical verification, stress-testing | Rigorous, analytical |
+| **Lucas** | Creative and divergent thinking, contrarian analysis, blind-spot detection, bias identification | Divergent, lateral |
+
+**Flow:** Captain Swarm decomposes → Harper, Benjamin, Lucas work in parallel → Captain Swarm mediates conflicts and synthesizes
+
+#### Key Differences from Default Mode
+
+| Aspect | Default Mode | Grok Mode |
+|--------|-------------|-----------|
+| **Decomposition** | By task phase (research → analyze → verify) | By thinking style (facts vs logic vs creativity) |
+| **Agent count** | 5 (4 workers + 1 synthesizer) | 4 (3 specialists + 1 leader) |
+| **Synthesis** | Generic integration agent | Captain Swarm mediates conflicts between agents |
+| **Contrarian check** | Not present | Lucas specifically challenges assumptions and detects biases |
+| **Question schema** | 4 questions (research, analysis, alternatives, verification) | 3 questions (harper, benjamin, lucas) |
 
 ## API Reference
 
@@ -73,6 +103,7 @@ HeavySwarm(
     worker_tools: Optional[tool_type] = None,
     random_loops_per_agent: bool = False,
     max_loops: int = 1,
+    use_grok_agents: bool = False,
 )
 ```
 
@@ -94,7 +125,8 @@ HeavySwarm(
 | `output_type` | `str` | `"dict-all-except-first"` | Output formatting type for conversation history |
 | `worker_tools` | `Optional[tool_type]` | `None` | Tools available to worker agents for enhanced functionality |
 | `random_loops_per_agent` | `bool` | `False` | Enable random number of loops per agent (1-10 range) |
-| `max_loops` | `int` | `1` | Maximum number of loops when using random_loops_per_agent |
+| `max_loops` | `int` | `1` | Maximum number of execution loops for iterative refinement |
+| `use_grok_agents` | `bool` | `False` | Enable Grok 4.20 Heavy architecture with Captain Swarm, Harper, Benjamin, and Lucas agents instead of the default Research/Analysis/Alternatives/Verification agents |
 
 ##### Raises
 
@@ -160,19 +192,35 @@ Generate and extract only the specialized questions without metadata or executio
 
 **Returns:**
 
-- `Dict[str, str]`: Clean dictionary containing only the questions:
+- `Dict[str, str]`: Clean dictionary containing only the questions.
+
+  **Default mode keys:**
   - `research_question` (str): Question for comprehensive information gathering
   - `analysis_question` (str): Question for pattern analysis and insights
   - `alternatives_question` (str): Question for exploring creative solutions
   - `verification_question` (str): Question for validation and feasibility
+
+  **Grok mode keys** (`use_grok_agents=True`):
+  - `harper_question` (str): Question for evidence-based research and fact verification
+  - `benjamin_question` (str): Question for logical reasoning and mathematical verification
+  - `lucas_question` (str): Question for creative/contrarian analysis and blind-spot detection
+
   - `error` (str): Error message if question generation fails (on error only)
 
 **Example:**
 
 ```python
+# Default mode
 questions = swarm.get_questions_only("Analyze market trends for EVs")
 print(questions['research_question'])
 print(questions['analysis_question'])
+
+# Grok mode
+grok_swarm = HeavySwarm(use_grok_agents=True, worker_model_name="gpt-4.1", question_agent_model_name="gpt-4.1")
+questions = grok_swarm.get_questions_only("Analyze market trends for EVs")
+print(questions['harper_question'])
+print(questions['benjamin_question'])
+print(questions['lucas_question'])
 ```
 
 ##### `get_questions_as_list(task: str) -> List[str]`
@@ -187,11 +235,19 @@ Generate specialized questions and return them as an ordered list.
 
 **Returns:**
 
-- `List[str]`: Ordered list of 4 specialized questions:
+- `List[str]`: Ordered list of specialized questions.
+
+  **Default mode** (4 questions):
   - `[0]` Research question for comprehensive information gathering
   - `[1]` Analysis question for pattern analysis and insights
   - `[2]` Alternatives question for exploring creative solutions
   - `[3]` Verification question for validation and feasibility assessment
+
+  **Grok mode** (3 questions):
+  - `[0]` Harper question for evidence-based research and fact verification
+  - `[1]` Benjamin question for logical reasoning and mathematical verification
+  - `[2]` Lucas question for creative/contrarian analysis and blind-spot detection
+
   - Single-item list containing error message (on error)
 
 **Example:**
@@ -252,13 +308,13 @@ except ValueError as e:
 
 ##### `create_agents() -> Dict[str, Agent]`
 
-Create and cache the 4 specialized agents with detailed role-specific prompts.
+Create and cache specialized agents with detailed role-specific prompts. The agents created depend on the `use_grok_agents` setting.
 
 **Parameters:**
 
 - None
 
-**Returns:**
+**Returns (default mode):**
 
 | Key             | Agent Instance         | Description                                 |
 |-----------------|-----------------------|---------------------------------------------|
@@ -268,17 +324,150 @@ Create and cache the 4 specialized agents with detailed role-specific prompts.
 | `'verification'`| Verification Agent    | Verification Agent instance                 |
 | `'synthesis'`   | Synthesis Agent       | Synthesis Agent instance                    |
 
+**Returns (Grok mode, `use_grok_agents=True`):**
+
+| Key         | Agent Instance   | Description                                          |
+|-------------|-----------------|------------------------------------------------------|
+| `'captain'` | Captain Swarm   | Leader and orchestrator — handles decomposition and synthesis |
+| `'harper'`  | Harper          | Research and facts specialist                        |
+| `'benjamin'`| Benjamin        | Logic, math, and code specialist                     |
+| `'lucas'`   | Lucas           | Creative and divergent thinking specialist           |
+
 **Example:**
 
 ```python
+# Default mode
 agents = swarm.create_agents()
 research_agent = agents['research']
 print(f"Research agent name: {research_agent.agent_name}")
+
+# Grok mode
+grok_swarm = HeavySwarm(use_grok_agents=True, worker_model_name="gpt-4.1", question_agent_model_name="gpt-4.1")
+agents = grok_swarm.create_agents()
+print(f"Captain: {agents['captain'].agent_name}")
+print(f"Harper: {agents['harper'].agent_name}")
 ```
 
 ## Examples
 
-### Basic Usage
+### Grok Mode — Quick Start
+
+```python
+from swarms.structs.heavy_swarm import HeavySwarm
+
+# Enable Grok 4.20 Heavy architecture
+swarm = HeavySwarm(
+    name="Grok Analysis Team",
+    description="Multi-agent analysis with Grok-style agents",
+    worker_model_name="gpt-4.1",
+    question_agent_model_name="gpt-4.1",
+    use_grok_agents=True,
+    show_dashboard=True,
+)
+
+# Captain Swarm decomposes the task, Harper/Benjamin/Lucas
+# work in parallel, then Captain synthesizes with conflict resolution
+result = swarm.run("Evaluate whether Tesla should expand into commercial trucking")
+print(result)
+```
+
+### Grok Mode — Medical Research
+
+```python
+from swarms.structs.heavy_swarm import HeavySwarm
+
+swarm = HeavySwarm(
+    name="Medical Research Team",
+    worker_model_name="gpt-4.1",
+    question_agent_model_name="gpt-4.1",
+    use_grok_agents=True,
+    loops_per_agent=2,
+    show_dashboard=True,
+)
+
+# Harper gathers clinical evidence, Benjamin verifies
+# statistical claims, Lucas challenges treatment assumptions
+result = swarm.run(
+    "Analyze the latest research on GLP-1 receptor agonists "
+    "for treating obesity: efficacy, long-term safety, cost-effectiveness, "
+    "and potential off-label applications"
+)
+print(result)
+```
+
+### Grok Mode — Strategic Analysis with Tools
+
+```python
+from swarms.structs.heavy_swarm import HeavySwarm
+
+def web_search(query: str) -> str:
+    """Search the web for information."""
+    # Your search implementation
+    ...
+
+swarm = HeavySwarm(
+    name="Strategic Intel Team",
+    worker_model_name="gpt-4.1",
+    question_agent_model_name="gpt-4.1",
+    use_grok_agents=True,
+    worker_tools=[web_search],
+    show_dashboard=True,
+    timeout=600,
+)
+
+# Harper uses tools for real-time fact-gathering,
+# Benjamin stress-tests the strategy mathematically,
+# Lucas identifies blind spots and contrarian opportunities
+result = swarm.run(
+    "Should our company enter the Southeast Asian market in 2026? "
+    "Consider regulatory environment, competitive landscape, "
+    "logistics costs, and consumer behavior patterns."
+)
+print(result)
+```
+
+### Grok Mode via SwarmRouter
+
+```python
+from swarms.structs.swarm_router import SwarmRouter
+
+router = SwarmRouter(
+    name="GrokRouter",
+    description="Router with Grok Heavy agents",
+    swarm_type="HeavySwarm",
+    heavy_swarm_worker_model_name="gpt-4.1",
+    heavy_swarm_question_agent_model_name="gpt-4.1",
+    heavy_swarm_use_grok_agents=True,
+)
+
+result = router.run("Analyze the future of autonomous vehicles")
+print(result)
+```
+
+### Grok Mode — Question Preview
+
+```python
+from swarms.structs.heavy_swarm import HeavySwarm
+
+swarm = HeavySwarm(
+    worker_model_name="gpt-4.1",
+    question_agent_model_name="gpt-4.1",
+    use_grok_agents=True,
+)
+
+# Preview what Captain Swarm will ask each specialist
+questions = swarm.get_questions_only("Should we migrate from PostgreSQL to CockroachDB?")
+print(f"Harper (facts): {questions['harper_question']}")
+print(f"Benjamin (logic): {questions['benjamin_question']}")
+print(f"Lucas (creative): {questions['lucas_question']}")
+
+# Or as a list
+question_list = swarm.get_questions_as_list("Should we migrate from PostgreSQL to CockroachDB?")
+for i, q in enumerate(question_list):
+    print(f"Agent {i+1}: {q}")
+```
+
+### Basic Usage (Default Mode)
 
 ```python
 from swarms.structs.heavy_swarm import HeavySwarm
@@ -550,8 +739,10 @@ print(result)
 | Aspect              | Recommendation/Description                                                                                   |
 |---------------------|-------------------------------------------------------------------------------------------------------------|
 | **Performance**     | Use `max_workers` based on your CPU cores for optimal parallel execution                                     |
-| **Cost**            | Higher model versions (`gpt-4o`) provide better analysis but increase costs                                 |
+| **Cost**            | Higher model versions provide better analysis but increase costs. Grok mode uses 4 agents vs 5, slightly reducing cost per run |
 | **Timeouts**        | Complex tasks may require longer `timeout` values                                                           |
 | **Tools**           | Integrate domain-specific tools for enhanced analysis capabilities                                           |
 | **Dashboard**       | Enable `show_dashboard=True` for visual progress tracking                                                   |
 | **Batch Processing**| Disable dashboard and verbose logging for efficient batch operations                                        |
+| **When to use Grok mode** | Best for tasks requiring debate-style analysis where facts, logic, and creative thinking need to be weighed against each other (e.g., strategic decisions, investment analysis, policy evaluation). Captain Swarm's conflict mediation is especially valuable when different perspectives might disagree. |
+| **When to use Default mode** | Best for systematic, phased analysis where each step builds on the previous one (e.g., research reports, market studies, compliance audits). The dedicated Verification Agent provides stronger validation coverage. |
