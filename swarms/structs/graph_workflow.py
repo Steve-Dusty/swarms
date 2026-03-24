@@ -2328,6 +2328,8 @@ class GraphWorkflow:
             "name": self.name,
             "description": self.description,
             "max_loops": self.max_loops,
+            # Sorted for deterministic output — two equivalent workflows
+            # built in different insertion orders produce identical specs.
             "nodes": [
                 {
                     "id": node_id,
@@ -2336,7 +2338,7 @@ class GraphWorkflow:
                     ),
                     "metadata": node.metadata,
                 }
-                for node_id, node in self.nodes.items()
+                for node_id, node in sorted(self.nodes.items())
             ],
             "edges": [
                 {
@@ -2344,10 +2346,12 @@ class GraphWorkflow:
                     "target": e.target,
                     "metadata": e.metadata,
                 }
-                for e in self.edges
+                for e in sorted(
+                    self.edges, key=lambda e: (e.source, e.target)
+                )
             ],
-            "entry_points": list(self.entry_points),
-            "end_points": list(self.end_points),
+            "entry_points": sorted(self.entry_points),
+            "end_points": sorted(self.end_points),
         }
 
     def save_spec(self, path: str) -> None:
@@ -2401,8 +2405,9 @@ class GraphWorkflow:
             described by *spec* and agents resolved from *agent_registry*.
 
         Raises:
-            KeyError: If a node's ``agent_name`` is not found in *agent_registry*.
-            ValueError: If *spec* is missing required keys.
+            ValueError: If *spec* is missing required keys, any node/edge dict
+                is malformed, or an ``agent_name`` is absent from
+                *agent_registry*.
 
         Example::
 
@@ -2413,13 +2418,37 @@ class GraphWorkflow:
             workflow = GraphWorkflow.from_topology_spec(spec, registry)
             workflow.run("Write a report on AI trends")
         """
+        if not isinstance(spec, dict):
+            raise ValueError(
+                f"spec must be a dict, got {type(spec).__name__}"
+            )
+        if "nodes" not in spec:
+            raise ValueError("spec is missing required key 'nodes'")
+
+        # Validate per-node required keys
+        for i, n in enumerate(spec.get("nodes", [])):
+            for key in ("id", "agent_name"):
+                if key not in n:
+                    raise ValueError(
+                        f"Node at index {i} is missing required key '{key}'"
+                    )
+
+        # Validate per-edge required keys
+        for i, e in enumerate(spec.get("edges", [])):
+            for key in ("source", "target"):
+                if key not in e:
+                    raise ValueError(
+                        f"Edge at index {i} is missing required key '{key}'"
+                    )
+
+        # Check all referenced agents exist in the registry
         missing = [
             n["agent_name"]
-            for n in spec.get("nodes", [])
+            for n in spec["nodes"]
             if n["agent_name"] not in agent_registry
         ]
         if missing:
-            raise KeyError(
+            raise ValueError(
                 f"The following agent names are referenced in the spec but not "
                 f"found in agent_registry: {missing}"
             )
@@ -2430,7 +2459,7 @@ class GraphWorkflow:
                 agent=agent_registry[n["agent_name"]],
                 metadata=n.get("metadata") or {},
             )
-            for n in spec.get("nodes", [])
+            for n in spec["nodes"]
         }
 
         edges = [
