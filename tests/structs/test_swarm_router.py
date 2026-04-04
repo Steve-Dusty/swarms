@@ -115,9 +115,7 @@ def test_initialization_with_heavy_swarm_config():
 
     assert router.swarm_type == "HeavySwarm"
     assert router.heavy_swarm_loops_per_agent == 2
-    assert (
-        router.heavy_swarm_question_agent_model_name == "gpt-5.4"
-    )
+    assert router.heavy_swarm_question_agent_model_name == "gpt-5.4"
     assert router.heavy_swarm_worker_model_name == "gpt-5.4"
     assert router.heavy_swarm_swarm_show_output is False
 

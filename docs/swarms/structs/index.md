@@ -35,6 +35,7 @@ Multi-agent systems unlock new levels of intelligence, reliability, and efficien
 | **[SwarmRouter](https://docs.swarms.world/en/latest/swarms/structs/swarm_router/)** | Universal orchestrator that provides a single interface to run any type of swarm with dynamic selection. | Simplifying complex workflows, switching between swarm strategies, unified multi-agent management. |
 | **[HierarchicalSwarm](https://docs.swarms.world/en/latest/swarms/structs/hierarchical_swarm/)** | Director agent coordinates specialized worker agents in a hierarchy. | Complex, multi-stage tasks, iterative refinement, enterprise workflows. |
 | **[Hybrid Hierarchical-Cluster Swarm (HHCS)](https://docs.swarms.world/en/latest/swarms/structs/hhcs/)** | Router agent distributes tasks to specialized swarms for parallel, hierarchical processing. | Enterprise-scale, multi-domain, and highly complex workflows. |
+| **[MAKER](https://docs.swarms.world/en/latest/swarms/structs/maker/)** | Decomposes a task into many steps; each step uses micro-agents, red-flagging, and first-to-ahead-by-k voting before committing. | Long or fragile workflows where you want statistical agreement on every atomic step (see Meyerson et al., 2025). |
 
 ---
 

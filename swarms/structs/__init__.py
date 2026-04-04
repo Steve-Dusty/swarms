@@ -17,6 +17,12 @@ from swarms.structs.conversation import Conversation
 from swarms.structs.council_as_judge import CouncilAsAJudge
 from swarms.structs.cron_job import CronJob
 from swarms.structs.debate_with_judge import DebateWithJudge
+from swarms.structs.planner_generator_evaluator import (
+    PlannerGeneratorEvaluator,
+    StepContract,
+    EvaluationReport,
+    HarnessResult,
+)
 from swarms.structs.graph_workflow import (
     Edge,
     GraphWorkflow,
@@ -173,6 +179,10 @@ __all__ = [
     "SelfMoASeq",
     "SkillOrchestra",
     "DebateWithJudge",
+    "PlannerGeneratorEvaluator",
+    "StepContract",
+    "EvaluationReport",
+    "HarnessResult",
     "SubagentRegistry",
     "SubagentTask",
     "TaskStatus",

@@ -1,4 +1,4 @@
-from swarms.structs.agent import Agent
+from swarms import Agent
 
 # Agent 1: Risk Metrics Calculator
 risk_metrics_agent = Agent(
