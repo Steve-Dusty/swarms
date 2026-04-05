@@ -17,10 +17,13 @@ error handling, progress feedback, and user-friendly output formatting.
 """
 
 import argparse
+import getpass
 import os
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 from litellm import traceback
+from rich.markup import escape as rich_escape
 from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.table import Table
@@ -699,6 +702,10 @@ class CustomHelpAction(argparse.Action):
         print()
         print("Commands:")
         commands = [
+            (
+                "init",
+                "Scaffold a new project with .env, agents.yaml, and workspace",
+            ),
             ("onboarding", "Run environment setup check"),
             (
                 "get-api-key",
@@ -739,6 +746,10 @@ class CustomHelpAction(argparse.Action):
         print("Options:")
         options = [
             ("-h, --help", "Show this help message and exit"),
+            (
+                "--dir PATH",
+                "Project directory for 'swarms init' (default: prompted)",
+            ),
             (
                 "--yaml-file FILE",
                 "YAML configuration file path (default: agents.yaml)",
@@ -892,6 +903,7 @@ def setup_argument_parser() -> argparse.ArgumentParser:
         help="Show this help message and exit",
     )
     command_choices = [
+        "init",
         "onboarding",
         "get-api-key",
         "check-login",
@@ -1080,6 +1092,13 @@ def setup_argument_parser() -> argparse.ArgumentParser:
         "--model",
         type=str,
         help="Model name for autoswarm command",
+    )
+    # Init specific arguments
+    parser.add_argument(
+        "--dir",
+        type=str,
+        default=None,
+        help="Directory for 'swarms init' (default: prompted interactively)",
     )
     return parser
 
@@ -1566,6 +1585,355 @@ def handle_chat(args: argparse.Namespace) -> Optional[Agent]:
         return None
 
 
+def handle_init(args: argparse.Namespace) -> None:
+    """
+    Handle the `swarms init` command — interactive project scaffolding wizard.
+
+    Prompts the user for a project directory, workspace directory, and LLM
+    provider API keys, then writes a .env file into the chosen directory.
+    Finishes by validating the environment is ready.
+
+    Args:
+        args: Parsed command line arguments containing:
+            - dir: Optional path for the new project (default: prompted)
+    """
+    from rich.rule import Rule
+
+    console.print()
+    console.print(
+        Panel(
+            "[bold white]Swarms Project Initialization Wizard[/bold white]\n"
+            "[dim white]We'll create a .env file and workspace directory.[/dim white]",
+            border_style="red",
+            title="[bold red] 🚀 swarms init [/bold red]",
+            title_align="left",
+            padding=(0, 2),
+        )
+    )
+    console.print()
+
+    # ── Step 1: Project directory ────────────────────────────────────────────
+    console.print(
+        Rule(
+            "[bold red]Step 1 — Project Directory[/bold red]",
+            style="dim red",
+        )
+    )
+    console.print()
+
+    if getattr(args, "dir", None):
+        project_dir = Path(args.dir).expanduser().resolve()
+    else:
+        default_dir = str(Path.cwd())
+        console.print(
+            "  [dim white]Where should the project files be written?[/dim white]\n"
+            "  [dim white](Press Enter to use the current directory)[/dim white]"
+        )
+        raw = console.input(
+            f"  [bold white]Project directory[/bold white] [dim white]\\[{rich_escape(default_dir)}\\][/dim white]: "
+        ).strip()
+        project_dir = (
+            Path(raw).expanduser().resolve()
+            if raw
+            else Path(default_dir)
+        )
+
+    project_dir.mkdir(parents=True, exist_ok=True)
+    console.print(
+        f"  [white]✓ Project directory:[/white] [bold white]{project_dir}[/bold white]\n"
+    )
+
+    # ── Step 2: Workspace directory ──────────────────────────────────────────
+    console.print(
+        Rule(
+            "[bold red]Step 2 — Workspace Directory[/bold red]",
+            style="dim red",
+        )
+    )
+    console.print()
+    console.print(
+        "  [dim white]WORKSPACE_DIR is where agents read and write files.[/dim white]"
+    )
+    default_workspace = str(project_dir / "workspace")
+    raw = console.input(
+        f"  [bold white]Workspace directory[/bold white] [dim white]\\[{rich_escape(default_workspace)}\\][/dim white]: "
+    ).strip()
+    workspace_dir = (
+        Path(raw).expanduser().resolve()
+        if raw
+        else Path(default_workspace)
+    )
+    workspace_dir.mkdir(parents=True, exist_ok=True)
+    console.print(
+        f"  [white]✓ Workspace directory:[/white] [bold white]{workspace_dir}[/bold white]\n"
+    )
+
+    # ── Step 3: LLM provider API keys ────────────────────────────────────────
+    console.print(
+        Rule(
+            "[bold red]Step 3 — LLM Provider API Keys[/bold red]",
+            style="dim red",
+        )
+    )
+    console.print()
+
+    providers = [
+        ("OPENAI_API_KEY", "OpenAI", "gpt-4o, gpt-5.x"),
+        (
+            "ANTHROPIC_API_KEY",
+            "Anthropic",
+            "claude-opus-4-6, claude-sonnet-4-6",
+        ),
+        ("GOOGLE_API_KEY", "Google", "gemini-2.0-flash, gemini-pro"),
+        (
+            "GROQ_API_KEY",
+            "Groq",
+            "llama-3.x, mixtral — fast inference",
+        ),
+        ("MISTRAL_API_KEY", "Mistral", "mistral-large, codestral"),
+        (
+            "TOGETHER_API_KEY",
+            "Together AI",
+            "llama, qwen — open weights",
+        ),
+        ("COHERE_API_KEY", "Cohere", "command-r-plus"),
+        ("XAI_API_KEY", "xAI / Grok", "grok-4, grok-beta"),
+        (
+            "OPENROUTER_API_KEY",
+            "OpenRouter",
+            "any model via openrouter.ai",
+        ),
+    ]
+
+    table = Table(
+        show_header=True,
+        header_style="bold red",
+        border_style="dim red",
+        padding=(0, 2),
+        title="Available Providers",
+    )
+    table.add_column("#", style="bold white", width=4)
+    table.add_column("Provider", style="bold white", width=14)
+    table.add_column("Models / Notes", style="dim white")
+    for idx, (_, name, note) in enumerate(providers, 1):
+        table.add_row(str(idx), name, note)
+    console.print(table)
+    console.print()
+
+    console.print(
+        "  [dim white]Enter the numbers of the providers you want to configure,[/dim white]\n"
+        "  [dim white]separated by commas. Type [bold white]all[/bold white][dim white] to configure every provider,[/dim white]\n"
+        "  [dim white]or press [bold white]Enter[/bold white][dim white] to skip this step.[/dim white]"
+    )
+    selection_raw = (
+        console.input(
+            "  [bold white]Providers[/bold white] [dim white](e.g. 1,2 or all)[/dim white]: "
+        )
+        .strip()
+        .lower()
+    )
+
+    selected_providers: List[tuple] = []
+    if selection_raw == "all":
+        selected_providers = providers
+    elif selection_raw:
+        selected_indices = {
+            int(x.strip())
+            for x in selection_raw.split(",")
+            if x.strip().isdigit()
+        }
+        selected_providers = [
+            p
+            for i, p in enumerate(providers, 1)
+            if i in selected_indices
+        ]
+
+    console.print()
+    collected_keys: Dict[str, str] = {}
+
+    for env_var, name, _ in selected_providers:
+        # Check if already set in environment
+        existing = os.environ.get(env_var, "")
+        if existing:
+            console.print(
+                f"  [white]✓ {name}[/white] [dim white]({env_var} already set in environment — "
+                "press Enter to keep, or type a new key)[/dim white]"
+            )
+        else:
+            console.print(
+                f"  [bold white]{name} API Key[/bold white] [dim white]({env_var})[/dim white]"
+            )
+
+        try:
+            key = getpass.getpass(
+                prompt="    Key (hidden): "
+            ).strip()
+        except (EOFError, KeyboardInterrupt):
+            key = ""
+
+        if key:
+            collected_keys[env_var] = key
+            console.print(f"  [white]  ✓ {env_var} saved[/white]")
+        elif existing:
+            console.print(
+                f"  [dim white]  → keeping existing {env_var}[/dim white]"
+            )
+        else:
+            console.print(
+                f"  [dim white]  → {env_var} skipped[/dim white]"
+            )
+        console.print()
+
+    # ── Step 4: Swarms API key (optional) ────────────────────────────────────
+    console.print(
+        Rule(
+            "[bold red]Step 4 — Swarms API Key (optional)[/bold red]",
+            style="dim red",
+        )
+    )
+    console.print()
+    console.print(
+        "  [dim white]Required for [bold white]--marketplace-prompt-id[/bold white][dim white] and the Swarms platform.[/dim white]\n"
+        "  [dim white]Get one at: [bold white]https://swarms.world/platform/api-keys[/bold white][dim white][/dim white]"
+    )
+    try:
+        swarms_key = getpass.getpass(
+            prompt="    SWARMS_API_KEY (hidden, Enter to skip): "
+        ).strip()
+    except (EOFError, KeyboardInterrupt):
+        swarms_key = ""
+    if swarms_key:
+        collected_keys["SWARMS_API_KEY"] = swarms_key
+        console.print("  [white]  ✓ SWARMS_API_KEY saved[/white]")
+    else:
+        console.print(
+            "  [dim white]  → SWARMS_API_KEY skipped[/dim white]"
+        )
+    console.print()
+
+    # ── Step 4: Write .env ───────────────────────────────────────────────────
+    console.print(
+        Rule(
+            "[bold red]Step 4 — Writing Project Files[/bold red]",
+            style="dim red",
+        )
+    )
+    console.print()
+
+    env_path = project_dir / ".env"
+    env_lines = [
+        "# Swarms environment — generated by `swarms init`",
+        "# Add your API keys below. Never commit this file to version control.",
+        "",
+        f"WORKSPACE_DIR={workspace_dir}",
+        "",
+        "# ── LLM Provider Keys ───────────────────────────────────────────────",
+    ]
+    all_provider_vars = [p[0] for p in providers] + ["SWARMS_API_KEY"]
+    for env_var in all_provider_vars:
+        value = collected_keys.get(env_var, "")
+        if value:
+            env_lines.append(f"{env_var}={value}")
+        else:
+            env_lines.append(f"# {env_var}=")
+    env_lines += [
+        "",
+        "# ── Optional Settings ───────────────────────────────────────────────",
+        "# SWARMS_VERBOSE=false",
+        "# SWARMS_LOG_LEVEL=INFO",
+    ]
+
+    env_path.write_text("\n".join(env_lines) + "\n")
+    console.print(f"  [white]✓ .env[/white]               {env_path}")
+    console.print(
+        f"  [white]✓ workspace/[/white]         {workspace_dir}"
+    )
+    console.print()
+
+    # ── Step 5: Validate ─────────────────────────────────────────────────────
+    console.print(
+        Rule(
+            "[bold red]Step 5 — Validating Setup[/bold red]",
+            style="dim red",
+        )
+    )
+    console.print()
+
+    issues: List[str] = []
+
+    # Check at least one LLM key
+    all_llm_vars = [p[0] for p in providers]
+    active_llm_keys = [
+        v
+        for v in all_llm_vars
+        if collected_keys.get(v) or os.environ.get(v)
+    ]
+    if active_llm_keys:
+        console.print(
+            f"  [white]✓ LLM keys configured:[/white] [dim white]{', '.join(active_llm_keys)}[/dim white]"
+        )
+    else:
+        console.print(
+            "  [bold red]✗ No LLM provider key set.[/bold red] "
+            "[dim white]Add at least one key to .env before running agents.[/dim white]"
+        )
+        issues.append("No LLM provider API key configured.")
+
+    # Check workspace dir
+    if workspace_dir.exists():
+        console.print(
+            f"  [white]✓ Workspace directory exists:[/white] [dim white]{workspace_dir}[/dim white]"
+        )
+    else:
+        console.print(
+            f"  [bold red]✗ Workspace directory missing:[/bold red] {workspace_dir}"
+        )
+        issues.append(
+            f"Workspace directory not found: {workspace_dir}"
+        )
+
+    # Check .env readable
+    if env_path.exists() and env_path.stat().st_size > 0:
+        console.print(
+            "  [white]✓ .env file written successfully[/white]"
+        )
+    else:
+        issues.append(".env file is missing or empty.")
+
+    console.print()
+
+    # ── Summary ──────────────────────────────────────────────────────────────
+    if not issues:
+        console.print(
+            Panel(
+                f"[bold white]Your environment is ready![/bold white]\n\n"
+                f"  [dim white]cd[/dim white] [white]{project_dir}[/white]\n"
+                f"  [dim white]then try:[/dim white]\n\n"
+                f"  [bold white]swarms chat[/bold white]                            [dim white]# interactive agent[/dim white]\n"
+                f"  [bold white]swarms heavy-swarm --task '...'[/bold white]        [dim white]# deep analysis[/dim white]\n"
+                f"  [bold white]swarms setup-check[/bold white]                     [dim white]# verify environment[/dim white]",
+                border_style="white",
+                title="[bold white] ✓ Done [/bold white]",
+                title_align="left",
+                padding=(1, 2),
+            )
+        )
+    else:
+        issue_text = "\n".join(f"  • {i}" for i in issues)
+        console.print(
+            Panel(
+                f"[bold white]Project created with warnings:[/bold white]\n\n"
+                f"[bold red]{issue_text}[/bold red]\n\n"
+                f"[dim white]Edit [bold white]{env_path}[/bold white][dim white] to add missing keys, then run "
+                f"[bold white]swarms setup-check[/bold white][dim white] to verify.[/dim white]",
+                border_style="red",
+                title="[bold red] ⚠ Completed with issues [/bold red]",
+                title_align="left",
+                padding=(1, 2),
+            )
+        )
+
+
 def route_command(args: argparse.Namespace) -> None:
     """
     Route the command to the appropriate handler function.
@@ -1585,6 +1953,7 @@ def route_command(args: argparse.Namespace) -> None:
         like opening URLs or displaying help.
     """
     command_handlers: Dict[str, Any] = {
+        "init": handle_init,
         "onboarding": handle_onboarding,
         "get-api-key": lambda args: get_api_key(),
         "check-login": lambda args: check_login(),
@@ -1650,12 +2019,12 @@ def main() -> None:
         except Exception as e:
             console.print(
                 f"\n[{COLORS['error']}]Oops! An unexpected error occurred while running your command:[/{COLORS['error']}]\n"
-                f"[bold]{str(e)}[/bold]\n\n"
+                f"[bold]{rich_escape(str(e))}[/bold]\n\n"
                 "[bold white]Troubleshooting tips:[/bold white]\n"
                 "- Double-check your arguments and the command structure\n"
                 "- Try 'swarms help' for command details and examples\n"
                 "- If the issue persists, please report it at https://github.com/OpenAgentsInc/swarms/issues\n\n"
-                f"[dim]Traceback:[/dim]\n{traceback.format_exc()}"
+                f"[dim]Traceback:[/dim]\n{rich_escape(traceback.format_exc())}"
             )
             return
     except Exception as error:

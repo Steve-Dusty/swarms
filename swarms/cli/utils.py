@@ -100,6 +100,7 @@ def show_ascii_art():
     # ── Pre-header startup tip ───────────────────────────────────────────────
     startup_tips = [
         # Commands
+        "New project? Run [bold]swarms init[/bold] to scaffold .env and workspace",
         "Start chatting instantly with [bold]swarms chat[/bold]",
         "Verify your setup anytime with [bold]swarms setup-check[/bold]",
         "See every command with [bold]swarms --help[/bold]",
@@ -160,6 +161,7 @@ def show_ascii_art():
 
     # ── Rotating command tip ──────────────────────────────────────────────────
     tips = [
+        "[bold white]swarms init[/bold white] — scaffold a new project with .env and workspace",
         "[bold white]swarms chat[/bold white] — interactive autonomous agent",
         "[bold white]swarms agent --name '...' --task '...'[/bold white] — one-shot agent",
         "[bold white]swarms autoswarm --task '...'[/bold white] — auto-generate a swarm",

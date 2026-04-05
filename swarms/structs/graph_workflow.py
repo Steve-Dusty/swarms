@@ -1802,7 +1802,11 @@ class GraphWorkflow:
                     for node_id in layer:
                         try:
                             prompt = self._build_prompt(
-                                node_id, task, prev_outputs, layer_idx, loop
+                                node_id,
+                                task,
+                                prev_outputs,
+                                layer_idx,
+                                loop,
                             )
                             layer_data.append(
                                 (
@@ -1944,9 +1948,9 @@ class GraphWorkflow:
                 # Accumulate per-loop results (keyed to avoid overwriting)
                 if self.max_loops > 1:
                     for node_id, output in execution_results.items():
-                        all_loop_results[
-                            f"{node_id}_loop_{loop}"
-                        ] = output
+                        all_loop_results[f"{node_id}_loop_{loop}"] = (
+                            output
+                        )
 
             # Build final return value
             total_execution_time = time.time() - run_start_time

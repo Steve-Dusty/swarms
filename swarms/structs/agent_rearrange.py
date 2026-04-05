@@ -694,9 +694,9 @@ class AgentRearrange:
                     # Use indexed key to preserve all outputs
                     # from repeated agents (e.g., "Writer_0", "Writer_2")
                     if agent_name in response_dict:
-                        response_dict[
-                            f"{agent_name}_{task_idx}"
-                        ] = result
+                        response_dict[f"{agent_name}_{task_idx}"] = (
+                            result
+                        )
                     else:
                         response_dict[agent_name] = result
 
