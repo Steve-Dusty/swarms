@@ -19,6 +19,7 @@ error handling, progress feedback, and user-friendly output formatting.
 import argparse
 import getpass
 import os
+import subprocess
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
@@ -1959,8 +1960,8 @@ def route_command(args: argparse.Namespace) -> None:
         "load-markdown": handle_load_markdown,
         "agent": handle_agent,
         "chat": handle_chat,
-        "upgrade": lambda args: os.system(
-            "pip install --upgrade swarms"
+        "upgrade": lambda args: subprocess.run(
+            ["pip", "install", "--upgrade", "swarms"], check=True
         ),
         "autoswarm": handle_autoswarm,
         "setup-check": lambda args: run_setup_check(

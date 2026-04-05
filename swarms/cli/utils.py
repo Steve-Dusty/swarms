@@ -563,9 +563,11 @@ def check_login():
     Returns:
         bool: True if login is successful
     """
-    cache_file = "cache.txt"
+    cache_dir = Path.home() / ".cache" / "swarms"
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    cache_file = cache_dir / "auth"
 
-    if os.path.exists(cache_file):
+    if cache_file.exists():
         with open(cache_file, "r") as f:
             if f.read() == "logged_in":
                 console.print(
@@ -578,6 +580,7 @@ def check_login():
         time.sleep(1)
         with open(cache_file, "w") as f:
             f.write("logged_in")
+        cache_file.chmod(0o600)
         progress.remove_task(task)
 
     console.print(
