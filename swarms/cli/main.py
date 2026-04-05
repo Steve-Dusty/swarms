@@ -1765,9 +1765,7 @@ def handle_init(args: argparse.Namespace) -> None:
             )
 
         try:
-            key = getpass.getpass(
-                prompt="    Key (hidden): "
-            ).strip()
+            key = getpass.getpass(prompt="    Key (hidden): ").strip()
         except (EOFError, KeyboardInterrupt):
             key = ""
 
