@@ -1630,7 +1630,7 @@ def handle_init(args: argparse.Namespace) -> None:
             "  [dim white](Press Enter to use the current directory)[/dim white]"
         )
         raw = console.input(
-            f"  [bold white]Project directory[/bold white] [dim white]\\[{rich_escape(default_dir)}\\][/dim white]: "
+            f"  [bold white]Project directory[/bold white] [dim white]\\[{rich_escape(default_dir)}][/dim white]: "
         ).strip()
         project_dir = (
             Path(raw).expanduser().resolve()
@@ -1656,7 +1656,7 @@ def handle_init(args: argparse.Namespace) -> None:
     )
     default_workspace = str(project_dir / "workspace")
     raw = console.input(
-        f"  [bold white]Workspace directory[/bold white] [dim white]\\[{rich_escape(default_workspace)}\\][/dim white]: "
+        f"  [bold white]Workspace directory[/bold white] [dim white]\\[{rich_escape(default_workspace)}][/dim white]: "
     ).strip()
     workspace_dir = (
         Path(raw).expanduser().resolve()
