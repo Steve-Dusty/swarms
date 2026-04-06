@@ -967,9 +967,7 @@ def _check_bash_command(command: str) -> str | None:
             return f"Command blocked: matches dangerous pattern {pattern!r}."
     for regex in _BASH_BLOCKLIST_REGEX:
         if regex.search(command):
-            return (
-                "Command blocked: matches dangerous regex pattern."
-            )
+            return "Command blocked: matches dangerous regex pattern."
     return None
 
 
