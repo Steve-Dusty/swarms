@@ -5715,9 +5715,7 @@ Summary: {summary}
         available_models = self.get_available_models()
         if self.current_model_index < len(available_models):
             return available_models[self.current_model_index]
-        return (
-            available_models[0] if available_models else "gpt-5.4"
-        )
+        return available_models[0] if available_models else "gpt-5.4"
 
     def switch_to_next_model(self) -> bool:
         """

@@ -218,6 +218,7 @@ class SwarmRouter:
         heavy_swarm_question_agent_model_name: str = "gpt-4.1",
         heavy_swarm_worker_model_name: str = "gpt-4.1",
         heavy_swarm_swarm_show_output: bool = True,
+        heavy_swarm_use_grok_agents: bool = False,
         telemetry_enabled: bool = False,
         council_judge_model_name: str = "gpt-5.4",  # Add missing model_name attribute
         verbose: bool = False,
@@ -267,6 +268,7 @@ class SwarmRouter:
         self.heavy_swarm_swarm_show_output = (
             heavy_swarm_swarm_show_output
         )
+        self.heavy_swarm_use_grok_agents = heavy_swarm_use_grok_agents
         self.chairman_model = chairman_model
         self.autosave = autosave
         self.autosave_use_timestamp = autosave_use_timestamp
@@ -491,6 +493,7 @@ class SwarmRouter:
             worker_tools=self.worker_tools,
             aggregation_strategy=self.aggregation_strategy,
             show_dashboard=False,
+            use_grok_agents=self.heavy_swarm_use_grok_agents,
         )
 
     def _create_llm_council(self, *args, **kwargs):

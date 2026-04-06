@@ -1582,6 +1582,7 @@ class GraphWorkflow:
         task: str,
         prev_outputs: Dict[str, Any],
         layer_idx: int,
+        loop_idx: int = 0,
     ) -> str:
         """
         Optimized prompt building with minimal string operations.
@@ -1590,14 +1591,17 @@ class GraphWorkflow:
             node_id (str): The node ID to build a prompt for.
             task (str): The main task.
             prev_outputs (Dict[str, Any]): Previous outputs from predecessor nodes.
+                For loop_idx > 0 this also contains end-point outputs from the
+                previous loop iteration.
             layer_idx (int): The current layer index.
+            loop_idx (int): The current loop iteration (0-based).
 
         Returns:
             str: The built prompt.
         """
         if self.verbose:
             logger.debug(
-                f"Building prompt for node {node_id} (layer {layer_idx})"
+                f"Building prompt for node {node_id} (layer {layer_idx}, loop {loop_idx})"
             )
 
         try:
@@ -1625,6 +1629,24 @@ class GraphWorkflow:
                     f"If you agree with their analysis, say so and expand on it. "
                     f"If you disagree or find gaps, explain why and provide corrections or improvements. "
                     f"Your goal is to collaborate and create a comprehensive response that builds on all previous work."
+                )
+            elif loop_idx > 0 and layer_idx == 0 and prev_outputs:
+                # Entry-point nodes in subsequent loops receive end-point
+                # outputs from the previous loop as refinement context.
+                prior_parts = [
+                    f"Output from {nid} (previous iteration):\n{out}"
+                    for nid, out in prev_outputs.items()
+                    if out is not None
+                ]
+                prior_context = "\n\n".join(prior_parts)
+
+                prompt = (
+                    f"Original Task: {task}\n\n"
+                    f"Previous Iteration Outputs:\n{prior_context}\n\n"
+                    f"Instructions: This is iteration {loop_idx + 1} of the workflow. "
+                    f"Review the outputs from the previous iteration above. "
+                    f"Refine, correct, or expand upon the previous results. "
+                    f"Focus on improving accuracy, filling gaps, and strengthening the analysis."
                 )
             else:
                 prompt = (
@@ -1691,6 +1713,10 @@ class GraphWorkflow:
         """
         Run the workflow graph with optimized parallel agent execution.
 
+        When max_loops > 1, the graph is executed multiple times. End-point
+        outputs from each loop are fed as additional context into the next
+        loop so that agents can iteratively refine their results.
+
         Args:
             task (Optional[str]): Task to execute. Uses self.task if not provided.
             img (Optional[str]): Optional image path for multimodal tasks.
@@ -1698,7 +1724,11 @@ class GraphWorkflow:
             **kwargs: Additional keyword arguments.
 
         Returns:
-            Dict[str, Any]: Execution results from all nodes.
+            Dict[str, Any]: Execution results keyed by node ID.
+                When max_loops == 1, returns the single loop's results.
+                When max_loops > 1, returns a dict with per-loop results
+                keyed as ``{node_id}_loop_{loop_number}`` plus the final
+                loop's results under the plain ``node_id`` keys.
         """
         run_start_time = time.time()
 
@@ -1731,6 +1761,11 @@ class GraphWorkflow:
 
         try:
             loop = 0
+            # Accumulated results across all loops
+            all_loop_results: Dict[str, Any] = {}
+            # End-point outputs carried forward as context for the next loop
+            prior_loop_end_outputs: Dict[str, Any] = {}
+
             while loop < self.max_loops:
                 loop_start_time = time.time()
 
@@ -1747,6 +1782,11 @@ class GraphWorkflow:
                 execution_results = {}
                 prev_outputs = {}
 
+                # Seed entry-point nodes with end-point outputs from the
+                # previous loop so agents can refine iteratively.
+                if prior_loop_end_outputs:
+                    prev_outputs.update(prior_loop_end_outputs)
+
                 for layer_idx, layer in enumerate(
                     self._sorted_layers
                 ):
@@ -1762,7 +1802,11 @@ class GraphWorkflow:
                     for node_id in layer:
                         try:
                             prompt = self._build_prompt(
-                                node_id, task, prev_outputs, layer_idx
+                                node_id,
+                                task,
+                                prev_outputs,
+                                layer_idx,
+                                loop,
                             )
                             layer_data.append(
                                 (
@@ -1894,20 +1938,40 @@ class GraphWorkflow:
                         f"Loop {loop}/{self.max_loops} completed in {loop_execution_time:.3f}s"
                     )
 
-                # For now, we still return after the first loop
-                # This maintains backward compatibility
-                total_execution_time = time.time() - run_start_time
+                # Capture end-point outputs to pass as context into the next loop
+                prior_loop_end_outputs = {
+                    node_id: execution_results[node_id]
+                    for node_id in self.end_points
+                    if node_id in execution_results
+                }
 
-                logger.info(
-                    f"GraphWorkflow execution completed: {len(execution_results)} agents executed in {total_execution_time:.3f}s"
+                # Accumulate per-loop results (keyed to avoid overwriting)
+                if self.max_loops > 1:
+                    for node_id, output in execution_results.items():
+                        all_loop_results[f"{node_id}_loop_{loop}"] = (
+                            output
+                        )
+
+            # Build final return value
+            total_execution_time = time.time() - run_start_time
+
+            logger.info(
+                f"GraphWorkflow execution completed: {len(execution_results)} agents executed across {self.max_loops} loop(s) in {total_execution_time:.3f}s"
+            )
+
+            if self.verbose:
+                logger.debug(
+                    f"Final execution results: {list(execution_results.keys())}"
                 )
 
-                if self.verbose:
-                    logger.debug(
-                        f"Final execution results: {list(execution_results.keys())}"
-                    )
+            # For single-loop (the common case), return results directly.
+            # For multi-loop, merge the per-loop history with the final
+            # loop's results so callers can access both.
+            if self.max_loops > 1:
+                all_loop_results.update(execution_results)
+                return all_loop_results
 
-                return execution_results
+            return execution_results
 
         except Exception as e:
             total_time = time.time() - run_start_time
@@ -2300,6 +2364,187 @@ class GraphWorkflow:
                 f"Error in GraphWorkflow.visualize_simple: {e}"
             )
             raise e
+
+    def to_spec(self) -> Dict[str, Any]:
+        """
+        Serialize the workflow topology to a lightweight plain-dict spec.
+
+        Unlike ``to_json()``, this method does **not** attempt to serialize the
+        Agent objects themselves — it only records each agent's ``agent_name``
+        so that the spec can be version-controlled, diffed, and shared without
+        requiring agent implementation details.
+
+        Returns:
+            Dict[str, Any]: A dictionary containing:
+                - ``name``, ``description``, ``max_loops`` — workflow metadata.
+                - ``nodes`` — list of ``{"id": ..., "agent_name": ..., "metadata": ...}`` dicts.
+                - ``edges`` — list of ``{"source": ..., "target": ..., "metadata": ...}`` dicts.
+                - ``entry_points`` — list of entry-point node IDs.
+                - ``end_points`` — list of end-point node IDs.
+
+        Example::
+
+            spec = workflow.to_spec()
+            # version-control or share `spec`
+            reconstructed = GraphWorkflow.from_topology_spec(spec, agent_registry)
+        """
+        return {
+            "name": self.name,
+            "description": self.description,
+            "max_loops": self.max_loops,
+            # Sorted for deterministic output — two equivalent workflows
+            # built in different insertion orders produce identical specs.
+            "nodes": [
+                {
+                    "id": node_id,
+                    "agent_name": getattr(
+                        node.agent, "agent_name", node_id
+                    ),
+                    "metadata": node.metadata,
+                }
+                for node_id, node in sorted(self.nodes.items())
+            ],
+            "edges": [
+                {
+                    "source": e.source,
+                    "target": e.target,
+                    "metadata": e.metadata,
+                }
+                for e in sorted(
+                    self.edges, key=lambda e: (e.source, e.target)
+                )
+            ],
+            "entry_points": sorted(self.entry_points),
+            "end_points": sorted(self.end_points),
+        }
+
+    def save_spec(self, path: str) -> None:
+        """
+        Save the workflow topology spec produced by :meth:`to_spec` to a JSON file.
+
+        This is the recommended way to persist a workflow definition for
+        version control, sharing, or later reconstruction via
+        :meth:`from_topology_spec`.
+
+        Args:
+            path (str): Filesystem path to write the JSON file to.
+
+        Example::
+
+            workflow.save_spec("my_workflow.json")
+        """
+        dir_name = os.path.dirname(path)
+        if dir_name:
+            os.makedirs(dir_name, exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(self.to_spec(), f, indent=2, default=str)
+        if self.verbose:
+            logger.info(f"Workflow spec saved to {path}")
+
+    @classmethod
+    def from_topology_spec(
+        cls,
+        spec: Dict[str, Any],
+        agent_registry: Dict[str, "Agent"],
+        **kwargs: Any,
+    ) -> "GraphWorkflow":
+        """
+        Reconstruct a :class:`GraphWorkflow` from a topology spec and an agent registry.
+
+        This is the counterpart to :meth:`to_spec` / :meth:`save_spec`.  The
+        spec describes *which* agents exist and how they are connected; the
+        registry supplies the live ``Agent`` objects that implement each node.
+
+        Args:
+            spec (Dict[str, Any]): A topology spec as returned by :meth:`to_spec`
+                or loaded from a file written by :meth:`save_spec`.
+            agent_registry (Dict[str, Agent]): Mapping from ``agent_name`` to
+                the corresponding ``Agent`` instance.  Every agent referenced in
+                ``spec["nodes"]`` must appear in the registry.
+            **kwargs: Additional keyword arguments forwarded to the
+                :class:`GraphWorkflow` constructor (e.g. ``verbose``, ``backend``).
+
+        Returns:
+            GraphWorkflow: A fully initialised workflow with the topology
+            described by *spec* and agents resolved from *agent_registry*.
+
+        Raises:
+            ValueError: If *spec* is missing required keys, any node/edge dict
+                is malformed, or an ``agent_name`` is absent from
+                *agent_registry*.
+
+        Example::
+
+            with open("my_workflow.json") as f:
+                spec = json.load(f)
+
+            registry = {"Researcher": researcher_agent, "Writer": writer_agent}
+            workflow = GraphWorkflow.from_topology_spec(spec, registry)
+            workflow.run("Write a report on AI trends")
+        """
+        if not isinstance(spec, dict):
+            raise ValueError(
+                f"spec must be a dict, got {type(spec).__name__}"
+            )
+        if "nodes" not in spec:
+            raise ValueError("spec is missing required key 'nodes'")
+
+        # Validate per-node required keys
+        for i, n in enumerate(spec.get("nodes", [])):
+            for key in ("id", "agent_name"):
+                if key not in n:
+                    raise ValueError(
+                        f"Node at index {i} is missing required key '{key}'"
+                    )
+
+        # Validate per-edge required keys
+        for i, e in enumerate(spec.get("edges", [])):
+            for key in ("source", "target"):
+                if key not in e:
+                    raise ValueError(
+                        f"Edge at index {i} is missing required key '{key}'"
+                    )
+
+        # Check all referenced agents exist in the registry
+        missing = [
+            n["agent_name"]
+            for n in spec["nodes"]
+            if n["agent_name"] not in agent_registry
+        ]
+        if missing:
+            raise ValueError(
+                f"The following agent names are referenced in the spec but not "
+                f"found in agent_registry: {missing}"
+            )
+
+        nodes = {
+            n["id"]: Node(
+                id=n["id"],
+                agent=agent_registry[n["agent_name"]],
+                metadata=n.get("metadata") or {},
+            )
+            for n in spec["nodes"]
+        }
+
+        edges = [
+            Edge(
+                source=e["source"],
+                target=e["target"],
+                metadata=e.get("metadata") or {},
+            )
+            for e in spec.get("edges", [])
+        ]
+
+        return cls(
+            name=spec.get("name", "Loaded-Workflow"),
+            description=spec.get("description", ""),
+            max_loops=spec.get("max_loops", 1),
+            nodes=nodes,
+            edges=edges,
+            entry_points=spec.get("entry_points") or [],
+            end_points=spec.get("end_points") or [],
+            **kwargs,
+        )
 
     def to_json(
         self,

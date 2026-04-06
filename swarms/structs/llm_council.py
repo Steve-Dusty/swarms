@@ -10,19 +10,20 @@ The council demonstrates how different models evaluate and rank each other's wor
 often selecting responses from other models as superior to their own.
 """
 
-from typing import Dict, List, Optional
 import random
+from typing import Dict, List, Optional
+
 from swarms.structs.agent import Agent
+from swarms.structs.conversation import Conversation
 from swarms.structs.multi_agent_exec import (
-    run_agents_concurrently,
     batched_grid_agent_execution,
+    run_agents_concurrently,
 )
+from swarms.structs.swarm_id import swarm_id
 from swarms.utils.history_output_formatter import (
     HistoryOutputType,
     history_output_formatter,
 )
-from swarms.structs.conversation import Conversation
-from swarms.structs.swarm_id import swarm_id
 
 
 def get_gpt_councilor_prompt() -> str:
