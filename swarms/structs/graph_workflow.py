@@ -1588,6 +1588,7 @@ class GraphWorkflow:
         task: str,
         prev_outputs: Dict[str, Any],
         layer_idx: int,
+        loop_idx: int = 0,
     ) -> str:
         """
         Optimized prompt building with minimal string operations.
@@ -1596,14 +1597,17 @@ class GraphWorkflow:
             node_id (str): The node ID to build a prompt for.
             task (str): The main task.
             prev_outputs (Dict[str, Any]): Previous outputs from predecessor nodes.
+                For loop_idx > 0 this also contains end-point outputs from the
+                previous loop iteration.
             layer_idx (int): The current layer index.
+            loop_idx (int): The current loop iteration (0-based).
 
         Returns:
             str: The built prompt.
         """
         if self.verbose:
             logger.debug(
-                f"Building prompt for node {node_id} (layer {layer_idx})"
+                f"Building prompt for node {node_id} (layer {layer_idx}, loop {loop_idx})"
             )
 
         try:
@@ -1631,6 +1635,24 @@ class GraphWorkflow:
                     f"If you agree with their analysis, say so and expand on it. "
                     f"If you disagree or find gaps, explain why and provide corrections or improvements. "
                     f"Your goal is to collaborate and create a comprehensive response that builds on all previous work."
+                )
+            elif loop_idx > 0 and layer_idx == 0 and prev_outputs:
+                # Entry-point nodes in subsequent loops receive end-point
+                # outputs from the previous loop as refinement context.
+                prior_parts = [
+                    f"Output from {nid} (previous iteration):\n{out}"
+                    for nid, out in prev_outputs.items()
+                    if out is not None
+                ]
+                prior_context = "\n\n".join(prior_parts)
+
+                prompt = (
+                    f"Original Task: {task}\n\n"
+                    f"Previous Iteration Outputs:\n{prior_context}\n\n"
+                    f"Instructions: This is iteration {loop_idx + 1} of the workflow. "
+                    f"Review the outputs from the previous iteration above. "
+                    f"Refine, correct, or expand upon the previous results. "
+                    f"Focus on improving accuracy, filling gaps, and strengthening the analysis."
                 )
             else:
                 prompt = (
@@ -1697,6 +1719,10 @@ class GraphWorkflow:
         """
         Run the workflow graph with optimized parallel agent execution.
 
+        When max_loops > 1, the graph is executed multiple times. End-point
+        outputs from each loop are fed as additional context into the next
+        loop so that agents can iteratively refine their results.
+
         Args:
             task (Optional[str]): Task to execute. Uses self.task if not provided.
             img (Optional[str]): Optional image path for multimodal tasks.
@@ -1704,7 +1730,11 @@ class GraphWorkflow:
             **kwargs: Additional keyword arguments.
 
         Returns:
-            Dict[str, Any]: Execution results from all nodes.
+            Dict[str, Any]: Execution results keyed by node ID.
+                When max_loops == 1, returns the single loop's results.
+                When max_loops > 1, returns a dict with per-loop results
+                keyed as ``{node_id}_loop_{loop_number}`` plus the final
+                loop's results under the plain ``node_id`` keys.
         """
         run_start_time = time.time()
 
@@ -1737,6 +1767,11 @@ class GraphWorkflow:
 
         try:
             loop = 0
+            # Accumulated results across all loops
+            all_loop_results: Dict[str, Any] = {}
+            # End-point outputs carried forward as context for the next loop
+            prior_loop_end_outputs: Dict[str, Any] = {}
+
             while loop < self.max_loops:
                 loop_start_time = time.time()
 
@@ -1759,6 +1794,11 @@ class GraphWorkflow:
                 task_key = hashlib.sha256(
                     task.encode("utf-8")
                 ).hexdigest()[:16]
+
+                # Seed entry-point nodes with end-point outputs from the
+                # previous loop so agents can refine iteratively.
+                if prior_loop_end_outputs:
+                    prev_outputs.update(prior_loop_end_outputs)
 
                 for layer_idx, layer in enumerate(
                     self._sorted_layers
@@ -1823,7 +1863,7 @@ class GraphWorkflow:
                     for node_id in layer:
                         try:
                             prompt = self._build_prompt(
-                                node_id, task, prev_outputs, layer_idx
+                                node_id, task, prev_outputs, layer_idx, loop
                             )
                             layer_data.append(
                                 (
@@ -1989,20 +2029,40 @@ class GraphWorkflow:
                         f"Loop {loop}/{self.max_loops} completed in {loop_execution_time:.3f}s"
                     )
 
-                # For now, we still return after the first loop
-                # This maintains backward compatibility
-                total_execution_time = time.time() - run_start_time
+                # Capture end-point outputs to pass as context into the next loop
+                prior_loop_end_outputs = {
+                    node_id: execution_results[node_id]
+                    for node_id in self.end_points
+                    if node_id in execution_results
+                }
 
-                logger.info(
-                    f"GraphWorkflow execution completed: {len(execution_results)} agents executed in {total_execution_time:.3f}s"
+                # Accumulate per-loop results (keyed to avoid overwriting)
+                if self.max_loops > 1:
+                    for node_id, output in execution_results.items():
+                        all_loop_results[
+                            f"{node_id}_loop_{loop}"
+                        ] = output
+
+            # Build final return value
+            total_execution_time = time.time() - run_start_time
+
+            logger.info(
+                f"GraphWorkflow execution completed: {len(execution_results)} agents executed across {self.max_loops} loop(s) in {total_execution_time:.3f}s"
+            )
+
+            if self.verbose:
+                logger.debug(
+                    f"Final execution results: {list(execution_results.keys())}"
                 )
 
-                if self.verbose:
-                    logger.debug(
-                        f"Final execution results: {list(execution_results.keys())}"
-                    )
+            # For single-loop (the common case), return results directly.
+            # For multi-loop, merge the per-loop history with the final
+            # loop's results so callers can access both.
+            if self.max_loops > 1:
+                all_loop_results.update(execution_results)
+                return all_loop_results
 
-                return execution_results
+            return execution_results
 
         except Exception as e:
             total_time = time.time() - run_start_time

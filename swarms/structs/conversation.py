@@ -93,8 +93,7 @@ class Conversation:
         conversations_dir: Optional[str] = None,
         export_method: str = "json",
         dynamic_context_window: bool = True,
-        caching: bool = True,
-        cache_enabled: bool = True,
+        cache_enabled: bool = False,
         output_metadata: bool = False,
     ):
 
@@ -118,9 +117,7 @@ class Conversation:
         self.token_count = token_count
         self.export_method = export_method
         self.dynamic_context_window = dynamic_context_window
-        # Ensure an explicit `caching=False` is respected; only fall back to
-        # `cache_enabled` when `caching` is not explicitly set (i.e., is None).
-        self.caching = cache_enabled if caching is None else caching
+        self.caching = cache_enabled
         self.output_metadata = output_metadata
 
         if self.name is None:
@@ -516,16 +513,35 @@ class Conversation:
 
         return counts
 
-    def return_history_as_string(self):
+    def return_history_as_string(self) -> str:
         """Return the conversation history as a string.
+
+        When caching is enabled the result is memoised and returned on
+        subsequent calls until the history is mutated (any add / delete /
+        update operation sets ``_str_cache`` back to ``None``).
 
         Returns:
             str: The conversation history formatted as a string.
         """
+        if not self.caching:
+            return self._build_history_string()
+
+        if self._str_cache is None:
+            self._cache_misses += 1
+            self._str_cache = self._build_history_string()
+            self._last_cached_tokens = count_tokens(
+                self._str_cache, self.tokenizer_model_name
+            )
+        else:
+            self._cache_hits += 1
+
+        return self._str_cache
+
+    def _build_history_string(self) -> str:
+        """Build the raw history string without any caching layer."""
         if self.dynamic_context_window is True:
             return self.dynamic_auto_chunking()
-        else:
-            return self._return_history_as_string_worker()
+        return self._return_history_as_string_worker()
 
     def _return_history_as_string_worker(self):
         formatted_messages = []
@@ -538,41 +554,25 @@ class Conversation:
         return "\n\n".join(formatted_messages)
 
     def get_str(self) -> str:
-        """Get the conversation history as a string.
+        """Alias for :meth:`return_history_as_string` (kept for compatibility).
 
         Returns:
-            str: The conversation history.
+            str: The conversation history formatted as a string.
         """
-        if not self.caching:
-            return self.return_history_as_string()
-        if self._str_cache is None:
-            self._cache_misses += 1
-            self._str_cache = self.return_history_as_string()
-            self._last_cached_tokens = count_tokens(
-                self._str_cache, self.tokenizer_model_name
-            )
-        else:
-            self._cache_hits += 1
-        return self._str_cache
+        return self.return_history_as_string()
 
     def get_cache_stats(self) -> Dict[str, Any]:
-        """Return cache performance statistics for get_str().
+        """Return cache performance statistics for :meth:`return_history_as_string`.
 
         Returns:
             Dict[str, Any]: A dictionary with hits, misses, cached_tokens,
-                            total_tokens, and hit_rate.
+                            and hit_rate.
         """
         total_calls = self._cache_hits + self._cache_misses
-        cached_tokens = self._last_cached_tokens
-        total_tokens = (
-            self._cache_misses * cached_tokens
-            + self._cache_hits * cached_tokens
-        )
         return {
             "hits": self._cache_hits,
             "misses": self._cache_misses,
-            "cached_tokens": cached_tokens,
-            "total_tokens": total_tokens,
+            "cached_tokens": self._last_cached_tokens,
             "hit_rate": (
                 self._cache_hits / total_calls
                 if total_calls > 0

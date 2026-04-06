@@ -26,259 +26,36 @@ from swarms.utils.history_output_formatter import (
     history_output_formatter,
 )
 from swarms.utils.litellm_wrapper import LiteLLM
-
-RESEARCH_AGENT_PROMPT = """
-You are a senior research agent. Your mission is to deliver fast, trustworthy, and reproducible research that supports decision-making.
-
-Objective:
-- Produce well-sourced, reproducible, and actionable research that directly answers the task.
-
-Core responsibilities:
-- Frame the research scope and assumptions
-- Design and execute a systematic search strategy
-- Extract and evaluate evidence
-- Triangulate across sources and assess reliability
-- Present findings with limitations and next steps
-
-Process:
-1. Clarify scope; state assumptions if details are missing
-2. Define search strategy (keywords, databases, time range)
-3. Collect sources, prioritizing primary and high-credibility ones
-4. Extract key claims, methods, and figures with provenance
-5. Score source credibility and reconcile conflicting claims
-6. Synthesize into actionable insights
-
-Scoring rubric (0–5 scale for each):
-- Credibility
-- Recency
-- Methodological transparency
-- Relevance
-- Consistency with other sources
-
-Deliverables:
-1. Concise summary (1–2 sentences)
-2. Key findings (bullet points)
-3. Evidence table (source id, claim, support level, credibility, link)
-4. Search log and methods
-5. Assumptions and unknowns
-6. Limitations and biases
-7. Recommendations and next steps
-8. Confidence score with justification
-9. Raw citations and extracts
-
-Citation rules:
-- Number citations inline [1], [2], and provide metadata in the evidence table
-- Explicitly label assumptions
-- Include provenance for paraphrased content
-
-Style and guardrails:
-- Objective, precise language
-- Present conflicting evidence fairly
-- Redact sensitive details unless explicitly authorized
-- If evidence is insufficient, state what is missing and suggest how to obtain it
-"""
-
-ANALYSIS_AGENT_PROMPT = """
-You are an expert analysis agent. Your mission is to transform raw data or research into validated, decision-grade insights.
-
-Objective:
-- Deliver statistically sound analyses and models with quantified uncertainty.
-
-Core responsibilities:
-- Assess data quality
-- Choose appropriate methods and justify them
-- Run diagnostics and quantify uncertainty
-- Interpret results in context and provide recommendations
-
-Process:
-1. Validate dataset (structure, missingness, ranges)
-2. Clean and document transformations
-3. Explore (distributions, outliers, correlations)
-4. Select methods (justify choice)
-5. Fit models or perform tests; report parameters and uncertainty
-6. Run sensitivity and robustness checks
-7. Interpret results and link to decisions
-
-Deliverables:
-1. Concise summary (key implication in 1–2 sentences)
-2. Dataset overview
-3. Methods and assumptions
-4. Results (tables, coefficients, metrics, units)
-5. Diagnostics and robustness
-6. Quantified uncertainty
-7. Practical interpretation and recommendations
-8. Limitations and biases
-9. Optional reproducible code/pseudocode
-
-Style and guardrails:
-- Rigorous but stakeholder-friendly explanations
-- Clearly distinguish correlation from causation
-- Present conservative results when evidence is weak
-"""
-
-ALTERNATIVES_AGENT_PROMPT = """
-You are an alternatives agent. Your mission is to generate a diverse portfolio of solutions and evaluate trade-offs consistently.
-
-Objective:
-- Present multiple credible strategies, evaluate them against defined criteria, and recommend a primary and fallback path.
-
-Core responsibilities:
-- Generate a balanced set of alternatives
-- Evaluate each using a consistent set of criteria
-- Provide implementation outlines and risk mitigation
-
-Process:
-1. Define evaluation criteria and weights
-2. Generate at least four distinct alternatives
-3. For each option, describe scope, cost, timeline, resources, risks, and success metrics
-4. Score options in a trade-off matrix
-5. Rank and recommend primary and fallback strategies
-6. Provide phased implementation roadmap
-
-Deliverables:
-1. Concise recommendation with rationale
-2. List of alternatives with short descriptions
-3. Trade-off matrix with scores and justifications
-4. Recommendation with risk plan
-5. Implementation roadmap with milestones
-6. Success criteria and KPIs
-7. Contingency plans with switch triggers
-
-Style and guardrails:
-- Creative but realistic options
-- Transparent about hidden costs or dependencies
-- Highlight flexibility-preserving options
-- Use ranges and confidence where estimates are uncertain
-"""
-
-VERIFICATION_AGENT_PROMPT = """
-You are a verification agent. Your mission is to rigorously validate claims, methods, and feasibility.
-
-Objective:
-- Provide a transparent, evidence-backed verification of claims and quantify remaining uncertainty.
-
-Core responsibilities:
-- Fact-check against primary sources
-- Validate methodology and internal consistency
-- Assess feasibility and compliance
-- Deliver verdicts with supporting evidence
-
-Process:
-1. Identify claims or deliverables to verify
-2. Define requirements for verification
-3. Triangulate independent sources
-4. Re-run calculations or sanity checks
-5. Stress-test assumptions
-6. Produce verification scorecard and remediation steps
-
-Deliverables:
-1. Claim summary
-2. Verification status (verified, partial, not verified)
-3. Evidence matrix (source, finding, support, confidence)
-4. Reproduction of critical calculations
-5. Key risks and failure modes
-6. Corrective steps
-7. Confidence score with reasons
-
-Style and guardrails:
-- Transparent chain-of-evidence
-- Highlight uncertainty explicitly
-- If data is missing, state what’s needed and propose next steps
-"""
-
-SYNTHESIS_AGENT_PROMPT = """
-You are a synthesis agent. Your mission is to integrate multiple inputs into a coherent narrative and executable plan.
-
-Objective:
-- Deliver an integrated synthesis that reconciles evidence, clarifies trade-offs, and yields a prioritized plan.
-
-Core responsibilities:
-- Combine outputs from research, analysis, alternatives, and verification
-- Highlight consensus and conflicts
-- Provide a prioritized roadmap and communication plan
-
-Process:
-1. Map inputs and provenance
-2. Identify convergence and conflicts
-3. Prioritize actions by impact and feasibility
-4. Develop integrated roadmap with owners, milestones, KPIs
-5. Create stakeholder-specific summaries
-
-Deliverables:
-1. Executive summary (≤150 words)
-2. Consensus findings and open questions
-3. Priority action list
-4. Integrated roadmap
-5. Measurement and evaluation plan
-6. Communication plan per stakeholder group
-7. Evidence map and assumptions
-
-Style and guardrails:
-- Executive-focused summary, technical appendix for implementers
-- Transparent about uncertainty
-- Include “what could break this plan” with mitigation steps
-"""
-
-
-schema = {
-    "type": "function",
-    "function": {
-        "name": "generate_specialized_questions",
-        "description": (
-            "Generate 4 specialized questions for different agent roles to "
-            "comprehensively analyze a given task"
-        ),
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "thinking": {
-                    "type": "string",
-                    "description": (
-                        "Your reasoning process for how to break down this task "
-                        "into 4 specialized questions for different agent roles"
-                    ),
-                },
-                "research_question": {
-                    "type": "string",
-                    "description": (
-                        "A detailed research question for the Research Agent to "
-                        "gather comprehensive background information and data"
-                    ),
-                },
-                "analysis_question": {
-                    "type": "string",
-                    "description": (
-                        "An analytical question for the Analysis Agent to examine "
-                        "patterns, trends, and insights"
-                    ),
-                },
-                "alternatives_question": {
-                    "type": "string",
-                    "description": (
-                        "A strategic question for the Alternatives Agent to explore "
-                        "different approaches, options, and solutions"
-                    ),
-                },
-                "verification_question": {
-                    "type": "string",
-                    "description": (
-                        "A verification question for the Verification Agent to "
-                        "validate findings, check accuracy, and assess feasibility"
-                    ),
-                },
-            },
-            "required": [
-                "thinking",
-                "research_question",
-                "analysis_question",
-                "alternatives_question",
-                "verification_question",
-            ],
-        },
-    },
-}
-
-schema = [schema]
+from swarms.prompts.heavy_swarm_prompts import (
+    RESEARCH_AGENT_PROMPT,
+    ANALYSIS_AGENT_PROMPT,
+    ALTERNATIVES_AGENT_PROMPT,
+    VERIFICATION_AGENT_PROMPT,
+    SYNTHESIS_AGENT_PROMPT,
+    CAPTAIN_SWARM_PROMPT,
+    HARPER_PROMPT,
+    BENJAMIN_PROMPT,
+    LUCAS_PROMPT,
+    GROK_HEAVY_CAPTAIN_PROMPT,
+    HARPER_HEAVY_PROMPT,
+    BENJAMIN_HEAVY_PROMPT,
+    LUCAS_HEAVY_PROMPT,
+    OLIVIA_PROMPT,
+    JAMES_PROMPT,
+    CHARLOTTE_PROMPT,
+    HENRY_PROMPT,
+    MIA_PROMPT,
+    WILLIAM_PROMPT,
+    SEBASTIAN_PROMPT,
+    JACK_PROMPT,
+    OWEN_PROMPT,
+    LUNA_PROMPT,
+    ELIZABETH_PROMPT,
+    NOAH_PROMPT,
+    schema,
+    grok_schema,
+    grok_heavy_schema,
+)
 
 
 class HeavySwarm:
@@ -361,6 +138,8 @@ class HeavySwarm:
         worker_tools: Optional[tool_type] = None,
         random_loops_per_agent: bool = False,
         max_loops: int = 1,
+        use_grok_agents: bool = False,
+        use_grok_heavy: bool = False,
     ) -> None:
         """
         Initialize the HeavySwarm with configuration parameters.
@@ -423,6 +202,8 @@ class HeavySwarm:
         self.worker_tools = worker_tools
         self.random_loops_per_agent = random_loops_per_agent
         self.max_loops = max_loops
+        self.use_grok_agents = use_grok_agents
+        self.use_grok_heavy = use_grok_heavy
 
         self.conversation = Conversation()
         self.console = Console()
@@ -530,6 +311,12 @@ class HeavySwarm:
             This method is automatically called during __init__ to ensure the swarm
             is properly configured before any operations begin.
         """
+        if self.use_grok_agents and self.use_grok_heavy:
+            raise ValueError(
+                "use_grok_agents and use_grok_heavy are mutually exclusive. "
+                "Set only one to True."
+            )
+
         if self.show_dashboard:
             with Progress(
                 SpinnerColumn(),
@@ -756,10 +543,25 @@ class HeavySwarm:
                     # Agent execution phase
                     try:
                         if self.show_dashboard:
+                            agent_count = (
+                                15
+                                if self.use_grok_heavy
+                                else 3
+                                if self.use_grok_agents
+                                else 4
+                            )
+                            agent_label = (
+                                "Grok Heavy agents"
+                                if self.use_grok_heavy
+                                else "Grok agents (Harper, "
+                                "Benjamin, Lucas)"
+                                if self.use_grok_agents
+                                else "agents"
+                            )
                             self.console.print(
                                 Panel(
-                                    "[bold red]⚡ LAUNCHING SPECIALIZED AGENTS[/bold red]\n"
-                                    "[white]Executing 4 agents in parallel for comprehensive analysis[/white]",
+                                    f"[bold red]⚡ LAUNCHING SPECIALIZED AGENTS[/bold red]\n"
+                                    f"[white]Executing {agent_count} {agent_label} in parallel for comprehensive analysis[/white]",
                                     title="[bold red]AGENT EXECUTION PHASE[/bold red]",
                                     border_style="red",
                                 )
@@ -782,6 +584,11 @@ class HeavySwarm:
                     # Synthesis phase
                     try:
                         if self.show_dashboard:
+                            synth_name = (
+                                "Grok"
+                                if (self.use_grok_heavy or self.use_grok_agents)
+                                else "Agent 5"
+                            )
                             with Progress(
                                 SpinnerColumn(),
                                 TextColumn(
@@ -791,19 +598,19 @@ class HeavySwarm:
                                 console=self.console,
                             ) as progress:
                                 synthesis_task = progress.add_task(
-                                    "[red]Agent 5: SYNTHESIZING COMPREHENSIVE ANALYSIS ••••••••••••••••••••••••••••••••",
+                                    f"[red]{synth_name}: SYNTHESIZING COMPREHENSIVE ANALYSIS ••••••••••••••••••••••••••••••••",
                                     total=None,
                                 )
 
                                 progress.update(
                                     synthesis_task,
-                                    description="[red]Agent 5: INTEGRATING AGENT RESULTS ••••••••••••••••••••••••••••••••",
+                                    description=f"[red]{synth_name}: INTEGRATING AGENT RESULTS ••••••••••••••••••••••••••••••••",
                                 )
                                 time.sleep(0.5)
 
                                 progress.update(
                                     synthesis_task,
-                                    description="[red]Agent 5: Summarizing Results ••••••••••••••••••••••••••••••••",
+                                    description=f"[red]{synth_name}: Summarizing Results ••••••••••••••••••••••••••••••••",
                                 )
 
                                 final_result = (
@@ -816,13 +623,13 @@ class HeavySwarm:
 
                                 progress.update(
                                     synthesis_task,
-                                    description="[white]Agent 5: GENERATING FINAL REPORT ••••••••••••••••••••••••••••••••",
+                                    description=f"[white]{synth_name}: GENERATING FINAL REPORT ••••••••••••••••••••••••••••••••",
                                 )
                                 time.sleep(0.3)
 
                                 progress.update(
                                     synthesis_task,
-                                    description="[bold white]Agent 5: COMPLETE! ••••••••••••••••••••••••••••••••",
+                                    description=f"[bold white]{synth_name}: COMPLETE! ••••••••••••••••••••••••••••••••",
                                 )
                                 time.sleep(0.5)
 
@@ -960,10 +767,20 @@ class HeavySwarm:
         if self.worker_tools is not None:
             tools = self.worker_tools
 
-        # Research Agent - Deep information gathering and data collection
+        if self.use_grok_heavy:
+            return self._create_grok_heavy_agents(tools)
+
+        if self.use_grok_agents:
+            return self._create_grok_agents(tools)
+
+        # Research Agent
         research_agent = Agent(
             agent_name="Research-Agent",
-            agent_description="Expert research agent specializing in comprehensive information gathering and data collection",
+            agent_description=(
+                "Expert research agent specializing in "
+                "comprehensive information gathering "
+                "and data collection"
+            ),
             system_prompt=RESEARCH_AGENT_PROMPT,
             max_loops=self.handle_worker_agent_loops(),
             model_name=self.worker_model_name,
@@ -974,10 +791,14 @@ class HeavySwarm:
             tools=tools,
         )
 
-        # Analysis Agent - Pattern recognition and deep analytical insights
+        # Analysis Agent
         analysis_agent = Agent(
             agent_name="Analysis-Agent",
-            agent_description="Expert analytical agent specializing in pattern recognition, data analysis, and insight generation",
+            agent_description=(
+                "Expert analytical agent specializing "
+                "in pattern recognition, data analysis, "
+                "and insight generation"
+            ),
             system_prompt=ANALYSIS_AGENT_PROMPT,
             max_loops=self.handle_worker_agent_loops(),
             model_name=self.worker_model_name,
@@ -988,10 +809,14 @@ class HeavySwarm:
             tools=tools,
         )
 
-        # Alternatives Agent - Strategic options and creative solutions
+        # Alternatives Agent
         alternatives_agent = Agent(
             agent_name="Alternatives-Agent",
-            agent_description="Expert strategic agent specializing in alternative approaches, creative solutions, and option generation",
+            agent_description=(
+                "Expert strategic agent specializing "
+                "in alternative approaches, creative "
+                "solutions, and option generation"
+            ),
             system_prompt=ALTERNATIVES_AGENT_PROMPT,
             max_loops=self.handle_worker_agent_loops(),
             model_name=self.worker_model_name,
@@ -1002,10 +827,14 @@ class HeavySwarm:
             tools=tools,
         )
 
-        # Verification Agent - Validation, feasibility assessment, and quality assurance
+        # Verification Agent
         verification_agent = Agent(
             agent_name="Verification-Agent",
-            agent_description="Expert verification agent specializing in validation, feasibility assessment, and quality assurance",
+            agent_description=(
+                "Expert verification agent specializing "
+                "in validation, feasibility assessment, "
+                "and quality assurance"
+            ),
             system_prompt=VERIFICATION_AGENT_PROMPT,
             max_loops=self.handle_worker_agent_loops(),
             model_name=self.worker_model_name,
@@ -1016,10 +845,14 @@ class HeavySwarm:
             tools=tools,
         )
 
-        # Synthesis Agent - Integration and comprehensive analysis
+        # Synthesis Agent
         synthesis_agent = Agent(
             agent_name="Synthesis-Agent",
-            agent_description="Expert synthesis agent specializing in integration, comprehensive analysis, and final recommendations",
+            agent_description=(
+                "Expert synthesis agent specializing "
+                "in integration, comprehensive analysis, "
+                "and final recommendations"
+            ),
             system_prompt=SYNTHESIS_AGENT_PROMPT,
             max_loops=1,
             model_name=self.worker_model_name,
@@ -1037,6 +870,142 @@ class HeavySwarm:
             "verification": verification_agent,
             "synthesis": synthesis_agent,
         }
+        return agents
+
+    def _create_grok_agents(self, tools):
+        """
+        Create the Grok 4.20 Heavy architecture agents:
+        Captain Swarm (leader), Harper (research/facts),
+        Benjamin (logic/math/code), Lucas (creative).
+        """
+        captain = Agent(
+            agent_name="Captain-Swarm",
+            agent_description=(
+                "Leader and orchestrator of the Grok "
+                "Heavy multi-agent system"
+            ),
+            system_prompt=CAPTAIN_SWARM_PROMPT,
+            max_loops=1,
+            model_name=self.worker_model_name,
+            streaming_on=False,
+            verbose=False,
+            dynamic_temperature_enabled=True,
+            print_on=True,
+            tools=tools,
+        )
+
+        harper = Agent(
+            agent_name="Harper",
+            agent_description=(
+                "Research and Facts specialist for "
+                "evidence-based data gathering and "
+                "fact verification"
+            ),
+            system_prompt=HARPER_PROMPT,
+            max_loops=self.handle_worker_agent_loops(),
+            model_name=self.worker_model_name,
+            streaming_on=False,
+            verbose=False,
+            dynamic_temperature_enabled=True,
+            print_on=self.agent_prints_on,
+            tools=tools,
+        )
+
+        benjamin = Agent(
+            agent_name="Benjamin",
+            agent_description=(
+                "Logic, Math, and Code specialist for "
+                "rigorous reasoning and computational "
+                "verification"
+            ),
+            system_prompt=BENJAMIN_PROMPT,
+            max_loops=self.handle_worker_agent_loops(),
+            model_name=self.worker_model_name,
+            streaming_on=False,
+            verbose=False,
+            dynamic_temperature_enabled=True,
+            print_on=self.agent_prints_on,
+            tools=tools,
+        )
+
+        lucas = Agent(
+            agent_name="Lucas",
+            agent_description=(
+                "Creative and Divergent Thinking "
+                "specialist for contrarian analysis "
+                "and blind-spot detection"
+            ),
+            system_prompt=LUCAS_PROMPT,
+            max_loops=self.handle_worker_agent_loops(),
+            model_name=self.worker_model_name,
+            streaming_on=False,
+            verbose=False,
+            dynamic_temperature_enabled=True,
+            print_on=self.agent_prints_on,
+            tools=tools,
+        )
+
+        return {
+            "captain": captain,
+            "harper": harper,
+            "benjamin": benjamin,
+            "lucas": lucas,
+        }
+
+    def _create_grok_heavy_agents(self, tools):
+        """
+        Create the 16-agent Grok 4.20 Heavy architecture:
+        Grok (captain/coordinator) + 15 domain specialists.
+        """
+        WORKER_CONFIGS = [
+            ("harper", "Harper", HARPER_HEAVY_PROMPT, "Creative Writing and Storytelling specialist"),
+            ("benjamin", "Benjamin", BENJAMIN_HEAVY_PROMPT, "Data, Finance and Economics specialist"),
+            ("lucas", "Lucas", LUCAS_HEAVY_PROMPT, "Coding, Programming and Technical Builds specialist"),
+            ("olivia", "Olivia", OLIVIA_PROMPT, "Literature, Arts and Culture specialist"),
+            ("james", "James", JAMES_PROMPT, "History, Politics and Philosophy specialist"),
+            ("charlotte", "Charlotte", CHARLOTTE_PROMPT, "Math, Statistics and Logic specialist"),
+            ("henry", "Henry", HENRY_PROMPT, "Engineering, Robotics and Innovation specialist"),
+            ("mia", "Mia", MIA_PROMPT, "Biology, Health and Medicine specialist"),
+            ("william", "William", WILLIAM_PROMPT, "Business Strategy and Entrepreneurship specialist"),
+            ("sebastian", "Sebastian", SEBASTIAN_PROMPT, "Physics, Astronomy and Hard Sciences specialist"),
+            ("jack", "Jack", JACK_PROMPT, "Psychology and Human Behavior specialist"),
+            ("owen", "Owen", OWEN_PROMPT, "Environment, Sustainability and Global Systems specialist"),
+            ("luna", "Luna", LUNA_PROMPT, "Space Exploration and Futurism specialist"),
+            ("elizabeth", "Elizabeth", ELIZABETH_PROMPT, "Ethics, Policy and Critical Thinking specialist"),
+            ("noah", "Noah", NOAH_PROMPT, "Long-Term Innovation and Systems Thinking specialist"),
+        ]
+
+        agents = {}
+        for key, name, prompt, desc in WORKER_CONFIGS:
+            agents[key] = Agent(
+                agent_name=name,
+                agent_description=desc,
+                system_prompt=prompt,
+                max_loops=self.handle_worker_agent_loops(),
+                model_name=self.worker_model_name,
+                streaming_on=False,
+                verbose=False,
+                dynamic_temperature_enabled=True,
+                print_on=self.agent_prints_on,
+                tools=tools,
+            )
+
+        agents["captain"] = Agent(
+            agent_name="Grok",
+            agent_description=(
+                "Lead coordinator and synthesizer of "
+                "the 16-agent Grok Heavy system"
+            ),
+            system_prompt=GROK_HEAVY_CAPTAIN_PROMPT,
+            max_loops=1,
+            model_name=self.worker_model_name,
+            streaming_on=False,
+            verbose=False,
+            dynamic_temperature_enabled=True,
+            print_on=True,
+            tools=tools,
+        )
+
         return agents
 
     def _execute_agents_parallel(
@@ -1120,28 +1089,89 @@ class HeavySwarm:
                 return agent_type, f"Error: {str(e)}"
 
         # Prepare agent tasks
-        agent_tasks = [
-            (
-                "Research",
-                agents["research"],
-                questions.get("research_question", ""),
-            ),
-            (
-                "Analysis",
-                agents["analysis"],
-                questions.get("analysis_question", ""),
-            ),
-            (
-                "Alternatives",
-                agents["alternatives"],
-                questions.get("alternatives_question", ""),
-            ),
-            (
-                "Verification",
-                agents["verification"],
-                questions.get("verification_question", ""),
-            ),
-        ]
+        if self.use_grok_heavy:
+            heavy_keys = [
+                ("Harper", "harper"),
+                ("Benjamin", "benjamin"),
+                ("Lucas", "lucas"),
+                ("Olivia", "olivia"),
+                ("James", "james"),
+                ("Charlotte", "charlotte"),
+                ("Henry", "henry"),
+                ("Mia", "mia"),
+                ("William", "william"),
+                ("Sebastian", "sebastian"),
+                ("Jack", "jack"),
+                ("Owen", "owen"),
+                ("Luna", "luna"),
+                ("Elizabeth", "elizabeth"),
+                ("Noah", "noah"),
+            ]
+            agent_tasks = [
+                (
+                    name,
+                    agents[key],
+                    questions.get(
+                        f"{key}_question", ""
+                    ),
+                )
+                for name, key in heavy_keys
+            ]
+        elif self.use_grok_agents:
+            agent_tasks = [
+                (
+                    "Harper",
+                    agents["harper"],
+                    questions.get(
+                        "harper_question", ""
+                    ),
+                ),
+                (
+                    "Benjamin",
+                    agents["benjamin"],
+                    questions.get(
+                        "benjamin_question", ""
+                    ),
+                ),
+                (
+                    "Lucas",
+                    agents["lucas"],
+                    questions.get(
+                        "lucas_question", ""
+                    ),
+                ),
+            ]
+        else:
+            agent_tasks = [
+                (
+                    "Research",
+                    agents["research"],
+                    questions.get(
+                        "research_question", ""
+                    ),
+                ),
+                (
+                    "Analysis",
+                    agents["analysis"],
+                    questions.get(
+                        "analysis_question", ""
+                    ),
+                ),
+                (
+                    "Alternatives",
+                    agents["alternatives"],
+                    questions.get(
+                        "alternatives_question", ""
+                    ),
+                ),
+                (
+                    "Verification",
+                    agents["verification"],
+                    questions.get(
+                        "verification_question", ""
+                    ),
+                ),
+            ]
 
         # Execute agents in parallel using ThreadPoolExecutor
         results = {}
@@ -1228,32 +1258,79 @@ class HeavySwarm:
         """
 
         # Agent configurations with professional styling
-        agent_configs = [
-            (
-                "Agent 1",
-                "research",
-                "white",
-                "Gathering comprehensive research data",
-            ),
-            (
-                "Agent 2",
-                "analysis",
-                "white",
-                "Analyzing patterns and generating insights",
-            ),
-            (
-                "Agent 3",
-                "alternatives",
-                "white",
-                "Exploring creative solutions and alternatives",
-            ),
-            (
-                "Agent 4",
-                "verification",
-                "white",
-                "Validating findings and checking feasibility",
-            ),
-        ]
+        if self.use_grok_heavy:
+            agent_configs = [
+                ("Harper", "harper", "white", "Crafting narrative and storytelling angles"),
+                ("Benjamin", "benjamin", "white", "Analyzing data, finance and economics"),
+                ("Lucas", "lucas", "white", "Building code and technical solutions"),
+                ("Olivia", "olivia", "white", "Exploring literature, arts and culture"),
+                ("James", "james", "white", "Examining history, politics and philosophy"),
+                ("Charlotte", "charlotte", "white", "Applying math, statistics and logic"),
+                ("Henry", "henry", "white", "Engineering and innovation analysis"),
+                ("Mia", "mia", "white", "Biology, health and medicine perspective"),
+                ("William", "william", "white", "Business strategy and entrepreneurship"),
+                ("Sebastian", "sebastian", "white", "Physics, astronomy and hard sciences"),
+                ("Jack", "jack", "white", "Psychology and human behavior insights"),
+                ("Owen", "owen", "white", "Environment and global systems view"),
+                ("Luna", "luna", "white", "Space exploration and futurism lens"),
+                ("Elizabeth", "elizabeth", "white", "Ethics, policy and critical thinking"),
+                ("Noah", "noah", "white", "Long-term innovation and systems thinking"),
+            ]
+        elif self.use_grok_agents:
+            agent_configs = [
+                (
+                    "Harper",
+                    "harper",
+                    "white",
+                    "Gathering evidence and "
+                    "verifying facts",
+                ),
+                (
+                    "Benjamin",
+                    "benjamin",
+                    "white",
+                    "Applying rigorous logic "
+                    "and verification",
+                ),
+                (
+                    "Lucas",
+                    "lucas",
+                    "white",
+                    "Exploring creative angles "
+                    "and blind spots",
+                ),
+            ]
+        else:
+            agent_configs = [
+                (
+                    "Agent 1",
+                    "research",
+                    "white",
+                    "Gathering comprehensive "
+                    "research data",
+                ),
+                (
+                    "Agent 2",
+                    "analysis",
+                    "white",
+                    "Analyzing patterns and "
+                    "generating insights",
+                ),
+                (
+                    "Agent 3",
+                    "alternatives",
+                    "white",
+                    "Exploring creative solutions "
+                    "and alternatives",
+                ),
+                (
+                    "Agent 4",
+                    "verification",
+                    "white",
+                    "Validating findings and "
+                    "checking feasibility",
+                ),
+            ]
 
         results = {}
 
@@ -1335,32 +1412,99 @@ class HeavySwarm:
                     return agent_type, f"Error: {str(e)}"
 
             # Prepare agent tasks with keys
-            agent_tasks = [
-                (
-                    "Agent 1",
-                    "research",
-                    agents["research"],
-                    questions.get("research_question", ""),
-                ),
-                (
-                    "Agent 2",
-                    "analysis",
-                    agents["analysis"],
-                    questions.get("analysis_question", ""),
-                ),
-                (
-                    "Agent 3",
-                    "alternatives",
-                    agents["alternatives"],
-                    questions.get("alternatives_question", ""),
-                ),
-                (
-                    "Agent 4",
-                    "verification",
-                    agents["verification"],
-                    questions.get("verification_question", ""),
-                ),
-            ]
+            if self.use_grok_heavy:
+                heavy_keys = [
+                    ("Harper", "harper"),
+                    ("Benjamin", "benjamin"),
+                    ("Lucas", "lucas"),
+                    ("Olivia", "olivia"),
+                    ("James", "james"),
+                    ("Charlotte", "charlotte"),
+                    ("Henry", "henry"),
+                    ("Mia", "mia"),
+                    ("William", "william"),
+                    ("Sebastian", "sebastian"),
+                    ("Jack", "jack"),
+                    ("Owen", "owen"),
+                    ("Luna", "luna"),
+                    ("Elizabeth", "elizabeth"),
+                    ("Noah", "noah"),
+                ]
+                agent_tasks = [
+                    (
+                        name,
+                        key,
+                        agents[key],
+                        questions.get(
+                            f"{key}_question", ""
+                        ),
+                    )
+                    for name, key in heavy_keys
+                ]
+            elif self.use_grok_agents:
+                agent_tasks = [
+                    (
+                        "Harper",
+                        "harper",
+                        agents["harper"],
+                        questions.get(
+                            "harper_question", ""
+                        ),
+                    ),
+                    (
+                        "Benjamin",
+                        "benjamin",
+                        agents["benjamin"],
+                        questions.get(
+                            "benjamin_question", ""
+                        ),
+                    ),
+                    (
+                        "Lucas",
+                        "lucas",
+                        agents["lucas"],
+                        questions.get(
+                            "lucas_question", ""
+                        ),
+                    ),
+                ]
+            else:
+                agent_tasks = [
+                    (
+                        "Agent 1",
+                        "research",
+                        agents["research"],
+                        questions.get(
+                            "research_question", ""
+                        ),
+                    ),
+                    (
+                        "Agent 2",
+                        "analysis",
+                        agents["analysis"],
+                        questions.get(
+                            "analysis_question", ""
+                        ),
+                    ),
+                    (
+                        "Agent 3",
+                        "alternatives",
+                        agents["alternatives"],
+                        questions.get(
+                            "alternatives_question",
+                            "",
+                        ),
+                    ),
+                    (
+                        "Agent 4",
+                        "verification",
+                        agents["verification"],
+                        questions.get(
+                            "verification_question",
+                            "",
+                        ),
+                    ),
+                ]
 
             # Execute agents in parallel
             with concurrent.futures.ThreadPoolExecutor(
@@ -1406,10 +1550,24 @@ class HeavySwarm:
                         results[agent_key] = f"Exception: {str(e)}"
 
         # Show completion summary
+        agent_count = (
+            15
+            if self.use_grok_heavy
+            else 3
+            if self.use_grok_agents
+            else 4
+        )
+        synth_label = (
+            "Grok"
+            if self.use_grok_heavy
+            else "Captain Swarm"
+            if self.use_grok_agents
+            else "synthesis"
+        )
         self.console.print(
             Panel(
                 "[bold red]⚡ ALL AGENTS COMPLETED SUCCESSFULLY![/bold red]\n"
-                "[white]Results from all 4 specialized agents are ready for synthesis[/white]",
+                f"[white]Results from all {agent_count} specialized agents are ready for {synth_label}[/white]",
                 title="[bold red]EXECUTION COMPLETE[/bold red]",
                 border_style="red",
             )
@@ -1434,17 +1592,112 @@ class HeavySwarm:
         """
         # Get the cached agents
         agents = self.create_agents()
-        synthesis_agent = agents["synthesis"]
 
-        agents_names = [
-            "Research Agent",
-            "Analysis Agent",
-            "Alternatives Agent",
-            "Verification Agent",
-        ]
+        if self.use_grok_heavy:
+            synthesis_agent = agents["captain"]
+            agents_names = [
+                "Harper (Creative Writing)",
+                "Benjamin (Data & Finance)",
+                "Lucas (Coding & Tech)",
+                "Olivia (Literature & Arts)",
+                "James (History & Philosophy)",
+                "Charlotte (Math & Statistics)",
+                "Henry (Engineering)",
+                "Mia (Biology & Health)",
+                "William (Business Strategy)",
+                "Sebastian (Physics & Science)",
+                "Jack (Psychology)",
+                "Owen (Environment)",
+                "Luna (Space & Futurism)",
+                "Elizabeth (Ethics & Policy)",
+                "Noah (Systems Thinking)",
+            ]
 
-        # Create comprehensive synthesis prompt
-        synthesis_prompt = f"""
+            synthesis_prompt = f"""
+        As Grok, synthesize the outputs of your 15 specialist agents into a unified, decision-grade response.
+
+        Original Task:
+        {original_task}
+
+        Your objectives:
+        - Integrate findings from all 15 specialists: {", ".join(agents_names)}
+        - Identify cross-domain convergences and contradictions
+        - Mediate conflicts: when specialists disagree, weigh evidence quality and explain your resolution
+        - Surface genuine uncertainties rather than forcing false consensus
+        - Deliver prioritized, actionable recommendations with confidence levels
+        - Flag risks, ethical concerns (Elizabeth), long-term systemic issues (Noah), and mitigation strategies
+
+        Conversation history for full context:
+
+        \n\n
+
+        {self.conversation.return_history_as_string()}
+
+        \n\n
+
+        Present your synthesis as:
+        1. Executive Summary (3-5 sentences)
+        2. Cross-Domain Convergences (what multiple specialists agree on)
+        3. Domain-Specific Key Findings (one bullet per specialist)
+        4. Conflict Resolution & Integrated Analysis
+        5. Prioritized Recommendations (with confidence levels)
+        6. Risks, Blind Spots & Mitigation
+        7. Ethical and Long-Term Considerations (Elizabeth + Noah's synthesis)
+        8. Next Steps
+
+        Be thorough, authoritative, and balance all 15 perspectives.
+        """
+        elif self.use_grok_agents:
+            synthesis_agent = agents["captain"]
+            agents_names = [
+                "Harper (Research & Facts)",
+                "Benjamin (Logic, Math & Code)",
+                "Lucas (Creative & Divergent)",
+            ]
+
+            synthesis_prompt = f"""
+        As Captain Swarm, produce a unified report from your three specialist agents. Mediate any conflicts between their outputs and deliver a coherent, decision-grade response.
+
+        Original Task:
+        {original_task}
+
+        Your objectives:
+        - Integrate findings from {", ".join(agents_names)}, highlighting how each specialist's perspective contributes.
+        - Mediate conflicts: where Harper's facts conflict with Benjamin's logic or Lucas's contrarian view, weigh evidence quality and explain your resolution.
+        - Surface genuine uncertainties rather than forcing false consensus.
+        - Provide prioritized, actionable recommendations with confidence levels.
+        - Identify risks, blind spots flagged by Lucas, and mitigation strategies.
+
+        Conversation history for context:
+
+        \n\n
+
+        {self.conversation.return_history_as_string()}
+
+        \n\n
+
+        Present your synthesis as:
+        1. Executive Summary
+        2. Harper's Key Findings (facts & evidence)
+        3. Benjamin's Verification (logic & validation)
+        4. Lucas's Perspectives (creative & contrarian)
+        5. Conflict Resolution & Integrated Analysis
+        6. Prioritized Recommendations
+        7. Risks, Blind Spots & Mitigation
+        8. Next Steps
+
+        Be thorough, objective, and balance all perspectives.
+        """
+        else:
+            synthesis_agent = agents["synthesis"]
+            agents_names = [
+                "Research Agent",
+                "Analysis Agent",
+                "Alternatives Agent",
+                "Verification Agent",
+            ]
+
+            synthesis_prompt = f"""
         You are an expert synthesis agent tasked with producing a clear, actionable, and executive-ready report based on the following task and the results from four specialized agents (Research, Analysis, Alternatives, Verification).
 
         Original Task:
@@ -1526,25 +1779,16 @@ class HeavySwarm:
 
         try:
             # Parse the JSON arguments
-            arguments = json.loads(tool_call.function.arguments)
+            arguments = json.loads(
+                tool_call.function.arguments
+            )
 
-            return {
-                "thinking": arguments.get("thinking", ""),
-                "research_question": arguments.get(
-                    "research_question", ""
-                ),
-                "analysis_question": arguments.get(
-                    "analysis_question", ""
-                ),
-                "alternatives_question": arguments.get(
-                    "alternatives_question", ""
-                ),
-                "verification_question": arguments.get(
-                    "verification_question", ""
-                ),
-                "tool_call_id": tool_call.id,
-                "function_name": tool_call.function.name,
-            }
+            result = dict(arguments)
+            result["tool_call_id"] = tool_call.id
+            result["function_name"] = (
+                tool_call.function.name
+            )
+            return result
 
         except json.JSONDecodeError as e:
             return {
@@ -1568,7 +1812,40 @@ class HeavySwarm:
         """
 
         # Create the prompt for question generation
-        prompt = f"""
+        if self.use_grok_heavy:
+            prompt = f"""
+        System: Grok task decomposer. Generate 15 non-overlapping domain-specific questions via function tool.
+
+        Specialists:
+        - Harper (Creative Writing & Storytelling): narrative framing, metaphors, human storytelling angles
+        - Benjamin (Data, Finance & Economics): quantitative data, financial modeling, economic implications
+        - Lucas (Coding, Programming & Technical): technical implementation, algorithms, systems architecture
+        - Olivia (Literature, Arts & Culture): cultural context, humanistic interpretation, aesthetic dimensions
+        - James (History, Politics & Philosophy): historical precedent, power dynamics, philosophical frameworks
+        - Charlotte (Math, Statistics & Logic): formal reasoning, quantitative analysis, statistical inference
+        - Henry (Engineering, Robotics & Innovation): physical systems, engineering trade-offs, innovation pathways
+        - Mia (Biology, Health & Medicine): biological implications, health impacts, medical evidence
+        - William (Business Strategy & Entrepreneurship): market strategy, competitive dynamics, business models
+        - Sebastian (Physics, Astronomy & Hard Sciences): fundamental science, physical constraints, scientific consensus
+        - Jack (Psychology & Human Behavior): cognitive biases, behavioral economics, psychological drivers
+        - Owen (Environment, Sustainability & Global Systems): ecological impact, systemic sustainability, global effects
+        - Luna (Space Exploration & Futurism): long-term futures, emerging technologies, civilizational scale
+        - Elizabeth (Ethics, Policy & Critical Thinking): ethical implications, policy trade-offs, unintended consequences
+        - Noah (Long-Term Innovation & Systems): systems thinking, long-term trajectories, second-order effects
+
+        Requirements:
+        - Each question ≤40 words, domain-specific, action-oriented
+        - No duplication across specialists
+        - Ambiguity notes only in "thinking" field (≤60 words)
+        - Each question must leverage the specialist's unique domain expertise
+
+        Task: {task}
+
+        Use generate_grok_heavy_questions function only.
+        """
+            active_schema = grok_heavy_schema
+        elif self.use_grok_agents:
+            prompt = f"""
         System: Technical task analyzer. Generate 4 non-overlapping analytical questions via function tool.
 
         Roles:
@@ -1587,12 +1864,15 @@ class HeavySwarm:
 
         Use generate_specialized_questions function only.
         """
+            active_schema = schema
+
+        max_tokens = 5000 if self.use_grok_heavy else 3000
 
         question_agent = LiteLLM(
             system_prompt=prompt,
             model=self.question_agent_model_name,
-            tools_list_dictionary=schema,
-            max_tokens=3000,
+            tools_list_dictionary=active_schema,
+            max_tokens=max_tokens,
             temperature=0.7,
             top_p=1,
             frequency_penalty=0,
@@ -1650,9 +1930,40 @@ class HeavySwarm:
         if "error" in result:
             return {"error": result["error"]}
 
+        if self.use_grok_heavy:
+            heavy_keys = [
+                "harper", "benjamin", "lucas", "olivia",
+                "james", "charlotte", "henry", "mia",
+                "william", "sebastian", "jack", "owen",
+                "luna", "elizabeth", "noah",
+            ]
+            return {
+                f"{k}_question": result.get(
+                    f"{k}_question", ""
+                )
+                for k in heavy_keys
+            }
+
+        if self.use_grok_agents:
+            return {
+                "harper_question": result.get(
+                    "harper_question", ""
+                ),
+                "benjamin_question": result.get(
+                    "benjamin_question", ""
+                ),
+                "lucas_question": result.get(
+                    "lucas_question", ""
+                ),
+            }
+
         return {
-            "research_question": result.get("research_question", ""),
-            "analysis_question": result.get("analysis_question", ""),
+            "research_question": result.get(
+                "research_question", ""
+            ),
+            "analysis_question": result.get(
+                "analysis_question", ""
+            ),
             "alternatives_question": result.get(
                 "alternatives_question", ""
             ),
@@ -1704,9 +2015,34 @@ class HeavySwarm:
         if "error" in questions:
             return [f"Error: {questions['error']}"]
 
+        if self.use_grok_heavy:
+            heavy_keys = [
+                "harper", "benjamin", "lucas", "olivia",
+                "james", "charlotte", "henry", "mia",
+                "william", "sebastian", "jack", "owen",
+                "luna", "elizabeth", "noah",
+            ]
+            return [
+                questions.get(f"{k}_question", "")
+                for k in heavy_keys
+            ]
+
+        if self.use_grok_agents:
+            return [
+                questions.get("harper_question", ""),
+                questions.get(
+                    "benjamin_question", ""
+                ),
+                questions.get("lucas_question", ""),
+            ]
+
         return [
             questions.get("research_question", ""),
             questions.get("analysis_question", ""),
-            questions.get("alternatives_question", ""),
-            questions.get("verification_question", ""),
+            questions.get(
+                "alternatives_question", ""
+            ),
+            questions.get(
+                "verification_question", ""
+            ),
         ]
