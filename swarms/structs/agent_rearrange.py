@@ -862,6 +862,14 @@ class AgentRearrange:
             Each batch is processed sequentially, but individual tasks within
             a batch may run concurrently depending on the flow configuration.
         """
+        if batch_size <= 0:
+            raise ValueError(
+                f"batch_size must be a positive integer, got {batch_size}"
+            )
+        if img is not None and len(img) != len(tasks):
+            raise ValueError(
+                f"img length ({len(img)}) must match tasks length ({len(tasks)})"
+            )
         results = []
         for i in range(0, len(tasks), batch_size):
             batch_tasks = tasks[i : i + batch_size]
@@ -889,7 +897,7 @@ class AgentRearrange:
             # Batch-scoped locks are created once and shared across all
             # worker clones so they can actually coordinate.
             batch_agent_locks: Dict[str, threading.Lock] = {}
-            max_workers = min(len(batch_tasks), os.cpu_count() or 1)
+            max_workers = min(len(batch_tasks), os.cpu_count() or 4)
             futures_ordered = []
             with ThreadPoolExecutor(
                 max_workers=max_workers
@@ -899,7 +907,7 @@ class AgentRearrange:
                 ):
                     try:
                         clone = copy.deepcopy(self)
-                    except (TypeError, copy.error):
+                    except (TypeError, copy.Error):
                         clone = copy.copy(self)
                         clone.conversation = copy.deepcopy(
                             self.conversation
@@ -910,7 +918,7 @@ class AgentRearrange:
                                 new_agents[name] = copy.deepcopy(
                                     agent
                                 )
-                            except (TypeError, copy.error):
+                            except (TypeError, copy.Error):
                                 if name not in batch_agent_locks:
                                     batch_agent_locks[name] = (
                                         threading.Lock()
@@ -921,8 +929,8 @@ class AgentRearrange:
                         clone.agents = new_agents
                     future = executor.submit(
                         clone.run,
-                        task=task_item,
-                        img=img_path,
+                        task_item,
+                        img_path,
                         *args,
                         **kwargs,
                     )

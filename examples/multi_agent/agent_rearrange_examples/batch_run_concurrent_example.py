@@ -12,7 +12,7 @@ Run with:
 """
 
 import time
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 from swarms import Agent, AgentRearrange
 
@@ -107,7 +107,7 @@ for i, (task, result) in enumerate(zip(TASKS, concurrent_results), 1):
 if concurrent_elapsed > 0:
     speedup = sequential_elapsed / concurrent_elapsed
     print(
-        f"\nSpeedup: {speedup:.1f}x  ({sequential_elapsed:.2f}s → {concurrent_elapsed:.2f}s)"
+        f"\nSpeedup: {speedup:.1f}x  ({sequential_elapsed:.2f}s -> {concurrent_elapsed:.2f}s)"
     )
 
 # ---------------------------------------------------------------------------

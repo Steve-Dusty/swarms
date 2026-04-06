@@ -16,13 +16,13 @@ at least two agents.
 import copy
 import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 from typing import List, Optional
 from unittest.mock import MagicMock, patch
 
 import pytest
 
 from swarms.structs.agent_rearrange import AgentRearrange
-from swarms.structs.conversation import Conversation
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -115,27 +115,41 @@ class TestBatchRunReturns:
 
 
 class TestBatchRunConcurrency:
-    def test_batch_is_faster_than_sequential(self):
+    def test_tasks_run_concurrently(self):
         """
-        With N tasks each taking ~T seconds, concurrent execution should
-        complete in significantly less than N*T seconds.
+        Verify concurrency by asserting that at least two tasks overlap in
+        execution, rather than relying on wall-clock timing thresholds that
+        can be flaky under CI load.
         """
         N = 5
-        T = 0.1  # seconds per task
-        pipeline = _make_pipeline("SlowAgent", "SlowAgent2", delay=T)
+        pipeline = _make_pipeline("SlowAgent", "SlowAgent2")
         tasks = [f"task-{i}" for i in range(N)]
 
-        t0 = time.perf_counter()
-        results = pipeline.batch_run(tasks=tasks, batch_size=N)
-        elapsed = time.perf_counter() - t0
+        active_count = 0
+        overlap_detected = threading.Event()
+        state_lock = threading.Lock()
+        original_run = pipeline.run
 
-        # Sequential would take ~N*T; concurrent should be well under that
-        sequential_time = N * T
-        assert elapsed < sequential_time * 0.7, (
-            f"Expected elapsed < {sequential_time * 0.7:.2f}s "
-            f"(70% of sequential {sequential_time:.2f}s), got {elapsed:.2f}s"
-        )
+        def instrumented_run(task, img=None, *a, **kw):
+            nonlocal active_count
+            with state_lock:
+                active_count += 1
+                if active_count >= 2:
+                    overlap_detected.set()
+            try:
+                time.sleep(0.05)
+                return original_run(task, img, *a, **kw)
+            finally:
+                with state_lock:
+                    active_count -= 1
+
+        pipeline.run = instrumented_run
+        results = pipeline.batch_run(tasks=tasks, batch_size=N)
+
         assert len(results) == N
+        assert (
+            overlap_detected.is_set()
+        ), "Expected at least two batch_run tasks to overlap in execution"
 
     def test_threadpoolexecutor_is_used(self):
         """Patch ThreadPoolExecutor to confirm it is invoked for each batch."""
@@ -326,6 +340,54 @@ class TestConversationIsolation:
                     "Agent state was shared — _LockedAgent proxy not working."
                 )
 
+    def test_locked_agent_serialises_calls(self):
+        """
+        _LockedAgent is correctness-first: when agents can't be deepcopied,
+        concurrent .run() calls on the same underlying agent are serialised
+        through a shared lock. This means at most one thread calls that
+        agent's .run() at any moment, so results are always correct at the
+        cost of per-agent parallelism.
+
+        We verify serialisation by confirming no two threads are inside
+        .run() simultaneously on the same agent.
+        """
+        from swarms.structs.agent_rearrange import _LockedAgent
+
+        call_count = 0
+        max_concurrent = 0
+        state_lock = threading.Lock()
+
+        class UnsafeAgent:
+            """Would produce wrong results if called concurrently."""
+
+            agent_name = "Unsafe"
+            system_prompt = ""
+
+            def run(self, task, *a, **kw):
+                nonlocal call_count, max_concurrent
+                with state_lock:
+                    call_count += 1
+                    max_concurrent = max(max_concurrent, call_count)
+                time.sleep(0.05)
+                with state_lock:
+                    call_count -= 1
+                return f"result:{task}"
+
+        shared_lock = threading.Lock()
+        agent = UnsafeAgent()
+        proxy = _LockedAgent(agent, shared_lock)
+
+        def call(task):
+            return proxy.run(task)
+
+        with ThreadPoolExecutor(max_workers=5) as ex:
+            futs = [ex.submit(call, f"t{i}") for i in range(5)]
+            [f.result() for f in futs]
+
+        assert (
+            max_concurrent == 1
+        ), f"Expected max 1 concurrent call through _LockedAgent, got {max_concurrent}"
+
 
 # ---------------------------------------------------------------------------
 # 4. Image paths forwarded correctly
@@ -416,3 +478,18 @@ class TestBatchSizeBoundaries:
         ) as mock_tpe:
             pipeline.batch_run(tasks=tasks, batch_size=1)
             assert mock_tpe.call_count == 1
+
+    @pytest.mark.parametrize("batch_size", [0, -1, -10])
+    def test_invalid_batch_size_raises(self, batch_size):
+        """batch_size <= 0 must raise ValueError immediately."""
+        pipeline = _make_pipeline("AgentA", "AgentB")
+        with pytest.raises(ValueError, match="batch_size"):
+            pipeline.batch_run(tasks=["t1"], batch_size=batch_size)
+
+    def test_img_length_mismatch_raises(self):
+        """Mismatched img and tasks lengths must raise ValueError."""
+        pipeline = _make_pipeline("AgentA", "AgentB")
+        with pytest.raises(ValueError, match="img length"):
+            pipeline.batch_run(
+                tasks=["t1", "t2"], img=["img1.png"], batch_size=5
+            )
