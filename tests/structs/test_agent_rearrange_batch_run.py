@@ -6,17 +6,14 @@ Tests verify:
 2. Each task gets its own conversation copy — no shared-state corruption
 3. Result ordering is preserved across all tasks and batch boundaries
 4. Works correctly with and without image paths
-5. batch_size boundary conditions are handled correctly
-6. Fallback path (non-deepcopyable agents) is safe via _LockedAgent proxy
+5. batch_size boundary conditions and input validation
 
 Note: validate_flow() requires '->' in the flow, so all pipelines here use
 at least two agents.
 """
 
-import copy
 import threading
 import time
-from concurrent.futures import ThreadPoolExecutor
 from typing import List, Optional
 from unittest.mock import MagicMock, patch
 
@@ -52,7 +49,7 @@ def _make_pipeline(
 
     Requires at least 2 agent names because validate_flow() demands '->'.
     """
-    assert len(agent_names) >= 2, "_make_pipeline needs ≥2 agents"
+    assert len(agent_names) >= 2, "_make_pipeline needs >=2 agents"
     agents = [_make_agent(n, delay=delay) for n in agent_names]
     flow = " -> ".join(agent_names)
     return AgentRearrange(
@@ -163,7 +160,6 @@ class TestBatchRunConcurrency:
             ).ThreadPoolExecutor,
         ) as mock_tpe:
             pipeline.batch_run(tasks=tasks, batch_size=10)
-            # One batch → ThreadPoolExecutor called once
             assert mock_tpe.call_count == 1
 
     def test_multiple_batches_uses_executor_per_batch(self):
@@ -178,48 +174,16 @@ class TestBatchRunConcurrency:
             ).ThreadPoolExecutor,
         ) as mock_tpe:
             pipeline.batch_run(tasks=tasks, batch_size=2)
-            # 6 tasks / batch_size=2 → 3 batches → 3 executor instances
+            # 6 tasks / batch_size=2 -> 3 batches -> 3 executor instances
             assert mock_tpe.call_count == 3
 
 
 # ---------------------------------------------------------------------------
-# 3. Conversation + agent-state isolation — no shared state between tasks
+# 3. Conversation isolation — no shared state between tasks
 # ---------------------------------------------------------------------------
 
 
 class TestConversationIsolation:
-    def test_deepcopy_called_per_task(self):
-        """
-        batch_run must call copy.deepcopy once per task so both the
-        conversation AND agent objects are isolated.
-        """
-        pipeline = _make_pipeline("AgentA", "AgentB")
-        tasks = ["alpha", "beta", "gamma"]
-
-        deepcopy_calls: List[object] = []
-        original_deepcopy = copy.deepcopy
-
-        def _spy_deepcopy(obj):
-            result = original_deepcopy(obj)
-            # We care about cloning the full AgentRearrange (not sub-copies
-            # that deepcopy triggers internally)
-            from swarms.structs.agent_rearrange import AgentRearrange
-
-            if isinstance(obj, AgentRearrange):
-                deepcopy_calls.append(obj)
-            return result
-
-        with patch(
-            "swarms.structs.agent_rearrange.copy.deepcopy",
-            side_effect=_spy_deepcopy,
-        ):
-            pipeline.batch_run(tasks=tasks, batch_size=10)
-
-        assert len(deepcopy_calls) == len(tasks), (
-            f"Expected {len(tasks)} deepcopy calls on AgentRearrange, "
-            f"got {len(deepcopy_calls)}"
-        )
-
     def test_original_conversation_not_mutated(self):
         """The pipeline's own conversation should not change after batch_run."""
         pipeline = _make_pipeline("AgentA", "AgentB")
@@ -236,157 +200,64 @@ class TestConversationIsolation:
             after_msg_count == original_msg_count
         ), "pipeline.conversation was mutated by batch_run"
 
+    def test_each_task_gets_own_conversation_copy(self):
+        """Each worker clone must have its own conversation, not share one."""
+        pipeline = _make_pipeline("AgentA", "AgentB")
+        tasks = ["alpha", "beta", "gamma"]
+
+        # Hold strong references so GC doesn't reuse addresses
+        seen_conversations: list = []
+
+        def _mock_run(self_inner, task=None, img=None, *a, **kw):
+            seen_conversations.append(self_inner.conversation)
+            return f"result:{task}"
+
+        with patch.object(AgentRearrange, "_run", _mock_run):
+            pipeline.batch_run(tasks=tasks, batch_size=10)
+
+        assert len(seen_conversations) == len(tasks)
+        # All conversation objects must be distinct instances
+        for i in range(len(seen_conversations)):
+            for j in range(i + 1, len(seen_conversations)):
+                assert (
+                    seen_conversations[i] is not seen_conversations[j]
+                ), f"Tasks {i} and {j} shared the same conversation object"
+
     def test_stateful_agent_state_does_not_bleed_across_tasks(self):
         """
-        Regression: if agent objects were shared between concurrent workers,
-        a stateful agent's last_task attribute would be overwritten by a
-        racing thread, causing some results to contain the wrong task payload.
-
-        This test verifies that each worker operates on its own deep-copied
-        agent instances (no threading.Lock so the agent is deep-copyable),
-        so no cross-task contamination occurs.
+        Regression: concurrent tasks must not corrupt each other's results
+        via shared agent state. With deepcopy each task owns its own agent
+        instance, so last_task cannot be overwritten by a racing thread.
         """
 
         class StatefulAgent:
-            """Agent that records which task it last processed.
-
-            Deliberately lock-free — with deepcopy each task owns its own
-            instance, so no synchronisation is needed.  The test would be
-            unreliable (wrong task in result) if agents were shared.
-            """
-
             def __init__(self, name: str):
                 self.agent_name = name
                 self.system_prompt = ""
-                self.last_task: Optional[str] = None
+                self.last_task = None
 
             def run(self, task, *args, **kwargs):
                 time.sleep(0.05)
                 self.last_task = task
-                return f"{self.agent_name} saw::{self.last_task}"
-
-        a1 = StatefulAgent("Stage1")
-        a2 = StatefulAgent("Stage2")
+                return f"{self.agent_name}::{self.last_task}"
 
         pipeline = AgentRearrange(
-            agents=[a1, a2],
-            flow="Stage1 -> Stage2",
-            max_loops=1,
-            autosave=False,
-            output_type="final",
-        )
-
-        N = 8
-        tasks = [f"task-{i}" for i in range(N)]
-        results = pipeline.batch_run(tasks=tasks, batch_size=N)
-
-        assert len(results) == N
-        for i, result in enumerate(results):
-            assert f"task-{i}" in str(result), (
-                f"result[{i}] does not contain 'task-{i}': {result!r}\n"
-                "Likely cause: agent state was shared across concurrent workers."
-            )
-
-    def test_non_deepcopyable_agents_are_safe_via_locked_proxy(self):
-        """
-        Regression for the fallback path: when copy.deepcopy(self) fails
-        because an agent contains a threading.Lock, batch_run must still
-        produce correct, uncontaminated results by wrapping that agent in
-        a _LockedAgent proxy that serialises concurrent .run() calls.
-
-        Without the fix the old fallback left agents shared, so concurrent
-        tasks overwrote each other's last_task and results were wrong.
-        """
-
-        class NonCopyableAgent:
-            """Agent that cannot be deep-copied (holds a threading.Lock)."""
-
-            def __init__(self, name: str):
-                self.agent_name = name
-                self.system_prompt = ""
-                self._lock = threading.Lock()  # blocks deepcopy
-                self.last_task: Optional[str] = None
-
-            def run(self, task, *args, **kwargs):
-                # Simulate meaningful work time to maximise race chance
-                time.sleep(0.05)
-                self.last_task = task
-                return f"{self.agent_name} saw::{self.last_task}"
-
-        a1 = NonCopyableAgent("Stage1")
-        a2 = NonCopyableAgent("Stage2")
-
-        pipeline = AgentRearrange(
-            agents=[a1, a2],
-            flow="Stage1 -> Stage2",
+            agents=[StatefulAgent("A"), StatefulAgent("B")],
+            flow="A -> B",
             max_loops=1,
             autosave=False,
             output_type="final",
         )
 
         N = 10
-        tasks = [f"task-{i}" for i in range(N)]
+        tasks = [f"t{i}" for i in range(N)]
+        results = pipeline.batch_run(tasks=tasks, batch_size=N)
 
-        # Run multiple times to increase chance of catching a race
-        for run_idx in range(3):
-            results = pipeline.batch_run(tasks=tasks, batch_size=N)
-            assert (
-                len(results) == N
-            ), f"run {run_idx}: wrong result count"
-            for i, result in enumerate(results):
-                assert f"task-{i}" in str(result), (
-                    f"run {run_idx}, result[{i}] does not contain 'task-{i}': "
-                    f"{result!r}\n"
-                    "Agent state was shared — _LockedAgent proxy not working."
-                )
-
-    def test_locked_agent_serialises_calls(self):
-        """
-        _LockedAgent is correctness-first: when agents can't be deepcopied,
-        concurrent .run() calls on the same underlying agent are serialised
-        through a shared lock. This means at most one thread calls that
-        agent's .run() at any moment, so results are always correct at the
-        cost of per-agent parallelism.
-
-        We verify serialisation by confirming no two threads are inside
-        .run() simultaneously on the same agent.
-        """
-        from swarms.structs.agent_rearrange import _LockedAgent
-
-        call_count = 0
-        max_concurrent = 0
-        state_lock = threading.Lock()
-
-        class UnsafeAgent:
-            """Would produce wrong results if called concurrently."""
-
-            agent_name = "Unsafe"
-            system_prompt = ""
-
-            def run(self, task, *a, **kw):
-                nonlocal call_count, max_concurrent
-                with state_lock:
-                    call_count += 1
-                    max_concurrent = max(max_concurrent, call_count)
-                time.sleep(0.05)
-                with state_lock:
-                    call_count -= 1
-                return f"result:{task}"
-
-        shared_lock = threading.Lock()
-        agent = UnsafeAgent()
-        proxy = _LockedAgent(agent, shared_lock)
-
-        def call(task):
-            return proxy.run(task)
-
-        with ThreadPoolExecutor(max_workers=5) as ex:
-            futs = [ex.submit(call, f"t{i}") for i in range(5)]
-            [f.result() for f in futs]
-
-        assert (
-            max_concurrent == 1
-        ), f"Expected max 1 concurrent call through _LockedAgent, got {max_concurrent}"
+        assert len(results) == N
+        for i, result in enumerate(results):
+            assert f"t{i}" in str(
+                result
+            ), f"result[{i}] missing 't{i}': {result!r} — agent state race detected"
 
 
 # ---------------------------------------------------------------------------
@@ -423,7 +294,6 @@ class TestBatchRunWithImages:
             )
 
         assert len(results) == 3
-        # All images must have been forwarded (order may vary due to threading)
         assert sorted(received) == sorted(images)
 
     def test_no_img_passes_none(self):
@@ -452,7 +322,7 @@ class TestBatchRunWithImages:
 
 
 # ---------------------------------------------------------------------------
-# 5. batch_size boundary conditions
+# 5. batch_size boundary conditions and input validation
 # ---------------------------------------------------------------------------
 
 
@@ -466,17 +336,16 @@ class TestBatchSizeBoundaries:
         )
         assert len(results) == len(tasks)
 
-    def test_batch_size_one_still_concurrent_api(self):
+    def test_batch_size_one_still_uses_executor(self):
         """Even batch_size=1 should go through ThreadPoolExecutor."""
         pipeline = _make_pipeline("AgentA", "AgentB")
-        tasks = ["only"]
         with patch(
             "swarms.structs.agent_rearrange.ThreadPoolExecutor",
             wraps=__import__(
                 "concurrent.futures", fromlist=["ThreadPoolExecutor"]
             ).ThreadPoolExecutor,
         ) as mock_tpe:
-            pipeline.batch_run(tasks=tasks, batch_size=1)
+            pipeline.batch_run(tasks=["only"], batch_size=1)
             assert mock_tpe.call_count == 1
 
     @pytest.mark.parametrize("batch_size", [0, -1, -10])

@@ -1,7 +1,6 @@
 import copy
 import json
 import os
-import threading
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any, Callable, Dict, List, Optional, Union
 import asyncio
@@ -18,27 +17,6 @@ from swarms.utils.loguru_logger import initialize_logger
 from swarms.utils.output_types import OutputType
 
 logger = initialize_logger(log_folder="rearrange")
-
-
-class _LockedAgent:
-    """Thin proxy that serialises concurrent .run() calls via a shared lock.
-
-    Used as a fallback when an agent cannot be deep-copied (e.g. it contains
-    a threading.Lock or other non-picklable object).  All attribute access is
-    forwarded to the wrapped agent; only .run() is intercepted so that at most
-    one thread calls the underlying agent at a time.
-    """
-
-    def __init__(self, agent: Any, lock: threading.Lock) -> None:
-        self._agent = agent
-        self._lock = lock
-
-    def __getattr__(self, name: str) -> Any:
-        return getattr(self._agent, name)
-
-    def run(self, *args: Any, **kwargs: Any) -> Any:
-        with self._lock:
-            return self._agent.run(*args, **kwargs)
 
 
 class AgentRearrange:
@@ -879,24 +857,8 @@ class AgentRearrange:
                 else [None] * len(batch_tasks)
             )
 
-            # Process batch using concurrent execution via ThreadPoolExecutor.
-            #
-            # Isolation strategy (strongest → weakest):
-            #   1. copy.deepcopy(self)  — full isolation: each task owns its
-            #      own conversation AND its own copies of every agent object.
-            #   2. Fallback when deepcopy fails (agent has a threading.Lock,
-            #      file handle, etc.):
-            #      a. deepcopy conversation (always possible).
-            #      b. Per-agent deepcopy: if an individual agent can be
-            #         copied, that task gets its own copy.
-            #      c. If an agent still can't be copied, wrap it in
-            #         _LockedAgent so concurrent .run() calls are serialised
-            #         through a shared lock — preserving correctness at the
-            #         cost of per-agent parallelism.
-            #
-            # Batch-scoped locks are created once and shared across all
-            # worker clones so they can actually coordinate.
-            batch_agent_locks: Dict[str, threading.Lock] = {}
+            # Process batch concurrently. Each task gets a full deepcopy of
+            # self so conversation history and agent state are fully isolated.
             max_workers = min(len(batch_tasks), os.cpu_count() or 4)
             futures_ordered = []
             with ThreadPoolExecutor(
@@ -905,28 +867,7 @@ class AgentRearrange:
                 for task_item, img_path in zip(
                     batch_tasks, batch_imgs
                 ):
-                    try:
-                        clone = copy.deepcopy(self)
-                    except (TypeError, copy.Error):
-                        clone = copy.copy(self)
-                        clone.conversation = copy.deepcopy(
-                            self.conversation
-                        )
-                        new_agents: Dict[str, Any] = {}
-                        for name, agent in self.agents.items():
-                            try:
-                                new_agents[name] = copy.deepcopy(
-                                    agent
-                                )
-                            except (TypeError, copy.Error):
-                                if name not in batch_agent_locks:
-                                    batch_agent_locks[name] = (
-                                        threading.Lock()
-                                    )
-                                new_agents[name] = _LockedAgent(
-                                    agent, batch_agent_locks[name]
-                                )
-                        clone.agents = new_agents
+                    clone = copy.deepcopy(self)
                     future = executor.submit(
                         clone.run,
                         task_item,
