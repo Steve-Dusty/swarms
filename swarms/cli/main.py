@@ -56,26 +56,35 @@ from swarms.utils.formatter import formatter
 load_swarms_env()
 
 
-def run_autoswarm(task: str, model: str) -> None:
+def run_autoswarm(
+    task: str,
+    model: str,
+    output_path: str = None,
+    output_dir: str = None,
+    no_run: bool = False,
+) -> None:
     """
     Generate and execute an autonomous swarm configuration.
 
-    This function validates inputs, generates a swarm configuration using
-    the specified model, and handles errors with user-friendly messages.
+    Always writes a ready-to-run Python file to disk. By default also
+    executes the swarm immediately. Use --no-run to skip execution.
 
     Args:
         task: The task description for the swarm to execute. Must be non-empty.
         model: The model name to use for swarm generation (e.g., 'gpt-4').
             Must be non-empty.
+        output_path: Optional file path for the generated Python script.
+        output_dir: Optional directory to create the generated file in.
+        no_run: If True, only write the file without executing the swarm.
 
     Raises:
         SwarmCLIError: If task or model is empty or invalid.
         Exception: If swarm generation fails, displays formatted error message.
-
-    Note:
-        The function provides enhanced error handling with specific messages
-        for common issues like missing API keys or invalid model configurations.
     """
+    from swarms.agents.auto_generate_swarm_config import (
+        write_autoswarm_file,
+    )
+
     try:
         console.print(
             "[white]Initializing autoswarm configuration...[/white]"
@@ -88,19 +97,53 @@ def run_autoswarm(task: str, model: str) -> None:
         if not model or model.strip() == "":
             raise SwarmCLIError("Model name cannot be empty")
 
-        # Attempt to generate swarm configuration
+        # Step 1: Generate the config dict via LLM
         console.print(
             f"[white]Generating swarm for task: {task}[/white]"
         )
-        result = generate_swarm_config(task=task, model=model)
+        config = generate_swarm_config(
+            task=task,
+            model_name=model,
+        )
 
-        if result:
-            console.print(
-                "[white]✓ Swarm configuration generated successfully![/white]"
-            )
-        else:
+        if not config:
             raise SwarmCLIError(
                 "Failed to generate swarm configuration"
+            )
+
+        agents_count = len(config.get("agents", []))
+        console.print(
+            f"[white]✓ Swarm configuration generated[/white]"
+        )
+        console.print(
+            f"[white]✓ Parsed {agents_count} agents from config[/white]"
+        )
+
+        # Step 2: Write the Python file (always)
+        written_path = write_autoswarm_file(
+            config=config,
+            task=task,
+            output_path=output_path,
+            output_dir=output_dir,
+        )
+        console.print(
+            f"[white]✓ Written to: {written_path}[/white]"
+        )
+
+        # Step 3: Optionally run the swarm
+        if not no_run:
+            import yaml
+
+            console.print(
+                "[white]Running swarm...[/white]"
+            )
+            yaml_string = yaml.dump(config, default_flow_style=False)
+            create_agents_from_yaml(
+                yaml_string=yaml_string,
+                return_type="run_swarm",
+            )
+            console.print(
+                "[white]✓ Swarm executed successfully![/white]"
             )
 
     except Exception as e:
@@ -1094,6 +1137,25 @@ def setup_argument_parser() -> argparse.ArgumentParser:
         type=str,
         help="Model name for autoswarm command",
     )
+    parser.add_argument(
+        "-o",
+        "--output",
+        type=str,
+        default=None,
+        help="Output file path for the generated Python script (autoswarm command)",
+    )
+    parser.add_argument(
+        "-d",
+        "--output-dir",
+        type=str,
+        default=None,
+        help="Directory to create the generated Python script in (autoswarm command)",
+    )
+    parser.add_argument(
+        "--no-run",
+        action="store_true",
+        help="Only write the generated Python file, do not execute the swarm (autoswarm command)",
+    )
     # Init specific arguments
     parser.add_argument(
         "--dir",
@@ -1418,12 +1480,14 @@ def handle_autoswarm(args: argparse.Namespace) -> None:
     Handle the autoswarm command.
 
     Generates and executes an autonomous swarm configuration based on the
-    provided task and model.
+    provided task and model. Writes a ready-to-run Python file to disk.
 
     Args:
         args: Parsed command line arguments containing:
             - task: Required task description for the swarm
             - model: Required model name for swarm generation
+            - output: Optional output file path for the generated script
+            - no_run: Optional flag to skip execution and only write the file
 
     Exits:
         Exits with code 1 if --task is not provided.
@@ -1438,7 +1502,13 @@ def handle_autoswarm(args: argparse.Namespace) -> None:
             "Example usage: python cli.py autoswarm --task 'analyze this data' --model gpt-4",
         )
         exit(1)
-    run_autoswarm(args.task, args.model)
+    run_autoswarm(
+        task=args.task,
+        model=args.model,
+        output_path=getattr(args, "output", None),
+        output_dir=getattr(args, "output_dir", None),
+        no_run=getattr(args, "no_run", False),
+    )
 
 
 def handle_llm_council(args: argparse.Namespace) -> None:
