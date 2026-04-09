@@ -837,13 +837,6 @@ We've made it easy to start contributing. Here's how you can help:
 
 4. **Join the Discussion:** To participate in roadmap discussions and connect with other developers, join our community on [**Discord**](https://discord.gg/EamjgSaEQf).
 
-
-## Join the Community
-
-Join thousands of agent builders and AI engineers in the **[Swarms Discord](https://discord.gg/EamjgSaEQf)** to get technical support, showcase what you're building, collaborate with others deploying multi-agent systems, and stay up to date with new features. The Discord community offers help from the team and peers, a place to share your projects, connect with fellow builders, and be first to learn about the latest releases and integrations.
-
-[Join the Swarms Discord →](https://discord.gg/EamjgSaEQf)
-
 ### Thank You to Our Contributors
 
 Thank you for contributing to swarms. Your work is extremely appreciated and recognized.
@@ -851,6 +844,14 @@ Thank you for contributing to swarms. Your work is extremely appreciated and rec
 <a href="https://github.com/kyegomez/swarms/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=kyegomez/swarms" />
 </a>
+
+
+## Join the Community
+
+Join thousands of agent builders and AI engineers in the **[Swarms Discord](https://discord.gg/EamjgSaEQf)** to get technical support, showcase what you're building, collaborate with others deploying multi-agent systems, and stay up to date with new features. The Discord community offers help from the team and peers, a place to share your projects, connect with fellow builders, and be first to learn about the latest releases and integrations.
+
+[Join the Swarms Discord →](https://discord.gg/EamjgSaEQf)
+
 
 ### Thank You to Our Community
 
