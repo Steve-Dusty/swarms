@@ -848,7 +848,7 @@ Thank you for contributing to swarms. Your work is extremely appreciated and rec
 
 ## Join the Community
 
-Join thousands of agent builders and AI engineers in the **[Swarms Discord](https://discord.gg/EamjgSaEQf)** to get technical support, showcase what you're building, collaborate with others deploying multi-agent systems, and stay up to date with new features. The Discord community offers help from the team and peers, a place to share your projects, connect with fellow builders, and be first to learn about the latest releases and integrations.
+Join thousands of agent builders and AI engineers in the **[Swarms Discord](https://discord.gg/EamjgSaEQf)** for technical support, project showcases, collaboration, and the latest swarms ecosystem updates.
 
 [Join the Swarms Discord →](https://discord.gg/EamjgSaEQf)
 
