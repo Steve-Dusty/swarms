@@ -12,7 +12,10 @@ The drift result is surfaced on the returned object as `.drift`:
 """
 
 from swarms import Agent, SequentialWorkflow
-from swarms.structs.sequential_workflow import DriftDetectionAgent, DriftDetectionError
+from swarms.structs.sequential_workflow import (
+    DriftDetectionAgent,
+    DriftDetectionError,
+)
 
 # ---------------------------------------------------------------------------
 # Agents
@@ -49,8 +52,9 @@ writer = Agent(
 )
 
 # ---------------------------------------------------------------------------
-# Example 1 — drift_detection=True (default DriftDetectionAgent settings)
+# Example 1 — drift_detection=True with custom judge model
 # threshold=0.75, on_drift="flag", judge_model="claude-sonnet-4-5"
+# (DriftDetectionAgent defaults judge_model to "gpt-4o"; overridden here)
 # ---------------------------------------------------------------------------
 
 wf_flag = SequentialWorkflow(
@@ -71,24 +75,18 @@ print(f"Drift status: {result.drift.status}")
 
 # ---------------------------------------------------------------------------
 # Example 2 — custom DriftDetectionAgent with rerun on drift
-# Pass the agent directly to drift_detection after constructing it manually
-# and assigning it post-init (drift_detection param accepts bool only, so we
-# swap the attribute after construction for custom configuration).
 # ---------------------------------------------------------------------------
 
 wf_rerun = SequentialWorkflow(
     name="geopolitics-pipeline-rerun",
     agents=[researcher, analyst, writer],
     max_loops=1,
-    drift_detection=True,
-)
-
-# Override with a custom agent for finer control
-wf_rerun.drift_detection = DriftDetectionAgent(
-    threshold=0.80,
-    on_drift="rerun",
-    max_retries=2,
-    judge_model="claude-sonnet-4-5",
+    drift_detection=DriftDetectionAgent(
+        threshold=0.80,
+        on_drift="rerun",
+        max_retries=2,
+        judge_model="claude-sonnet-4-5",
+    ),
 )
 
 result2 = wf_rerun.run(task)
@@ -106,13 +104,11 @@ wf_raise = SequentialWorkflow(
     name="geopolitics-pipeline-strict",
     agents=[researcher, analyst, writer],
     max_loops=1,
-    drift_detection=True,
-)
-
-wf_raise.drift_detection = DriftDetectionAgent(
-    threshold=0.99,  # intentionally very strict to demonstrate raising
-    on_drift="raise",
-    judge_model="claude-sonnet-4-5",
+    drift_detection=DriftDetectionAgent(
+        threshold=0.99,  # intentionally very strict to demonstrate raising
+        on_drift="raise",
+        judge_model="claude-sonnet-4-5",
+    ),
 )
 
 print("\n=== Example 3: raise mode (strict threshold) ===")

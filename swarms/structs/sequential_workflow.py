@@ -89,7 +89,7 @@ Respond with ONLY a single floating-point number between 0.0 and 1.0, nothing el
             float: Alignment score in [0.0, 1.0].
         """
         try:
-            import litellm
+            import litellm  # pyre-ignore[21]
 
             prompt = self._SCORE_PROMPT.format(
                 original_task=original_task,
@@ -201,14 +201,30 @@ Respond with ONLY a single floating-point number between 0.0 and 1.0, nothing el
         )
 
 
+class _DictWorkflowResult(dict):
+    """
+    Dict subclass used when the pipeline returns a dict and drift detection is
+    enabled. Passes isinstance(result, dict) and exposes the full mapping API
+    (keys, items, get, update, …) unchanged, while adding a .drift attribute.
+    """
+
+    def __init__(self, data: dict, drift: DriftDetectionResult):
+        super().__init__(data)
+        self.drift = drift
+
+    def __repr__(self) -> str:
+        return f"_DictWorkflowResult({dict.__repr__(self)}, drift={self.drift!r})"
+
+
 @dataclass
 class _WorkflowResult:
     """
-    Thin wrapper used when the pipeline returns a primitive (e.g. str) and we
-    need to attach a DriftDetectionResult to it.
+    Thin wrapper used when the pipeline returns a non-dict primitive (str, etc.)
+    and drift detection is enabled. Proxies basic sequence/string access while
+    adding a .drift attribute.
     """
 
-    output: str
+    output: object
     drift: DriftDetectionResult
 
     def __str__(self) -> str:
@@ -216,6 +232,34 @@ class _WorkflowResult:
 
     def __repr__(self) -> str:
         return f"_WorkflowResult(output={self.output!r}, drift={self.drift!r})"
+
+    def __getitem__(self, key):
+        return self.output[key]
+
+    def __setitem__(self, key, value):
+        self.output[key] = value
+
+    def __contains__(self, key) -> bool:
+        return key in self.output
+
+    def __iter__(self):
+        return iter(self.output)
+
+    def __len__(self) -> int:
+        return len(self.output)
+
+
+def _wrap_result(
+    output: object, drift: DriftDetectionResult
+) -> object:
+    """Attach a DriftDetectionResult to a pipeline output without breaking its type contract."""
+    if isinstance(output, dict):
+        return _DictWorkflowResult(output, drift)
+    try:
+        output.drift = drift  # type: ignore[union-attr]
+        return output
+    except AttributeError:
+        return _WorkflowResult(output=output, drift=drift)
 
 
 class SequentialWorkflow:
@@ -256,7 +300,7 @@ class SequentialWorkflow:
         team_awareness: bool = False,
         autosave: bool = True,
         verbose: bool = False,
-        drift_detection: bool = False,
+        drift_detection: Union[bool, "DriftDetectionAgent"] = False,
         *args,
         **kwargs,
     ):
@@ -274,9 +318,9 @@ class SequentialWorkflow:
             multi_agent_collab_prompt (bool, optional): If True, appends a collaborative prompt to each agent.
             autosave (bool, optional): Whether to enable autosaving of conversation history. Defaults to False.
             verbose (bool, optional): Whether to enable verbose logging. Defaults to False.
-            drift_detection (bool, optional): If True, automatically runs a DriftDetectionAgent
-                after the final agent and scores semantic alignment between the original task and the
-                final output. Defaults to False.
+            drift_detection (Union[bool, DriftDetectionAgent], optional): Controls drift detection.
+                False disables it (default). True enables it with default settings. Pass a
+                pre-configured DriftDetectionAgent to customise threshold, on_drift, or max_retries.
             *args: Additional positional arguments.
             **kwargs: Additional keyword arguments.
 
@@ -294,9 +338,12 @@ class SequentialWorkflow:
         self.team_awareness = team_awareness
         self.autosave = autosave
         self.verbose = verbose
-        self.drift_detection = (
-            DriftDetectionAgent() if drift_detection else None
-        )
+        if isinstance(drift_detection, DriftDetectionAgent):
+            self.drift_detection = drift_detection
+        elif drift_detection:
+            self.drift_detection = DriftDetectionAgent()
+        else:
+            self.drift_detection = None
         self.swarm_workspace_dir = None
 
         self.reliability_check()
@@ -415,13 +462,21 @@ class SequentialWorkflow:
         """
         try:
             # prompt = f"{MULTI_AGENT_COLLAB_PROMPT}\n\n{task}"
-            result = self.agent_rearrange.run(
-                task=task,
-                img=img,
-            )
+            run_kwargs = {"task": task}
+            if img is not None:
+                run_kwargs["img"] = img
+            result = self.agent_rearrange.run(**run_kwargs)
 
             # Run drift detection if configured
             if self.drift_detection is not None:
+                _img = img
+
+                def _rerun(t: str) -> str:
+                    kw = {"task": t}
+                    if _img is not None:
+                        kw["img"] = _img
+                    return self.agent_rearrange.run(**kw)
+
                 drift_result = self.drift_detection.run(
                     original_task=task,
                     final_output=(
@@ -429,21 +484,12 @@ class SequentialWorkflow:
                         if isinstance(result, str)
                         else str(result)
                     ),
-                    pipeline_runner=lambda t: self.agent_rearrange.run(
-                        task=t, img=img
-                    ),
+                    pipeline_runner=_rerun,
                 )
                 # If a re-run produced a better output, use it as the workflow result
                 if drift_result.status == "rerun_complete":
                     result = drift_result.output
-                # Attach the drift result so callers can inspect it
-                try:
-                    result.drift = drift_result
-                except AttributeError:
-                    # result is a primitive (str/int); wrap it in a lightweight container
-                    result = _WorkflowResult(
-                        output=result, drift=drift_result
-                    )
+                result = _wrap_result(result, drift_result)
 
             # Save conversation history after successful execution
             if self.autosave and self.swarm_workspace_dir:

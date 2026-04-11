@@ -650,6 +650,24 @@ def test_workflow_drift_detection_true_creates_agent():
     assert isinstance(wf.drift_detection, DriftDetectionAgent)
 
 
+def test_workflow_drift_detection_accepts_preconfigured_agent():
+    agent = DriftDetectionAgent(
+        threshold=0.85, on_drift="rerun", max_retries=3
+    )
+    a1 = Agent(agent_name="A1", model_name="gpt-4o", max_loops=1)
+    a2 = Agent(agent_name="A2", model_name="gpt-4o", max_loops=1)
+    wf = SequentialWorkflow(
+        agents=[a1, a2],
+        max_loops=1,
+        autosave=False,
+        drift_detection=agent,
+    )
+    assert wf.drift_detection is agent
+    assert wf.drift_detection.threshold == 0.85
+    assert wf.drift_detection.on_drift == "rerun"
+    assert wf.drift_detection.max_retries == 3
+
+
 def test_workflow_run_with_drift_detection_attaches_drift_attr():
     wf = _make_workflow(drift_detection=True)
     fake_output = "pipeline result"
@@ -705,3 +723,27 @@ def test_workflow_run_raise_propagates_error():
     ), patch.object(wf.drift_detection, "score", return_value=0.1):
         with pytest.raises(DriftDetectionError):
             wf.run("task")
+
+
+def test_workflow_run_drift_with_dict_output_proxies_access():
+    # Default output_type="dict" means agent_rearrange.run may return a dict.
+    # Enabling drift_detection must not break dict access patterns.
+    wf = _make_workflow(drift_detection=True)
+    fake_output = {"Agent1": "research notes", "Agent2": "analysis"}
+    with patch.object(
+        wf.agent_rearrange, "run", return_value=fake_output
+    ), patch.object(wf.drift_detection, "score", return_value=0.9):
+        result = wf.run("task")
+    assert hasattr(result, "drift")
+    assert result.drift.status == "ok"
+    # Full mapping contract must be preserved
+    assert isinstance(result, dict)
+    assert result["Agent1"] == "research notes"
+    assert result["Agent2"] == "analysis"
+    assert "Agent1" in result
+    assert len(result) == 2
+    assert set(result) == {"Agent1", "Agent2"}
+    assert set(result.keys()) == {"Agent1", "Agent2"}
+    assert result.get("Agent1") == "research notes"
+    assert result.get("missing", "default") == "default"
+    assert dict(result.items()) == fake_output
