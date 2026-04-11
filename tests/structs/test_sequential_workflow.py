@@ -1,7 +1,15 @@
 import os
+from unittest.mock import MagicMock, patch
+
 import pytest
 
 from swarms import Agent, SequentialWorkflow
+from swarms.structs.sequential_workflow import (
+    DriftDetectionAgent,
+    DriftDetectionError,
+    DriftDetectionResult,
+    _WorkflowResult,
+)
 from swarms.utils.workspace_utils import get_workspace_dir
 
 
@@ -380,3 +388,320 @@ def test_sequential_workflow_autosave_saves_conversation_after_run(
     ), f"Expected conversation_history.json at {conversation_path}"
 
     get_workspace_dir.cache_clear()
+
+
+# ---------------------------------------------------------------------------
+# DriftDetectionResult
+# ---------------------------------------------------------------------------
+
+
+def test_drift_detection_result_fields():
+    result = DriftDetectionResult(
+        score=0.9,
+        status="ok",
+        output="some output",
+        original_task="task",
+    )
+    assert result.score == 0.9
+    assert result.status == "ok"
+    assert result.output == "some output"
+    assert result.original_task == "task"
+
+
+def test_drift_detection_result_default_original_task():
+    result = DriftDetectionResult(
+        score=0.5, status="drift_detected", output="x"
+    )
+    assert result.original_task == ""
+
+
+# ---------------------------------------------------------------------------
+# DriftDetectionError
+# ---------------------------------------------------------------------------
+
+
+def test_drift_detection_error_is_exception():
+    with pytest.raises(DriftDetectionError):
+        raise DriftDetectionError("drift too high")
+
+
+# ---------------------------------------------------------------------------
+# _WorkflowResult
+# ---------------------------------------------------------------------------
+
+
+def test_workflow_result_str():
+    dr = DriftDetectionResult(score=0.9, status="ok", output="hello")
+    wr = _WorkflowResult(output="hello", drift=dr)
+    assert str(wr) == "hello"
+    assert wr.drift is dr
+
+
+# ---------------------------------------------------------------------------
+# DriftDetectionAgent.score
+# ---------------------------------------------------------------------------
+
+
+def _make_litellm_response(content: str):
+    """Build a minimal mock that looks like a litellm completion response."""
+    msg = MagicMock()
+    msg.content = content
+    choice = MagicMock()
+    choice.message = msg
+    response = MagicMock()
+    response.choices = [choice]
+    return response
+
+
+def test_score_returns_float_from_llm():
+    agent = DriftDetectionAgent(judge_model="gpt-4o")
+    with patch(
+        "litellm.completion",
+        return_value=_make_litellm_response("0.85"),
+    ):
+        score = agent.score("task", "output")
+    assert score == pytest.approx(0.85)
+
+
+def test_score_clamps_above_one():
+    agent = DriftDetectionAgent()
+    with patch(
+        "litellm.completion",
+        return_value=_make_litellm_response("1.5"),
+    ):
+        score = agent.score("task", "output")
+    assert score == 1.0
+
+
+def test_score_clamps_below_zero():
+    agent = DriftDetectionAgent()
+    with patch(
+        "litellm.completion",
+        return_value=_make_litellm_response("-0.3"),
+    ):
+        score = agent.score("task", "output")
+    assert score == 0.0
+
+
+def test_score_defaults_to_one_on_llm_failure():
+    agent = DriftDetectionAgent()
+    with patch(
+        "litellm.completion", side_effect=RuntimeError("API error")
+    ):
+        score = agent.score("task", "output")
+    assert score == 1.0
+
+
+def test_score_defaults_to_one_on_parse_failure():
+    agent = DriftDetectionAgent()
+    with patch(
+        "litellm.completion",
+        return_value=_make_litellm_response("not-a-number"),
+    ):
+        score = agent.score("task", "output")
+    assert score == 1.0
+
+
+# ---------------------------------------------------------------------------
+# DriftDetectionAgent.run — on_drift="flag"
+# ---------------------------------------------------------------------------
+
+
+def test_run_flag_ok_when_score_above_threshold():
+    agent = DriftDetectionAgent(threshold=0.75, on_drift="flag")
+    with patch.object(agent, "score", return_value=0.9):
+        result = agent.run(
+            "task", "output", pipeline_runner=lambda t: "unused"
+        )
+    assert result.status == "ok"
+    assert result.score == pytest.approx(0.9)
+    assert result.output == "output"
+    assert result.original_task == "task"
+
+
+def test_run_flag_drift_detected_when_score_below_threshold():
+    agent = DriftDetectionAgent(threshold=0.75, on_drift="flag")
+    with patch.object(agent, "score", return_value=0.5):
+        result = agent.run(
+            "task", "output", pipeline_runner=lambda t: "unused"
+        )
+    assert result.status == "drift_detected"
+    assert result.score == pytest.approx(0.5)
+
+
+def test_run_flag_exact_threshold_is_ok():
+    agent = DriftDetectionAgent(threshold=0.75, on_drift="flag")
+    with patch.object(agent, "score", return_value=0.75):
+        result = agent.run(
+            "task", "output", pipeline_runner=lambda t: "unused"
+        )
+    assert result.status == "ok"
+
+
+# ---------------------------------------------------------------------------
+# DriftDetectionAgent.run — on_drift="raise"
+# ---------------------------------------------------------------------------
+
+
+def test_run_raise_raises_on_drift():
+    agent = DriftDetectionAgent(threshold=0.75, on_drift="raise")
+    with patch.object(agent, "score", return_value=0.4):
+        with pytest.raises(DriftDetectionError, match="score=0.40"):
+            agent.run(
+                "task", "output", pipeline_runner=lambda t: "unused"
+            )
+
+
+def test_run_raise_does_not_raise_when_ok():
+    agent = DriftDetectionAgent(threshold=0.75, on_drift="raise")
+    with patch.object(agent, "score", return_value=0.9):
+        result = agent.run(
+            "task", "output", pipeline_runner=lambda t: "unused"
+        )
+    assert result.status == "ok"
+
+
+# ---------------------------------------------------------------------------
+# DriftDetectionAgent.run — on_drift="rerun"
+# ---------------------------------------------------------------------------
+
+
+def test_run_rerun_succeeds_on_second_attempt():
+    agent = DriftDetectionAgent(
+        threshold=0.75, on_drift="rerun", max_retries=2
+    )
+    scores = iter([0.4, 0.9])
+    runner = MagicMock(return_value="new output")
+    with patch.object(agent, "score", side_effect=scores):
+        result = agent.run(
+            "task", "old output", pipeline_runner=runner
+        )
+    assert result.status == "rerun_complete"
+    assert result.output == "new output"
+    assert result.score == pytest.approx(0.9)
+    runner.assert_called_once_with("task")
+
+
+def test_run_rerun_exhausts_retries_returns_drift_detected():
+    # After exhausting retries without meeting threshold, status must be
+    # "drift_detected" (falls back to flag behavior), NOT "rerun_complete".
+    agent = DriftDetectionAgent(
+        threshold=0.75, on_drift="rerun", max_retries=2
+    )
+    scores = iter([0.3, 0.4, 0.5])
+    runner = MagicMock(return_value="retried output")
+    with patch.object(agent, "score", side_effect=scores):
+        result = agent.run(
+            "task", "old output", pipeline_runner=runner
+        )
+    assert result.status == "drift_detected"
+    assert runner.call_count == 2  # max_retries=2
+
+
+def test_run_rerun_complete_only_when_threshold_met():
+    # "rerun_complete" must only appear when the rerun actually meets the threshold.
+    agent = DriftDetectionAgent(
+        threshold=0.75, on_drift="rerun", max_retries=3
+    )
+    scores = iter([0.3, 0.5, 0.9])
+    runner = MagicMock(return_value="better output")
+    with patch.object(agent, "score", side_effect=scores):
+        result = agent.run(
+            "task", "old output", pipeline_runner=runner
+        )
+    assert result.status == "rerun_complete"
+    assert result.score == pytest.approx(0.9)
+
+
+def test_run_rerun_respects_max_retries_of_one():
+    agent = DriftDetectionAgent(
+        threshold=0.75, on_drift="rerun", max_retries=1
+    )
+    scores = iter([0.2, 0.3])
+    runner = MagicMock(return_value="retried")
+    with patch.object(agent, "score", side_effect=scores):
+        agent.run("task", "original", pipeline_runner=runner)
+    assert runner.call_count == 1
+
+
+# ---------------------------------------------------------------------------
+# SequentialWorkflow drift_detection integration
+# ---------------------------------------------------------------------------
+
+
+def _make_workflow(drift_detection=False):
+    a1 = Agent(agent_name="A1", model_name="gpt-4o", max_loops=1)
+    a2 = Agent(agent_name="A2", model_name="gpt-4o", max_loops=1)
+    return SequentialWorkflow(
+        agents=[a1, a2],
+        max_loops=1,
+        autosave=False,
+        drift_detection=drift_detection,
+    )
+
+
+def test_workflow_drift_detection_false_stores_none():
+    wf = _make_workflow(drift_detection=False)
+    assert wf.drift_detection is None
+
+
+def test_workflow_drift_detection_true_creates_agent():
+    wf = _make_workflow(drift_detection=True)
+    assert isinstance(wf.drift_detection, DriftDetectionAgent)
+
+
+def test_workflow_run_with_drift_detection_attaches_drift_attr():
+    wf = _make_workflow(drift_detection=True)
+    fake_output = "pipeline result"
+    with patch.object(
+        wf.agent_rearrange, "run", return_value=fake_output
+    ), patch.object(wf.drift_detection, "score", return_value=0.95):
+        result = wf.run("do something")
+    assert hasattr(result, "drift")
+    assert isinstance(result.drift, DriftDetectionResult)
+    assert result.drift.status == "ok"
+    assert result.drift.score == pytest.approx(0.95)
+
+
+def test_workflow_run_without_drift_detection_returns_raw():
+    wf = _make_workflow(drift_detection=False)
+    fake_output = "pipeline result"
+    with patch.object(
+        wf.agent_rearrange, "run", return_value=fake_output
+    ):
+        result = wf.run("do something")
+    assert result == fake_output
+    assert not hasattr(result, "drift")
+
+
+def test_workflow_run_drift_detected_status():
+    wf = _make_workflow(drift_detection=True)
+    with patch.object(
+        wf.agent_rearrange, "run", return_value="output"
+    ), patch.object(wf.drift_detection, "score", return_value=0.3):
+        result = wf.run("task")
+    assert result.drift.status == "drift_detected"
+
+
+def test_workflow_run_rerun_uses_new_output():
+    wf = _make_workflow(drift_detection=True)
+    wf.drift_detection.on_drift = "rerun"
+    wf.drift_detection.max_retries = 1
+    run_outputs = iter(["old output", "new output"])
+    scores = iter([0.2, 0.9])
+    with patch.object(
+        wf.agent_rearrange, "run", side_effect=run_outputs
+    ), patch.object(wf.drift_detection, "score", side_effect=scores):
+        result = wf.run("task")
+    assert str(result) == "new output"
+    assert result.drift.status == "rerun_complete"
+
+
+def test_workflow_run_raise_propagates_error():
+    wf = _make_workflow(drift_detection=True)
+    wf.drift_detection.on_drift = "raise"
+    with patch.object(
+        wf.agent_rearrange, "run", return_value="output"
+    ), patch.object(wf.drift_detection, "score", return_value=0.1):
+        with pytest.raises(DriftDetectionError):
+            wf.run("task")
