@@ -2,7 +2,7 @@ import json
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
-from typing import Callable, List, Literal, Optional, Union
+from typing import Any, Callable, List, Literal, Optional, Union
 
 from loguru import logger as loguru_logger
 from swarms.prompts.multi_agent_collab_prompt import (
@@ -224,7 +224,7 @@ class _WorkflowResult:
     adding a .drift attribute.
     """
 
-    output: object
+    output: Any
     drift: DriftDetectionResult
 
     def __str__(self) -> str:
@@ -249,9 +249,7 @@ class _WorkflowResult:
         return len(self.output)
 
 
-def _wrap_result(
-    output: object, drift: DriftDetectionResult
-) -> object:
+def _wrap_result(output: Any, drift: DriftDetectionResult) -> object:
     """Attach a DriftDetectionResult to a pipeline output without breaking its type contract."""
     if isinstance(output, dict):
         return _DictWorkflowResult(output, drift)
