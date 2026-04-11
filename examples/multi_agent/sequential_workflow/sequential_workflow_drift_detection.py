@@ -23,9 +23,9 @@ researcher = Agent(
     system_prompt="""You are a research specialist. Given a topic, produce a
     concise factual summary covering the key points, major actors, and
     recent developments.""",
-    model_name="gpt-4o",
+    model_name="claude-sonnet-4-5",
     max_loops=1,
-    temperature=0.3,
+    temperature=1,
 )
 
 analyst = Agent(
@@ -33,9 +33,9 @@ analyst = Agent(
     system_prompt="""You are an analytical expert. Given research notes,
     identify the most significant implications and surface three clear
     takeaways that directly address the original question.""",
-    model_name="gpt-4o",
+    model_name="claude-sonnet-4-5",
     max_loops=1,
-    temperature=0.3,
+    temperature=1,
 )
 
 writer = Agent(
@@ -43,14 +43,14 @@ writer = Agent(
     system_prompt="""You are a professional writer. Given analytical takeaways,
     produce a polished, reader-friendly summary in 2-3 paragraphs that
     directly answers the original question.""",
-    model_name="gpt-4o",
+    model_name="claude-sonnet-4-5",
     max_loops=1,
-    temperature=0.5,
+    temperature=1,
 )
 
 # ---------------------------------------------------------------------------
 # Example 1 — drift_detection=True (default DriftDetectionAgent settings)
-# threshold=0.75, on_drift="flag", judge_model="gpt-4o"
+# threshold=0.75, on_drift="flag", judge_model="claude-sonnet-4-5"
 # ---------------------------------------------------------------------------
 
 wf_flag = SequentialWorkflow(
@@ -88,7 +88,7 @@ wf_rerun.drift_detection = DriftDetectionAgent(
     threshold=0.80,
     on_drift="rerun",
     max_retries=2,
-    judge_model="gpt-4o",
+    judge_model="claude-sonnet-4-5",
 )
 
 result2 = wf_rerun.run(task)
@@ -112,7 +112,7 @@ wf_raise = SequentialWorkflow(
 wf_raise.drift_detection = DriftDetectionAgent(
     threshold=0.99,  # intentionally very strict to demonstrate raising
     on_drift="raise",
-    judge_model="gpt-4o",
+    judge_model="claude-sonnet-4-5",
 )
 
 print("\n=== Example 3: raise mode (strict threshold) ===")
