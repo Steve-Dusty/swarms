@@ -1009,8 +1009,12 @@ class TestCreateAgentsFromYaml:
             in str(context.exception)
         )
 
-    def test_invalid_return_type(self):
+    @patch(
+        "swarms.agents.create_agents_from_yaml.create_agent_with_retry"
+    )
+    def test_invalid_return_type(self, mock_create_agent):
         """Test handling invalid return type"""
+        mock_create_agent.return_value = MagicMock()
         yaml_string = """
 agents:
   - agent_name: Financial-Analysis-Agent
