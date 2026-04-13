@@ -68,7 +68,7 @@ class SequentialWorkflow:
         verbose: bool = False,
         drift_detection: bool = False,
         drift_threshold: float = 0.75,
-        drift_model: str = "gpt-4o",
+        drift_model: str = "claude-sonnet-4-5",
         *args,
         **kwargs,
     ):
@@ -90,6 +90,8 @@ class SequentialWorkflow:
                 system_prompt=DRIFT_DETECTION_PROMPT,
                 model_name=drift_model,
                 max_loops=1,
+                thinking_tokens=1024,
+                temperature=1,
             )
             if drift_detection
             else None

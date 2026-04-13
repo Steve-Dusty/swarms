@@ -15,6 +15,8 @@ researcher = Agent(
     recent developments.""",
     model_name="claude-sonnet-4-5",
     max_loops=1,
+    temperature=1,
+    thinking_tokens=1024,
 )
 
 analyst = Agent(
@@ -24,6 +26,8 @@ analyst = Agent(
     takeaways that directly address the original question.""",
     model_name="claude-sonnet-4-5",
     max_loops=1,
+    temperature=1,
+    thinking_tokens=1024,
 )
 
 writer = Agent(
@@ -33,6 +37,8 @@ writer = Agent(
     directly answers the original question.""",
     model_name="claude-sonnet-4-5",
     max_loops=1,
+    temperature=1,
+    thinking_tokens=1024,
 )
 
 wf = SequentialWorkflow(
@@ -41,7 +47,7 @@ wf = SequentialWorkflow(
     max_loops=1,
     drift_detection=True,
     drift_threshold=0.75,
-    drift_model="gpt-4o",
+    drift_model="claude-sonnet-4-5",
 )
 
 result = wf.run(
