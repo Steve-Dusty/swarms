@@ -1,8 +1,7 @@
 import json
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from dataclasses import dataclass
-from typing import Any, Callable, List, Literal, Optional, Union
+from typing import Callable, List, Optional, Union
 
 from loguru import logger as loguru_logger
 from swarms.prompts.multi_agent_collab_prompt import (
@@ -17,247 +16,16 @@ from swarms.utils.workspace_utils import get_workspace_dir
 
 logger = initialize_logger(log_folder="sequential_workflow")
 
+DRIFT_DETECTION_PROMPT = """You are a semantic alignment judge. Evaluate how well a pipeline's final output addresses the original task.
 
-class DriftDetectionError(Exception):
-    """Raised when semantic drift exceeds the configured threshold and on_drift='raise'."""
-
-
-@dataclass
-class DriftDetectionResult:
-    """Result returned by DriftDetectionAgent after evaluating a pipeline output."""
-
-    score: float  # 0.0 (total drift) → 1.0 (perfect alignment)
-    status: str  # "ok" | "drift_detected" | "rerun_complete"
-    output: str  # The final output (original or from re-run)
-    original_task: str = ""
-
-
-class DriftDetectionAgent:
-    """
-    Judge agent that scores semantic alignment between a pipeline's final output
-    and the original task prompt using an LLM-as-judge approach.
-
-    Args:
-        threshold (float): Minimum alignment score (0–1) to consider output acceptable. Defaults to 0.75.
-        max_retries (int): Maximum re-run attempts when on_drift='rerun'. Defaults to 1.
-        on_drift (Literal["flag", "rerun", "raise"]): Action when score < threshold.
-            - "flag": Return result with status="drift_detected" (default).
-            - "rerun": Re-run the pipeline up to max_retries times.
-            - "raise": Raise DriftDetectionError.
-        judge_model (str): LiteLLM-compatible model identifier for the judge. Defaults to "gpt-4o".
-    """
-
-    _SCORE_PROMPT = """You are a semantic alignment judge. Your task is to evaluate how well a final output addresses the original task.
-
-Original task:
-{original_task}
-
-Final output:
-{final_output}
-
-Score the alignment on a scale from 0.0 to 1.0, where:
-- 1.0 means the output fully and precisely addresses the original task
-- 0.75 means the output mostly addresses the task with minor gaps
-- 0.5 means the output partially addresses the task
-- 0.25 means the output barely addresses the task
-- 0.0 means the output is completely unrelated to the task
+Score the alignment on a scale from 0.0 to 1.0:
+- 1.0  fully and precisely addresses the task
+- 0.75 mostly addresses the task with minor gaps
+- 0.5  partially addresses the task
+- 0.25 barely addresses the task
+- 0.0  completely unrelated to the task
 
 Respond with ONLY a single floating-point number between 0.0 and 1.0, nothing else."""
-
-    def __init__(
-        self,
-        threshold: float = 0.75,
-        max_retries: int = 1,
-        on_drift: Literal["flag", "rerun", "raise"] = "flag",
-        judge_model: str = "gpt-4o",
-    ):
-        self.threshold = threshold
-        self.max_retries = max_retries
-        self.on_drift = on_drift
-        self.judge_model = judge_model
-
-    def score(self, original_task: str, final_output: str) -> float:
-        """
-        Uses an LLM judge to score semantic alignment between the original task
-        and the final pipeline output.
-
-        Args:
-            original_task (str): The original task prompt passed to the pipeline.
-            final_output (str): The final output produced by the pipeline.
-
-        Returns:
-            float: Alignment score in [0.0, 1.0].
-        """
-        try:
-            import litellm  # pyre-ignore[21]
-
-            prompt = self._SCORE_PROMPT.format(
-                original_task=original_task,
-                final_output=final_output,
-            )
-            response = litellm.completion(
-                model=self.judge_model,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.0,
-                max_tokens=10,
-            )
-            raw = response.choices[0].message.content.strip()
-            score = float(raw)
-            return max(0.0, min(1.0, score))
-        except Exception as e:
-            logger.warning(
-                f"DriftDetectionAgent.score failed ({e}); defaulting score to 1.0"
-            )
-            return 1.0
-
-    def run(
-        self,
-        original_task: str,
-        final_output: str,
-        pipeline_runner: Callable,
-    ) -> DriftDetectionResult:
-        """
-        Evaluate the pipeline output and take action based on on_drift setting.
-
-        Args:
-            original_task (str): The original task prompt.
-            final_output (str): The final output from the pipeline.
-            pipeline_runner (Callable): Callable that re-runs the pipeline given the original task.
-
-        Returns:
-            DriftDetectionResult: Contains score, status, output, and original_task.
-
-        Raises:
-            DriftDetectionError: When on_drift='raise' and score < threshold.
-        """
-        score = self.score(original_task, final_output)
-        logger.info(
-            f"DriftDetectionAgent: score={score:.3f}, threshold={self.threshold}"
-        )
-
-        if score >= self.threshold:
-            return DriftDetectionResult(
-                score=score,
-                status="ok",
-                output=final_output,
-                original_task=original_task,
-            )
-
-        if self.on_drift == "flag":
-            logger.warning(
-                f"Drift detected (score={score:.3f} < threshold={self.threshold})"
-            )
-            return DriftDetectionResult(
-                score=score,
-                status="drift_detected",
-                output=final_output,
-                original_task=original_task,
-            )
-
-        elif self.on_drift == "rerun":
-            attempts = 0
-            current_output = final_output
-            current_score = score
-            while attempts < self.max_retries:
-                attempts += 1
-                logger.info(
-                    f"Drift detected (score={current_score:.3f}); re-running pipeline "
-                    f"(attempt {attempts}/{self.max_retries})"
-                )
-                current_output = pipeline_runner(original_task)
-                current_score = self.score(
-                    original_task, current_output
-                )
-                logger.info(
-                    f"Re-run {attempts} score={current_score:.3f}"
-                )
-                if current_score >= self.threshold:
-                    break
-
-            final_status = (
-                "rerun_complete"
-                if current_score >= self.threshold
-                else "drift_detected"
-            )
-            return DriftDetectionResult(
-                score=current_score,
-                status=final_status,
-                output=current_output,
-                original_task=original_task,
-            )
-
-        elif self.on_drift == "raise":
-            raise DriftDetectionError(
-                f"Final output drifted from original task "
-                f"(score={score:.2f}, threshold={self.threshold})"
-            )
-
-        # Fallback (should never reach here with valid on_drift values)
-        return DriftDetectionResult(
-            score=score,
-            status="drift_detected",
-            output=final_output,
-            original_task=original_task,
-        )
-
-
-class _DictWorkflowResult(dict):
-    """
-    Dict subclass used when the pipeline returns a dict and drift detection is
-    enabled. Passes isinstance(result, dict) and exposes the full mapping API
-    (keys, items, get, update, …) unchanged, while adding a .drift attribute.
-    """
-
-    def __init__(self, data: dict, drift: DriftDetectionResult):
-        super().__init__(data)
-        self.drift = drift
-
-    def __repr__(self) -> str:
-        return f"_DictWorkflowResult({dict.__repr__(self)}, drift={self.drift!r})"
-
-
-@dataclass
-class _WorkflowResult:
-    """
-    Thin wrapper used when the pipeline returns a non-dict primitive (str, etc.)
-    and drift detection is enabled. Proxies basic sequence/string access while
-    adding a .drift attribute.
-    """
-
-    output: Any
-    drift: DriftDetectionResult
-
-    def __str__(self) -> str:
-        return str(self.output)
-
-    def __repr__(self) -> str:
-        return f"_WorkflowResult(output={self.output!r}, drift={self.drift!r})"
-
-    def __getitem__(self, key):
-        return self.output[key]
-
-    def __setitem__(self, key, value):
-        self.output[key] = value
-
-    def __contains__(self, key) -> bool:
-        return key in self.output
-
-    def __iter__(self):
-        return iter(self.output)
-
-    def __len__(self) -> int:
-        return len(self.output)
-
-
-def _wrap_result(output: Any, drift: DriftDetectionResult) -> object:
-    """Attach a DriftDetectionResult to a pipeline output without breaking its type contract."""
-    if isinstance(output, dict):
-        return _DictWorkflowResult(output, drift)
-    try:
-        output.drift = drift  # type: ignore[union-attr]
-        return output
-    except AttributeError:
-        return _WorkflowResult(output=output, drift=drift)
 
 
 class SequentialWorkflow:
@@ -298,33 +66,12 @@ class SequentialWorkflow:
         team_awareness: bool = False,
         autosave: bool = True,
         verbose: bool = False,
-        drift_detection: Union[bool, "DriftDetectionAgent"] = False,
+        drift_detection: bool = False,
+        drift_threshold: float = 0.75,
+        drift_model: str = "gpt-4o",
         *args,
         **kwargs,
     ):
-        """
-        Initialize a SequentialWorkflow instance.
-
-        Args:
-            id (str, optional): Unique identifier for the workflow. Defaults to "sequential_workflow".
-            name (str, optional): Name of the workflow. Defaults to "SequentialWorkflow".
-            description (str, optional): Description of the workflow. Defaults to a standard description.
-            agents (List[Union[Agent, Callable]], optional): List of agents or callables to execute in sequence.
-            max_loops (int, optional): Maximum number of times to execute the workflow. Defaults to 1.
-            output_type (OutputType, optional): Output format for the workflow. Defaults to "dict".
-            shared_memory_system (callable, optional): Callable for shared memory management. Defaults to None.
-            multi_agent_collab_prompt (bool, optional): If True, appends a collaborative prompt to each agent.
-            autosave (bool, optional): Whether to enable autosaving of conversation history. Defaults to False.
-            verbose (bool, optional): Whether to enable verbose logging. Defaults to False.
-            drift_detection (Union[bool, DriftDetectionAgent], optional): Controls drift detection.
-                False disables it (default). True enables it with default settings. Pass a
-                pre-configured DriftDetectionAgent to customise threshold, on_drift, or max_retries.
-            *args: Additional positional arguments.
-            **kwargs: Additional keyword arguments.
-
-        Raises:
-            ValueError: If the agents list is None or empty, or if max_loops is set to 0.
-        """
         self.id = id
         self.name = name
         self.description = description
@@ -336,12 +83,17 @@ class SequentialWorkflow:
         self.team_awareness = team_awareness
         self.autosave = autosave
         self.verbose = verbose
-        if isinstance(drift_detection, DriftDetectionAgent):
-            self.drift_detection = drift_detection
-        elif drift_detection:
-            self.drift_detection = DriftDetectionAgent()
-        else:
-            self.drift_detection = None
+        self.drift_threshold = drift_threshold
+        self.drift_agent = (
+            Agent(
+                agent_name="DriftDetector",
+                system_prompt=DRIFT_DETECTION_PROMPT,
+                model_name=drift_model,
+                max_loops=1,
+            )
+            if drift_detection
+            else None
+        )
         self.swarm_workspace_dir = None
 
         self.reliability_check()
@@ -466,28 +218,21 @@ class SequentialWorkflow:
             result = self.agent_rearrange.run(**run_kwargs)
 
             # Run drift detection if configured
-            if self.drift_detection is not None:
-                _img = img
-
-                def _rerun(t: str) -> str:
-                    kw = {"task": t}
-                    if _img is not None:
-                        kw["img"] = _img
-                    return self.agent_rearrange.run(**kw)
-
-                drift_result = self.drift_detection.run(
-                    original_task=task,
-                    final_output=(
-                        result
-                        if isinstance(result, str)
-                        else str(result)
-                    ),
-                    pipeline_runner=_rerun,
-                )
-                # If a re-run produced a better output, use it as the workflow result
-                if drift_result.status == "rerun_complete":
-                    result = drift_result.output
-                result = _wrap_result(result, drift_result)
+            if self.drift_agent is not None:
+                try:
+                    score = float(
+                        self.drift_agent.run(
+                            f"Original task: {task}\n\nFinal output: {result}"
+                        ).strip()
+                    )
+                    if score < self.drift_threshold:
+                        logger.warning(
+                            f"Drift detected: score={score:.2f} below threshold={self.drift_threshold}"
+                        )
+                    else:
+                        logger.info(f"Drift check passed: score={score:.2f}")
+                except Exception as e:
+                    logger.warning(f"Drift detection failed ({e}); skipping")
 
             # Save conversation history after successful execution
             if self.autosave and self.swarm_workspace_dir:
