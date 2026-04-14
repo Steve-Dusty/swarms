@@ -44,7 +44,6 @@ This directory contains comprehensive examples demonstrating various capabilitie
 | [swarmarrange/](multi_agent/swarmarrange/) | Swarm arrangement examples |
 | [swarms_api_examples/](multi_agent/swarms_api_examples/) | Swarms API integration examples |
 | [utils/](multi_agent/utils/) | Multi-agent utility functions |
-| [agent_grpo_examples/](multi_agent/agent_grpo_examples/) | Agent GRPO (Group Reinforcement Policy Optimization) examples for math and physics problems |
 
 ### Single Agent Systems
 

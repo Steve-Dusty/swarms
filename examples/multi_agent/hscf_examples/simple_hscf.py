@@ -42,4 +42,6 @@ hscf_swarm = HierarchicalSwarm(
 )
 
 if __name__ == "__main__":
-    hscf_swarm.run("Research the latest advancements in solid-state batteries and write a summary report.")
+    hscf_swarm.run(
+        "Research the latest advancements in solid-state batteries and write a summary report."
+    )

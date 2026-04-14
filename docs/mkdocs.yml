@@ -369,6 +369,7 @@ nav:
     - Agent Examples:
       - Overview: "examples/basic_examples_overview.md"
       - Basic Agent: "swarms/examples/basic_agent.md"
+      - ReAct Agent Tutorial: "swarms/examples/react_agent_tutorial.md"
       - Agent Skills: "swarms/examples/agent_skills_overview.md"
       - Autonomous Agent: "swarms/examples/autonomous_agent_tutorial.md"
       - Agent Handoff: "swarms/examples/agent_handoff_tutorial.md"

@@ -485,11 +485,17 @@ def test_workflow_run_with_drift_below_threshold_warns():
     with patch.object(
         wf.agent_rearrange, "run", return_value="off-topic output"
     ), patch.object(
-        wf.drift_agent, "run", side_effect=lambda *a, **kw: next(drift_responses)
-    ), patch.object(sw_module, "logger", mock_logger):
+        wf.drift_agent,
+        "run",
+        side_effect=lambda *a, **kw: next(drift_responses),
+    ), patch.object(
+        sw_module, "logger", mock_logger
+    ):
         result = wf.run("task")
     assert result == "off-topic output"
-    warning_calls = [str(c) for c in mock_logger.warning.call_args_list]
+    warning_calls = [
+        str(c) for c in mock_logger.warning.call_args_list
+    ]
     assert any("Drift detected" in c for c in warning_calls)
 
 

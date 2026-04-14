@@ -228,7 +228,9 @@ class SequentialWorkflow:
 
         return flow
 
-    def _run_drift_detection(self, task: str, result: str, run_kwargs: dict) -> str:
+    def _run_drift_detection(
+        self, task: str, result: str, run_kwargs: dict
+    ) -> str:
         while True:
             try:
                 raw = self.drift_agent.run(
@@ -236,10 +238,14 @@ class SequentialWorkflow:
                 )
                 tool_calls = ast.literal_eval(raw)
                 score = float(
-                    json.loads(tool_calls[0]["function"]["arguments"])["score"]
+                    json.loads(
+                        tool_calls[0]["function"]["arguments"]
+                    )["score"]
                 )
             except Exception as e:
-                logger.warning(f"Drift detection failed ({e}); skipping")
+                logger.warning(
+                    f"Drift detection failed ({e}); skipping"
+                )
                 break
             if score >= self.drift_threshold:
                 logger.info(f"Drift check passed: score={score:.2f}")
@@ -289,7 +295,9 @@ class SequentialWorkflow:
 
             # Run drift detection if configured
             if self.drift_agent is not None:
-                result = self._run_drift_detection(task, result, run_kwargs)
+                result = self._run_drift_detection(
+                    task, result, run_kwargs
+                )
 
             # Save conversation history after successful execution
             if self.autosave and self.swarm_workspace_dir:

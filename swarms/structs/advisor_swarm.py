@@ -118,7 +118,9 @@ class AdvisorSwarm:
 
         self.conversation = Conversation()
 
-        self.executor_agent = executor_agent or self._create_executor()
+        self.executor_agent = (
+            executor_agent or self._create_executor()
+        )
         self.advisor_agent = advisor_agent or self._create_advisor()
 
     def reliability_check(self):
