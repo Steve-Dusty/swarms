@@ -162,23 +162,6 @@ swarm = AdvisorSwarm(
 result = swarm.run("Create a Python module for string manipulation utilities")
 ```
 
-### Using with SwarmRouter
-
-```python
-from swarms import Agent, SwarmRouter
-
-router = SwarmRouter(
-    name="Advisor Router",
-    agents=[],
-    swarm_type="AdvisorSwarm",
-    advisor_swarm_executor_model_name="claude-sonnet-4-6",
-    advisor_swarm_advisor_model_name="claude-opus-4-6",
-    advisor_swarm_max_advisor_uses=2,
-)
-
-result = router.run("Explain the CAP theorem in distributed systems")
-```
-
 ### Batched Tasks
 
 ```python

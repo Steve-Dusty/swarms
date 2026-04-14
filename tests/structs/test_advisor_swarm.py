@@ -137,43 +137,26 @@ class TestRunValidation:
 
 
 # ---------------------------------------------------------------------------
-# Prompt building tests
+# Verdict regex tests (edge cases)
 # ---------------------------------------------------------------------------
 
 
-class TestPromptBuilding:
+class TestVerdictParsing:
     def setup_method(self):
         self.swarm = AdvisorSwarm()
 
-    def test_planning_prompt_contains_task(self):
-        prompt = self.swarm._build_planning_prompt("Write a haiku")
-        assert "Write a haiku" in prompt
-        assert "PLANNING MODE" in prompt
+    def test_extra_whitespace(self):
+        assert self.swarm._is_satisfactory("VERDICT :  SATISFACTORY\nAll good.")
 
-    def test_executor_prompt_contains_task_and_advice(self):
-        prompt = self.swarm._build_executor_prompt(
-            "Write a haiku", "1. Choose a theme\n2. Count syllables"
+    def test_embedded_in_paragraph(self):
+        assert self.swarm._is_satisfactory(
+            "After reviewing the output:\nVERDICT: SATISFACTORY\nThe code is correct."
         )
-        assert "Write a haiku" in prompt
-        assert "Count syllables" in prompt
 
-    def test_review_prompt_contains_output(self):
-        prompt = self.swarm._build_review_prompt(
-            "Write a haiku", "Old pond / frog jumps in / water sound"
+    def test_needs_revision_not_satisfactory(self):
+        assert not self.swarm._is_satisfactory(
+            "VERDICT: NEEDS_REVISION\n1. Missing error handling"
         )
-        assert "REVIEW MODE" in prompt
-        assert "Old pond" in prompt
-        assert "Write a haiku" in prompt
-
-    def test_refinement_prompt_contains_all_context(self):
-        prompt = self.swarm._build_refinement_prompt(
-            "Write a haiku",
-            "Old pond / frog jumps in / water sound",
-            "VERDICT: NEEDS_REVISION\n1. Fix syllable count",
-        )
-        assert "Write a haiku" in prompt
-        assert "Old pond" in prompt
-        assert "Fix syllable count" in prompt
 
 
 # ---------------------------------------------------------------------------

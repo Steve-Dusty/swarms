@@ -9,6 +9,12 @@ decision points.
 The advisor never calls tools or produces user-facing output — it
 only provides strategic guidance to the executor.
 
+Architecture:
+    task --> [ Advisor: plan ] --> [ Executor: work ]
+                                       ^         |
+                                       |  loop   v
+                                  [ Executor ] <-- [ Advisor: review ]
+
 Flow:
     1. Advisor receives the task and produces a strategic plan
     2. Executor works on the task using the advisor's guidance
@@ -20,6 +26,7 @@ Reference: "The advisor strategy: Give agents an intelligence
 boost" (Anthropic, April 2026)
 """
 
+import re
 from typing import Any, Callable, List, Optional
 
 from loguru import logger
@@ -83,7 +90,7 @@ class AdvisorSwarm:
         ...     agent_name="Executor",
         ...     model_name="claude-sonnet-4-6",
         ...     max_loops=1,
-        ...     mcp_config={"url": "http://localhost:3000/tools"},
+        ...     tools=[my_tool],
         ... )
         >>> swarm = AdvisorSwarm(
         ...     executor_agent=executor,
@@ -182,64 +189,15 @@ class AdvisorSwarm:
             verbose=self.verbose,
         )
 
-    def _build_planning_prompt(self, task: str) -> str:
-        """Build the prompt for the advisor's planning call."""
-        history = self.conversation.get_str()
-        prompt = (
-            "You are in PLANNING MODE.\n\n"
-            f"Task: {task}\n"
-        )
-        if history:
-            prompt += (
-                f"\nConversation history (from previous loops):\n{history}\n"
-            )
-        prompt += (
-            "\nProvide a strategic plan for the executor to follow. "
-            "Use numbered steps. Stay under 100 words."
-        )
-        return prompt
-
-    def _build_executor_prompt(
-        self, task: str, advice: str
-    ) -> str:
-        """Build the prompt for the executor, incorporating the advisor's guidance."""
-        return (
-            f"Task: {task}\n\n"
-            f"Strategic guidance from your advisor:\n{advice}\n\n"
-            "Execute this task following the advisor's guidance. "
-            "Produce complete, concrete output."
-        )
-
-    def _build_review_prompt(
-        self, task: str, executor_output: str
-    ) -> str:
-        """Build the prompt for the advisor's review call."""
-        return (
-            "You are in REVIEW MODE.\n\n"
-            f"Original task: {task}\n\n"
-            f"Executor's output:\n{executor_output}\n\n"
-            "Review the output against the original task. "
-            "Start your response with VERDICT: SATISFACTORY or VERDICT: NEEDS_REVISION."
-        )
-
-    def _build_refinement_prompt(
-        self,
-        task: str,
-        executor_output: str,
-        review: str,
-    ) -> str:
-        """Build the prompt for the executor's refinement pass."""
-        return (
-            f"Original task: {task}\n\n"
-            f"Your previous output:\n{executor_output}\n\n"
-            f"Advisor feedback:\n{review}\n\n"
-            "Revise your output to address each point in the advisor's feedback. "
-            "Produce the complete revised output."
-        )
-
     def _is_satisfactory(self, review: str) -> bool:
-        """Check if the advisor's review indicates the output is satisfactory."""
-        return "verdict: satisfactory" in review.lower()
+        """Parse the advisor's review to determine if output is satisfactory.
+
+        Checks for VERDICT: SATISFACTORY using regex to handle
+        variations in whitespace and casing.
+        """
+        return bool(
+            re.search(r"verdict\s*:\s*satisfactory", review, re.IGNORECASE)
+        )
 
     def run(
         self,
@@ -273,7 +231,17 @@ class AdvisorSwarm:
             advisor_uses = 0
 
             # --- Step 1: Advisor plans ---
-            planning_prompt = self._build_planning_prompt(task)
+            # Advisor sees the task and full conversation history
+            # (history matters for multi-loop runs)
+            history = self.conversation.get_str()
+            planning_prompt = (
+                f"You are in PLANNING MODE.\n\n"
+                f"Task: {task}\n\n"
+                f"--- CONVERSATION HISTORY ---\n{history}\n"
+                f"--- END CONVERSATION HISTORY ---\n\n"
+                f"Provide a strategic plan for the Executor to follow."
+            )
+
             advice = self.advisor_agent.run(task=planning_prompt)
             advisor_uses += 1
             self.conversation.add(
@@ -283,11 +251,19 @@ class AdvisorSwarm:
 
             if self.verbose:
                 logger.info(
-                    f"[AdvisorSwarm] Advisor plan ({advisor_uses}/{self.max_advisor_uses} calls used)"
+                    f"[AdvisorSwarm] Advisor plan "
+                    f"({advisor_uses}/{self.max_advisor_uses} calls used)"
                 )
 
             # --- Step 2: Executor works ---
-            executor_prompt = self._build_executor_prompt(task, advice)
+            # Executor sees the task and the advisor's plan
+            executor_prompt = (
+                f"Task: {task}\n\n"
+                f"Strategic guidance from your Advisor:\n{advice}\n\n"
+                f"Execute this task following the Advisor's guidance. "
+                f"Produce complete, concrete output."
+            )
+
             executor_output = self.executor_agent.run(
                 task=executor_prompt, img=img, imgs=imgs
             )
@@ -301,9 +277,20 @@ class AdvisorSwarm:
             # --- Step 3-4: Review-refine loop ---
             while advisor_uses < self.max_advisor_uses:
                 # Step 3: Advisor reviews
-                review_prompt = self._build_review_prompt(
-                    task, executor_output
+                # Advisor sees the full conversation history including
+                # all prior exchanges — mirrors the Anthropic pattern
+                # where the advisor sees the full transcript
+                history = self.conversation.get_str()
+                review_prompt = (
+                    f"You are in REVIEW MODE.\n\n"
+                    f"Original task: {task}\n\n"
+                    f"--- CONVERSATION HISTORY ---\n{history}\n"
+                    f"--- END CONVERSATION HISTORY ---\n\n"
+                    f"Review the Executor's most recent output against "
+                    f"the original task. Start your response with "
+                    f"VERDICT: SATISFACTORY or VERDICT: NEEDS_REVISION."
                 )
+
                 review = self.advisor_agent.run(task=review_prompt)
                 advisor_uses += 1
                 self.conversation.add(
@@ -313,7 +300,8 @@ class AdvisorSwarm:
 
                 if self.verbose:
                     logger.info(
-                        f"[AdvisorSwarm] Advisor review ({advisor_uses}/{self.max_advisor_uses} calls used)"
+                        f"[AdvisorSwarm] Advisor review "
+                        f"({advisor_uses}/{self.max_advisor_uses} calls used)"
                     )
 
                 if self._is_satisfactory(review):
@@ -324,9 +312,16 @@ class AdvisorSwarm:
                     break
 
                 # Step 4: Executor refines
-                refinement_prompt = self._build_refinement_prompt(
-                    task, executor_output, review
+                # Executor sees: original task, its own output, and
+                # the advisor's specific feedback
+                refinement_prompt = (
+                    f"Original task: {task}\n\n"
+                    f"Your previous output:\n{executor_output}\n\n"
+                    f"Advisor feedback:\n{review}\n\n"
+                    f"Revise your output to address each point in the "
+                    f"Advisor's feedback. Produce the complete revised output."
                 )
+
                 executor_output = self.executor_agent.run(
                     task=refinement_prompt, img=img, imgs=imgs
                 )
@@ -335,7 +330,9 @@ class AdvisorSwarm:
                 )
 
                 if self.verbose:
-                    logger.info("[AdvisorSwarm] Executor refined output")
+                    logger.info(
+                        "[AdvisorSwarm] Executor refined output"
+                    )
 
             if self.verbose:
                 logger.info(

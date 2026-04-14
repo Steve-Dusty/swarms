@@ -18,7 +18,6 @@ from pydantic import BaseModel, Field
 from swarms.prompts.multi_agent_collab_prompt import (
     MULTI_AGENT_COLLAB_PROMPT_TWO,
 )
-from swarms.structs.advisor_swarm import AdvisorSwarm
 from swarms.structs.agent import Agent
 from swarms.structs.agent_rearrange import AgentRearrange
 from swarms.structs.batched_grid_workflow import BatchedGridWorkflow
@@ -47,7 +46,6 @@ from swarms.utils.swarm_autosave import (
 logger = initialize_logger(log_folder="swarm_router")
 
 SwarmType = Literal[
-    "AdvisorSwarm",
     "AgentRearrange",
     "MixtureOfAgents",
     "SequentialWorkflow",
@@ -216,9 +214,6 @@ class SwarmRouter:
         conversation: Any = None,
         agents_config: Optional[Dict[Any, Any]] = None,
         speaker_function: str = None,
-        advisor_swarm_executor_model_name: str = "claude-sonnet-4-6",
-        advisor_swarm_advisor_model_name: str = "claude-opus-4-6",
-        advisor_swarm_max_advisor_uses: int = 3,
         heavy_swarm_loops_per_agent: int = 1,
         heavy_swarm_question_agent_model_name: str = "gpt-4.1",
         heavy_swarm_worker_model_name: str = "gpt-4.1",
@@ -258,15 +253,6 @@ class SwarmRouter:
         self.conversation = conversation
         self.agents_config = agents_config
         self.speaker_function = speaker_function
-        self.advisor_swarm_executor_model_name = (
-            advisor_swarm_executor_model_name
-        )
-        self.advisor_swarm_advisor_model_name = (
-            advisor_swarm_advisor_model_name
-        )
-        self.advisor_swarm_max_advisor_uses = (
-            advisor_swarm_max_advisor_uses
-        )
         self.heavy_swarm_loops_per_agent = heavy_swarm_loops_per_agent
         self.heavy_swarm_question_agent_model_name = (
             heavy_swarm_question_agent_model_name
@@ -477,7 +463,6 @@ class SwarmRouter:
             Dict[str, Callable]: Dictionary mapping swarm types to their factory functions.
         """
         return {
-            "AdvisorSwarm": self._create_advisor_swarm,
             "HeavySwarm": self._create_heavy_swarm,
             "AgentRearrange": self._create_agent_rearrange,
             "CouncilAsAJudge": self._create_council_as_judge,
@@ -494,20 +479,6 @@ class SwarmRouter:
             "RoundRobin": self._create_round_robin_swarm,
             "PlannerWorkerSwarm": self._create_planner_worker_swarm,
         }
-
-    def _create_advisor_swarm(self, *args, **kwargs):
-        """Factory function for AdvisorSwarm."""
-        return AdvisorSwarm(
-            name=self.name,
-            description=self.description,
-            executor_model_name=self.advisor_swarm_executor_model_name,
-            advisor_model_name=self.advisor_swarm_advisor_model_name,
-            max_advisor_uses=self.advisor_swarm_max_advisor_uses,
-            max_loops=self.max_loops,
-            output_type=self.output_type,
-            verbose=self.verbose,
-            tools=self.worker_tools,
-        )
 
     def _create_heavy_swarm(self, *args, **kwargs):
         """Factory function for HeavySwarm."""
