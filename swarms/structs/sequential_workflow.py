@@ -1,3 +1,4 @@
+import ast
 import json
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -25,7 +26,27 @@ Score the alignment on a scale from 0.0 to 1.0:
 - 0.25 barely addresses the task
 - 0.0  completely unrelated to the task
 
-Respond with ONLY a single floating-point number between 0.0 and 1.0, nothing else."""
+Call the score_drift function with your score."""
+
+DRIFT_SCORE_TOOL = [
+    {
+        "type": "function",
+        "function": {
+            "name": "score_drift",
+            "description": "Record the semantic alignment score between the original task and the final output.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "score": {
+                        "type": "number",
+                        "description": "Alignment score between 0.0 and 1.0.",
+                    }
+                },
+                "required": ["score"],
+            },
+        },
+    }
+]
 
 
 class SequentialWorkflow:
@@ -72,6 +93,32 @@ class SequentialWorkflow:
         *args,
         **kwargs,
     ):
+        """
+        Initialize a SequentialWorkflow instance.
+
+        Args:
+            id (str, optional): Unique identifier for the workflow. Defaults to "sequential_workflow".
+            name (str, optional): Name of the workflow. Defaults to "SequentialWorkflow".
+            description (str, optional): Description of the workflow. Defaults to a standard description.
+            agents (List[Union[Agent, Callable]], optional): List of agents or callables to execute in sequence.
+            max_loops (int, optional): Maximum number of times to execute the workflow. Defaults to 1.
+            output_type (OutputType, optional): Output format for the workflow. Defaults to "dict".
+            shared_memory_system (callable, optional): Callable for shared memory management. Defaults to None.
+            multi_agent_collab_prompt (bool, optional): If True, appends a collaborative prompt to each agent.
+            autosave (bool, optional): Whether to enable autosaving of conversation history. Defaults to False.
+            verbose (bool, optional): Whether to enable verbose logging. Defaults to False.
+            drift_detection (bool, optional): If True, a judge agent scores the final output's semantic
+                alignment with the original task after the pipeline completes. Defaults to False.
+            drift_threshold (float, optional): Minimum alignment score (0–1) to consider output acceptable.
+                A warning is logged when the score falls below this value. Defaults to 0.75.
+            drift_model (str, optional): Model used by the drift detection judge agent.
+                Defaults to "claude-sonnet-4-5".
+            *args: Additional positional arguments.
+            **kwargs: Additional keyword arguments.
+
+        Raises:
+            ValueError: If the agents list is None or empty, or if max_loops is set to 0.
+        """
         self.id = id
         self.name = name
         self.description = description
@@ -92,6 +139,7 @@ class SequentialWorkflow:
                 max_loops=1,
                 thinking_tokens=1024,
                 temperature=1,
+                tools_list_dictionary=DRIFT_SCORE_TOOL,
             )
             if drift_detection
             else None
@@ -191,9 +239,11 @@ class SequentialWorkflow:
         """
         Executes a specified task through the agents in the dynamically constructed flow.
 
-        If drift_detection is configured, the DriftDetectionAgent runs automatically after
-        the final agent completes. The return value gains a ``drift`` attribute
-        (DriftDetectionResult) that callers can inspect.
+        If drift_detection is configured, a judge agent scores the final output's semantic
+        alignment with the original task after the pipeline completes. If the score falls
+        below drift_threshold, the pipeline reruns and the cycle repeats until the score
+        meets the threshold. If the judge output cannot be parsed, drift checking is skipped
+        and the last result is returned as-is.
 
         Args:
             task (str): The task for the agents to execute.
@@ -203,13 +253,9 @@ class SequentialWorkflow:
             **kwargs: Additional keyword arguments.
 
         Returns:
-            The final result after processing through all agents.  When drift_detection is
-            enabled the returned object also carries a ``drift`` attribute with the
-            DriftDetectionResult.
+            The final result after processing through all agents.
 
         Raises:
-            ValueError: If the task is None or empty.
-            DriftDetectionError: When drift_detection.on_drift='raise' and drift is detected.
             Exception: If any error occurs during task execution.
         """
         try:
@@ -221,20 +267,31 @@ class SequentialWorkflow:
 
             # Run drift detection if configured
             if self.drift_agent is not None:
-                try:
-                    score = float(
-                        self.drift_agent.run(
+                while True:
+                    try:
+                        raw = self.drift_agent.run(
                             f"Original task: {task}\n\nFinal output: {result}"
-                        ).strip()
-                    )
-                    if score < self.drift_threshold:
-                        logger.warning(
-                            f"Drift detected: score={score:.2f} below threshold={self.drift_threshold}"
                         )
-                    else:
-                        logger.info(f"Drift check passed: score={score:.2f}")
-                except Exception as e:
-                    logger.warning(f"Drift detection failed ({e}); skipping")
+                        tool_calls = ast.literal_eval(raw)
+                        score = float(
+                            json.loads(
+                                tool_calls[0]["function"]["arguments"]
+                            )["score"]
+                        )
+                    except Exception as e:
+                        logger.warning(
+                            f"Drift detection failed ({e}); skipping"
+                        )
+                        break
+                    if score >= self.drift_threshold:
+                        logger.info(
+                            f"Drift check passed: score={score:.2f}"
+                        )
+                        break
+                    logger.warning(
+                        f"Drift detected: score={score:.2f} below threshold={self.drift_threshold}, rerunning pipeline"
+                    )
+                    result = self.agent_rearrange.run(**run_kwargs)
 
             # Save conversation history after successful execution
             if self.autosave and self.swarm_workspace_dir:
