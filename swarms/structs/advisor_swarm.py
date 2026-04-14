@@ -3,30 +3,27 @@ AdvisorSwarm — Advisor Strategy Pattern
 
 Implements the advisor strategy described in Anthropic's research
 (April 2026): pair a cheaper executor model that drives the task
-end-to-end with a powerful advisor model consulted only at key
-decision points.
+end-to-end with a powerful advisor model consulted on-demand
+between executor turns.
 
-The advisor never calls tools or produces user-facing output — it
-only provides strategic guidance to the executor.
+Architecture (from Anthropic's diagram):
 
-Architecture:
-    task --> [ Advisor: plan ] --> [ Executor: work ]
-                                       ^         |
-                                       |  loop   v
-                                  [ Executor ] <-- [ Advisor: review ]
+    Main loop ──> [ Executor (Sonnet) ] ──tool call──> [ Advisor (Opus) ]
+                        |       ^                           |       ^
+                   read/write   |                      sends advice  |
+                        v       |                           v       |
+                  [ Shared context: conversation · tools · history ]
+                  Advisor reads the same context as Executor
 
-Flow:
-    1. Advisor receives the task and produces a strategic plan
-    2. Executor works on the task using the advisor's guidance
-    3. Advisor reviews the executor's output (budget permitting)
-    4. If not satisfactory, executor refines based on feedback
-    5. Repeat 3-4 until advisor says SATISFACTORY or budget exhausted
+The executor runs every turn. The advisor is on-demand — consulted
+between executor turns when budget allows. Both read from and write
+to the same shared conversation. The advisor never calls tools or
+produces user-facing output.
 
 Reference: "The advisor strategy: Give agents an intelligence
 boost" (Anthropic, April 2026)
 """
 
-import re
 from typing import Any, Callable, List, Optional
 
 from loguru import logger
@@ -49,11 +46,13 @@ logger = initialize_logger(log_folder="advisor_swarm")
 
 class AdvisorSwarm:
     """Implements the Advisor Strategy: pairs a cheaper executor model
-    with a powerful advisor model consulted at key decision points.
+    with a powerful advisor model consulted on-demand between executor
+    turns.
 
-    The advisor provides strategic guidance before work begins, then
-    reviews executor output in an iterative refinement loop. The
-    advisor never calls tools or produces user-facing output.
+    The executor runs in a main loop. Before each executor turn, the
+    advisor reads the full shared conversation context and provides
+    strategic guidance (if budget allows). Both agents read from and
+    write to the same conversation.
 
     This is provider-agnostic — any model supported by LiteLLM works
     for either role.
@@ -66,10 +65,8 @@ class AdvisorSwarm:
         advisor_model_name: Model for the advisor agent.
         executor_system_prompt: System prompt for the executor.
         advisor_system_prompt: System prompt for the advisor.
-        max_advisor_uses: Max advisor calls per run() invocation.
-            Budget: 1 for planning + up to (N-1) for reviews.
-        max_loops: Outer iteration count (each loop is a full
-            plan-execute-review cycle).
+        max_advisor_uses: Max advisor consultations per run().
+        max_loops: Number of executor turns.
         output_type: Format for conversation history output.
         verbose: Enable detailed logging.
         executor_agent: Optional pre-configured Agent for execution
@@ -83,20 +80,6 @@ class AdvisorSwarm:
         ...     advisor_model_name="claude-opus-4-6",
         ... )
         >>> result = swarm.run("Write a Python function to merge two sorted lists")
-
-        >>> # With custom executor that has tools
-        >>> from swarms import Agent
-        >>> executor = Agent(
-        ...     agent_name="Executor",
-        ...     model_name="claude-sonnet-4-6",
-        ...     max_loops=1,
-        ...     tools=[my_tool],
-        ... )
-        >>> swarm = AdvisorSwarm(
-        ...     executor_agent=executor,
-        ...     advisor_model_name="claude-opus-4-6",
-        ... )
-        >>> result = swarm.run("Refactor the auth module for performance")
     """
 
     def __init__(
@@ -140,9 +123,9 @@ class AdvisorSwarm:
 
     def reliability_check(self):
         """Validate swarm configuration."""
-        if self.max_advisor_uses < 1:
+        if self.max_advisor_uses < 0:
             raise ValueError(
-                f"max_advisor_uses must be >= 1 (need at least 1 for the planning call), got {self.max_advisor_uses}"
+                f"max_advisor_uses must be >= 0, got {self.max_advisor_uses}"
             )
         if self.max_loops < 1:
             raise ValueError(
@@ -189,16 +172,6 @@ class AdvisorSwarm:
             verbose=self.verbose,
         )
 
-    def _is_satisfactory(self, review: str) -> bool:
-        """Parse the advisor's review to determine if output is satisfactory.
-
-        Checks for VERDICT: SATISFACTORY using regex to handle
-        variations in whitespace and casing.
-        """
-        return bool(
-            re.search(r"verdict\s*:\s*satisfactory", review, re.IGNORECASE)
-        )
-
     def run(
         self,
         task: Optional[str] = None,
@@ -208,6 +181,11 @@ class AdvisorSwarm:
         **kwargs,
     ) -> Any:
         """Execute the advisor-executor orchestration flow.
+
+        The executor runs in a main loop for max_loops turns. Before
+        each turn, the advisor reads the full shared conversation and
+        provides guidance (if budget allows). Both agents read from
+        and write to the same conversation.
 
         Args:
             task: The task to accomplish.
@@ -221,123 +199,52 @@ class AdvisorSwarm:
             raise ValueError("A task is required")
 
         self.conversation.add(role="User", content=task)
+        advisor_uses = 0
 
-        for loop in range(self.max_loops):
+        for turn in range(self.max_loops):
             if self.verbose:
                 logger.info(
-                    f"[AdvisorSwarm] Loop {loop + 1}/{self.max_loops}"
+                    f"[AdvisorSwarm] Turn {turn + 1}/{self.max_loops}"
                 )
 
-            advisor_uses = 0
-
-            # --- Step 1: Advisor plans ---
-            # Advisor sees the task and full conversation history
-            # (history matters for multi-loop runs)
-            history = self.conversation.get_str()
-            planning_prompt = (
-                f"You are in PLANNING MODE.\n\n"
-                f"Task: {task}\n\n"
-                f"--- CONVERSATION HISTORY ---\n{history}\n"
-                f"--- END CONVERSATION HISTORY ---\n\n"
-                f"Provide a strategic plan for the Executor to follow."
-            )
-
-            advice = self.advisor_agent.run(task=planning_prompt)
-            advisor_uses += 1
-            self.conversation.add(
-                role="Advisor",
-                content=f"[Strategic Plan]\n{advice}",
-            )
-
-            if self.verbose:
-                logger.info(
-                    f"[AdvisorSwarm] Advisor plan "
-                    f"({advisor_uses}/{self.max_advisor_uses} calls used)"
+            # --- Advisor guidance (if budget allows) ---
+            if advisor_uses < self.max_advisor_uses:
+                context = self.conversation.get_str()
+                advisor_prompt = (
+                    f"Read the shared conversation context below and "
+                    f"provide strategic guidance for the Executor.\n\n"
+                    f"--- SHARED CONTEXT ---\n{context}\n"
+                    f"--- END SHARED CONTEXT ---"
                 )
 
-            # --- Step 2: Executor works ---
-            # Executor sees the task and the advisor's plan
+                advice = self.advisor_agent.run(task=advisor_prompt)
+                advisor_uses += 1
+                self.conversation.add(role="Advisor", content=advice)
+
+                if self.verbose:
+                    logger.info(
+                        f"[AdvisorSwarm] Advisor consulted "
+                        f"({advisor_uses}/{self.max_advisor_uses})"
+                    )
+
+            # --- Executor turn ---
+            context = self.conversation.get_str()
             executor_prompt = (
-                f"Task: {task}\n\n"
-                f"Strategic guidance from your Advisor:\n{advice}\n\n"
-                f"Execute this task following the Advisor's guidance. "
-                f"Produce complete, concrete output."
+                f"Read the shared conversation context below — it "
+                f"includes the task and any Advisor guidance — then "
+                f"produce your output.\n\n"
+                f"--- SHARED CONTEXT ---\n{context}\n"
+                f"--- END SHARED CONTEXT ---"
             )
 
-            executor_output = self.executor_agent.run(
+            output = self.executor_agent.run(
                 task=executor_prompt, img=img, imgs=imgs
             )
-            self.conversation.add(
-                role="Executor", content=executor_output
-            )
-
-            if self.verbose:
-                logger.info("[AdvisorSwarm] Executor produced output")
-
-            # --- Step 3-4: Review-refine loop ---
-            while advisor_uses < self.max_advisor_uses:
-                # Step 3: Advisor reviews
-                # Advisor sees the full conversation history including
-                # all prior exchanges — mirrors the Anthropic pattern
-                # where the advisor sees the full transcript
-                history = self.conversation.get_str()
-                review_prompt = (
-                    f"You are in REVIEW MODE.\n\n"
-                    f"Original task: {task}\n\n"
-                    f"--- CONVERSATION HISTORY ---\n{history}\n"
-                    f"--- END CONVERSATION HISTORY ---\n\n"
-                    f"Review the Executor's most recent output against "
-                    f"the original task. Start your response with "
-                    f"VERDICT: SATISFACTORY or VERDICT: NEEDS_REVISION."
-                )
-
-                review = self.advisor_agent.run(task=review_prompt)
-                advisor_uses += 1
-                self.conversation.add(
-                    role="Advisor",
-                    content=f"[Review]\n{review}",
-                )
-
-                if self.verbose:
-                    logger.info(
-                        f"[AdvisorSwarm] Advisor review "
-                        f"({advisor_uses}/{self.max_advisor_uses} calls used)"
-                    )
-
-                if self._is_satisfactory(review):
-                    if self.verbose:
-                        logger.info(
-                            "[AdvisorSwarm] Advisor verdict: SATISFACTORY"
-                        )
-                    break
-
-                # Step 4: Executor refines
-                # Executor sees: original task, its own output, and
-                # the advisor's specific feedback
-                refinement_prompt = (
-                    f"Original task: {task}\n\n"
-                    f"Your previous output:\n{executor_output}\n\n"
-                    f"Advisor feedback:\n{review}\n\n"
-                    f"Revise your output to address each point in the "
-                    f"Advisor's feedback. Produce the complete revised output."
-                )
-
-                executor_output = self.executor_agent.run(
-                    task=refinement_prompt, img=img, imgs=imgs
-                )
-                self.conversation.add(
-                    role="Executor", content=executor_output
-                )
-
-                if self.verbose:
-                    logger.info(
-                        "[AdvisorSwarm] Executor refined output"
-                    )
+            self.conversation.add(role="Executor", content=output)
 
             if self.verbose:
                 logger.info(
-                    f"[AdvisorSwarm] Loop {loop + 1} complete. "
-                    f"Advisor calls used: {advisor_uses}/{self.max_advisor_uses}"
+                    f"[AdvisorSwarm] Executor completed turn {turn + 1}"
                 )
 
         return history_output_formatter(
