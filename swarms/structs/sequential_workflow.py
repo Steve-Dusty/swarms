@@ -228,6 +228,28 @@ class SequentialWorkflow:
 
         return flow
 
+    def _run_drift_detection(self, task: str, result: str, run_kwargs: dict) -> str:
+        while True:
+            try:
+                raw = self.drift_agent.run(
+                    f"Original task: {task}\n\nFinal output: {result}"
+                )
+                tool_calls = ast.literal_eval(raw)
+                score = float(
+                    json.loads(tool_calls[0]["function"]["arguments"])["score"]
+                )
+            except Exception as e:
+                logger.warning(f"Drift detection failed ({e}); skipping")
+                break
+            if score >= self.drift_threshold:
+                logger.info(f"Drift check passed: score={score:.2f}")
+                break
+            logger.warning(
+                f"Drift detected: score={score:.2f} below threshold={self.drift_threshold}, rerunning pipeline"
+            )
+            result = self.agent_rearrange.run(**run_kwargs)
+        return result
+
     def run(
         self,
         task: str,
@@ -267,31 +289,7 @@ class SequentialWorkflow:
 
             # Run drift detection if configured
             if self.drift_agent is not None:
-                while True:
-                    try:
-                        raw = self.drift_agent.run(
-                            f"Original task: {task}\n\nFinal output: {result}"
-                        )
-                        tool_calls = ast.literal_eval(raw)
-                        score = float(
-                            json.loads(
-                                tool_calls[0]["function"]["arguments"]
-                            )["score"]
-                        )
-                    except Exception as e:
-                        logger.warning(
-                            f"Drift detection failed ({e}); skipping"
-                        )
-                        break
-                    if score >= self.drift_threshold:
-                        logger.info(
-                            f"Drift check passed: score={score:.2f}"
-                        )
-                        break
-                    logger.warning(
-                        f"Drift detected: score={score:.2f} below threshold={self.drift_threshold}, rerunning pipeline"
-                    )
-                    result = self.agent_rearrange.run(**run_kwargs)
+                result = self._run_drift_detection(task, result, run_kwargs)
 
             # Save conversation history after successful execution
             if self.autosave and self.swarm_workspace_dir:
