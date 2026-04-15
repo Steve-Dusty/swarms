@@ -302,7 +302,6 @@ nav:
         - Hybrid Hierarchical-Cluster Swarm: "swarms/structs/hhcs.md"
         - Auto Swarm Builder: "swarms/structs/auto_swarm_builder.md"
         - Swarm Matcher: "swarms/structs/swarm_matcher.md"
-        - Board of Directors: "swarms/structs/BoardOfDirectors.md"
         - SwarmRouter: "swarms/structs/swarm_router.md"
         - MultiAgentRouter: "swarms/structs/multi_agent_router.md"
         - AgentRouter: "swarms/structs/agent_router.md"

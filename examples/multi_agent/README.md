@@ -21,11 +21,6 @@ This directory contains comprehensive examples demonstrating various multi-agent
 - [batched_grid_workflow_example.py](batched_grid_workflow/batched_grid_workflow_example.py) - Complete workflow example
 - [README.md](batched_grid_workflow/README.md) - Detailed documentation
 
-## Board of Directors
-- [board_of_directors_example.py](board_of_directors/board_of_directors_example.py) - Full board simulation
-- [minimal_board_example.py](board_of_directors/minimal_board_example.py) - Minimal board setup
-- [simple_board_example.py](board_of_directors/simple_board_example.py) - Simple board example
-
 ## Caching Examples
 - [example_multi_agent_caching.py](caching_examples/example_multi_agent_caching.py) - Multi-agent caching implementation
 - [quick_start_agent_caching.py](caching_examples/quick_start_agent_caching.py) - Quick start guide for caching

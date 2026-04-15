@@ -27,6 +27,7 @@ from swarms.utils.index import (
     format_data_structure,
     format_dict_to_string,
 )
+from swarms.utils.loguru_logger import initialize_logger
 from swarms.utils.output_types import HistoryOutputType
 from swarms.utils.parse_code import extract_code_from_markdown
 
@@ -50,4 +51,5 @@ __all__ = [
     "exists",
     "format_data_structure",
     "format_dict_to_string",
+    "initialize_logger",
 ]
