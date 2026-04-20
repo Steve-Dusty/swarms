@@ -167,7 +167,7 @@ agent = Agent(
         "You are an autonomous research agent. Break down complex tasks into steps, "
         "execute each step thoroughly, and signal completion only when the full task is done."
     ),
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4",
     max_loops="auto",       # Agent decides when it's done — no fixed iteration cap
     autosave=True,
     verbose=True,
