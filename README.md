@@ -185,48 +185,6 @@ print(final_post)
 
 -----
 
-### AutoSwarmBuilder: Autonomous Agent Generation
-
-The `AutoSwarmBuilder` automatically generates specialized agents and their workflows based on your task description. Simply describe what you need, and it will create a complete multi-agent system with detailed prompts and optimal agent configurations. [Learn more about AutoSwarmBuilder](https://docs.swarms.world/en/latest/swarms/structs/auto_swarm_builder/)
-
-```python
-from swarms.structs.auto_swarm_builder import AutoSwarmBuilder
-import json
-
-# Initialize the AutoSwarmBuilder
-swarm = AutoSwarmBuilder(
-    name="My Swarm",
-    description="A swarm of agents",
-    verbose=True,
-    max_loops=1,
-    return_agents=True,
-    model_name="gpt-5.4",
-)
-
-# Let the builder automatically create agents and workflows
-result = swarm.run(
-    task="Create an accounting team to analyze crypto transactions, "
-         "there must be 5 agents in the team with extremely extensive prompts. "
-         "Make the prompts extremely detailed and specific and long and comprehensive. "
-         "Make sure to include all the details of the task in the prompts."
-)
-
-# The result contains the generated agents and their configurations
-print(json.dumps(result, indent=4))
-```
-
-The `AutoSwarmBuilder` provides:
-
-- **Automatic Agent Generation**: Creates specialized agents based on task requirements
-- **Intelligent Prompt Engineering**: Generates comprehensive, detailed prompts for each agent
-- **Optimal Workflow Design**: Determines the best agent interactions and workflow structure
-- **Production-Ready Configurations**: Returns fully configured agents ready for deployment
-- **Flexible Architecture**: Supports various swarm types and agent specializations
-
-This feature is perfect for rapid prototyping, complex task decomposition, and creating specialized agent teams without manual configuration.
-
------
-
 ## Available Multi-Agent Architectures
 
 `swarms` provides a variety of powerful, pre-built multi-agent architectures enabling you to orchestrate agents in various ways. Choose the right structure for your specific problem to build efficient and reliable production systems.
@@ -242,7 +200,6 @@ This feature is perfect for rapid prototyping, complex task decomposition, and c
 | **[ForestSwarm](https://docs.swarms.world/en/latest/swarms/structs/forest_swarm/)** | Dynamically selects the most suitable agent or tree of agents for a given task. | Task routing, optimizing for expertise, and complex decision-making trees. |
 | **[HierarchicalSwarm](https://docs.swarms.world/en/latest/swarms/structs/hierarchical_swarm/)** | Orchestrates agents with a director who creates plans and distributes tasks to specialized worker agents. | Complex project management, team coordination, and hierarchical decision-making with feedback loops. |
 | **[HeavySwarm](https://docs.swarms.world/en/latest/swarms/structs/heavy_swarm/)** | Implements a five-phase workflow with specialized agents (Research, Analysis, Alternatives, Verification) for comprehensive task analysis. | Complex research and analysis tasks, financial analysis, strategic planning, and comprehensive reporting. |
-| **[MAKER](https://docs.swarms.world/en/latest/swarms/structs/maker/)** | Long-horizon tasks decomposed into steps; each step uses first-to-ahead-by-k voting and red-flagging on micro-agent samples (from Meyerson et al., 2025). | Extremely long or fragile pipelines where you want statistical agreement and validation on every atomic step—not a hand-designed multi-agent graph. |
 | **[SwarmRouter](https://docs.swarms.world/en/latest/swarms/structs/swarm_router/)** | A universal orchestrator that provides a single interface to run any type of swarm with dynamic selection. | Simplifying complex workflows, switching between swarm strategies, and unified multi-agent management. |
 
 -----
@@ -440,6 +397,48 @@ print(f"Final Aggregated Output:\n{aggregated_output}\n")
 
 
 The `SwarmRouter` is a powerful tool for simplifying multi-agent orchestration. It provides a consistent and flexible way to deploy different collaborative strategies, allowing you to build more sophisticated applications with less code.
+
+-------
+
+### AutoSwarmBuilder: Autonomous Agent Generation
+
+The `AutoSwarmBuilder` automatically generates specialized agents and their workflows based on your task description. Simply describe what you need, and it will create a complete multi-agent system with detailed prompts and optimal agent configurations. [Learn more about AutoSwarmBuilder](https://docs.swarms.world/en/latest/swarms/structs/auto_swarm_builder/)
+
+```python
+from swarms.structs.auto_swarm_builder import AutoSwarmBuilder
+import json
+
+# Initialize the AutoSwarmBuilder
+swarm = AutoSwarmBuilder(
+    name="My Swarm",
+    description="A swarm of agents",
+    verbose=True,
+    max_loops=1,
+    return_agents=True,
+    model_name="gpt-5.4",
+)
+
+# Let the builder automatically create agents and workflows
+result = swarm.run(
+    task="Create an accounting team to analyze crypto transactions, "
+         "there must be 5 agents in the team with extremely extensive prompts. "
+         "Make the prompts extremely detailed and specific and long and comprehensive. "
+         "Make sure to include all the details of the task in the prompts."
+)
+
+# The result contains the generated agents and their configurations
+print(json.dumps(result, indent=4))
+```
+
+The `AutoSwarmBuilder` provides:
+
+- **Automatic Agent Generation**: Creates specialized agents based on task requirements
+- **Intelligent Prompt Engineering**: Generates comprehensive, detailed prompts for each agent
+- **Optimal Workflow Design**: Determines the best agent interactions and workflow structure
+- **Production-Ready Configurations**: Returns fully configured agents ready for deployment
+- **Flexible Architecture**: Supports various swarm types and agent specializations
+
+This feature is perfect for rapid prototyping, complex task decomposition, and creating specialized agent teams without manual configuration.
 
 -------
 
