@@ -62,14 +62,14 @@ Swarms delivers a comprehensive, enterprise-grade multi-agent infrastructure pla
 
 Swarms seamlessly integrates with industry-standard protocols and open specifications, unlocking powerful capabilities for tool integration, payment processing, distributed agent orchestration, and model interoperability.
 
-| Protocol | Description | Use Cases | Documentation |
-|----------|-------------|-----------|---------------|
-| **[MCP (Model Context Protocol)](https://docs.swarms.world/en/latest/swarms/examples/multi_mcp_agent/)** | Standardized protocol for AI agents to interact with external tools and services through MCP servers. Enables dynamic tool discovery and execution. | • Tool integration<br>• Multi-server connections<br>• External API access<br>• Database connectivity | [MCP Integration Guide](https://docs.swarms.world/en/latest/swarms/examples/multi_mcp_agent/) |
-| **[X402](https://docs.swarms.world/en/latest/examples/x402_payment_integration/)** | Cryptocurrency payment protocol for API endpoints. Enables monetization of agents with pay-per-use models. | • Agent monetization<br>• Payment gate protection<br>• Crypto payments<br>• Pay-per-use services | [X402 Quickstart](https://docs.swarms.world/en/latest/examples/x402_payment_integration/) |
-| **[AOP (Agent Orchestration Protocol)](https://docs.swarms.world/en/latest/examples/aop_medical/)** | Framework for deploying and managing agents as distributed services. Enables agent discovery, management, and execution through standardized protocols. | • Distributed agent deployment<br>• Agent discovery<br>• Service orchestration<br>• Scalable multi-agent systems | [AOP Reference](https://docs.swarms.world/en/latest/swarms/structs/aop/) |
-| **[Swarms Marketplace](https://swarms.world)** | Platform for discovering and sharing production-ready prompts, agents, and tools. Enables automatic prompt loading from the marketplace and publishing your own prompts directly from code. | • Prompt discovery and reuse<br>• One-line prompt loading<br>• Community prompt sharing<br>• Prompt monetization | [Marketplace Tutorial](https://docs.swarms.world/en/latest/swarms/examples/marketplace_prompt_loading/) |
-| **[Open Responses](https://www.openresponses.org/)** | Open-source specification and ecosystem for multi-provider, interoperable LLM interfaces based on the OpenAI Responses API. Provides a unified schema and tooling for calling language models, streaming results, and composing agentic workflows—independent of provider. | • Unified LLM interfaces<br>• Streaming outputs<br>• Multi-provider orchestration<br>• Interoperable agent workflows | [Open Responses Website](https://www.openresponses.org/) |
-| **[Agent Skills](https://docs.swarms.world/en/latest/swarms/agents/agent_skills/)** | Lightweight, markdown-based format for defining modular, reusable agent capabilities introduced by Anthropic. Enables specialization of agents without modifying code by loading skill definitions from simple SKILL.md files. | • Agent specialization<br>• Reusable skill libraries<br>• Code-free agent customization<br>• Claude Code compatibility | [Agent Skills Documentation](https://docs.swarms.world/en/latest/swarms/agents/agent_skills/) |
+| Protocol | Description | Documentation |
+|----------|-------------|---------------|
+| **[MCP (Model Context Protocol)](https://docs.swarms.world/en/latest/swarms/examples/multi_mcp_agent/)** | Standardized protocol for AI agents to interact with external tools and services through MCP servers. Enables dynamic tool discovery and execution. | [MCP Integration Guide](https://docs.swarms.world/en/latest/swarms/examples/multi_mcp_agent/) |
+| **[X402](https://docs.swarms.world/en/latest/examples/x402_payment_integration/)** | Cryptocurrency payment protocol for API endpoints. Enables monetization of agents with pay-per-use models. | [X402 Quickstart](https://docs.swarms.world/en/latest/examples/x402_payment_integration/) |
+| **[AOP (Agent Orchestration Protocol)](https://docs.swarms.world/en/latest/examples/aop_medical/)** | Framework for deploying and managing agents as distributed services. Enables agent discovery, management, and execution through standardized protocols. | [AOP Reference](https://docs.swarms.world/en/latest/swarms/structs/aop/) |
+| **[Swarms Marketplace](https://swarms.world)** | Platform for discovering and sharing production-ready prompts, agents, and tools. Enables automatic prompt loading from the marketplace and publishing your own prompts directly from code. | [Marketplace Tutorial](https://docs.swarms.world/en/latest/swarms/examples/marketplace_prompt_loading/) |
+| **[Open Responses](https://www.openresponses.org/)** | Open-source specification and ecosystem for multi-provider, interoperable LLM interfaces based on the OpenAI Responses API. Provides a unified schema and tooling for calling language models, streaming results, and composing agentic workflows—independent of provider. | [Open Responses Website](https://www.openresponses.org/) |
+| **[Agent Skills](https://docs.swarms.world/en/latest/swarms/agents/agent_skills/)** | Lightweight, markdown-based format for defining modular, reusable agent capabilities introduced by Anthropic. Enables specialization of agents without modifying code by loading skill definitions from simple SKILL.md files. | [Agent Skills Documentation](https://docs.swarms.world/en/latest/swarms/agents/agent_skills/) |
 
 
 ## Install
@@ -152,6 +152,44 @@ agent = Agent(
 # Run the agent with a task
 agent.run("What are the key benefits of using a multi-agent system?")
 ```
+
+### Autonomous Agent with `max_loops="auto"`
+
+Setting `max_loops="auto"` lets the agent decide for itself when the task is complete — it keeps reasoning and acting until it reaches a stopping condition, rather than halting after a fixed number of iterations. This is the recommended mode for open-ended, multi-step tasks where the number of steps isn't known in advance.
+
+```python
+from swarms import Agent
+
+agent = Agent(
+    agent_name="Autonomous-Research-Agent",
+    agent_description="An autonomous agent that conducts multi-step research independently.",
+    system_prompt=(
+        "You are an autonomous research agent. Break down complex tasks into steps, "
+        "execute each step thoroughly, and signal completion only when the full task is done."
+    ),
+    model_name="gpt-4o-mini",
+    max_loops="auto",       # Agent decides when it's done — no fixed iteration cap
+    autosave=True,
+    verbose=True,
+)
+
+# The agent will keep looping — planning, executing, and reflecting — until it
+# determines the task is fully complete.
+result = agent.run(
+    "Research the current state of quantum computing, identify the top three "
+    "hardware approaches, and summarize the key challenges each faces."
+)
+print(result)
+```
+
+**When to use `max_loops="auto"`:**
+- Open-ended research or analysis tasks
+- Tasks that require iterative refinement (e.g., write → review → revise)
+- Any workflow where the number of steps depends on intermediate results
+
+**When to use a fixed `max_loops` value:**
+- Latency-sensitive or cost-sensitive production pipelines
+- Tasks with a well-defined, bounded number of steps
 
 ### Your First Swarm: Multi-Agent Collaboration
 
