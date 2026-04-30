@@ -1,13 +1,8 @@
 <div align="left">
   <a href="https://swarms.world">
-    <img src="https://github.com/kyegomez/swarms/blob/master/images/new_logo.png" style="margin: 15px; max-width: 350px" width="80%" alt="Logo">
+    <img src="https://github.com/kyegomez/swarms/blob/master/images/new_logo.png" style="margin: 15px; max-width: 350px" width="100%" alt="Logo">
   </a>
 </div>
-
-
-
->
->Swarms, The Enterprise-Grade Production-Ready Multi-Agent Orchestration Framework 
 
 
 <p align="left">
