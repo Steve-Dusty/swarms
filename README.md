@@ -3,9 +3,6 @@
     <img src="https://github.com/kyegomez/swarms/blob/master/images/new_logo.png" style="margin: 15px; max-width: 350px" width="80%" alt="Logo">
   </a>
 </div>
-<p align="center">
-  <em>Swarms, The Enterprise-Grade Production-Ready Multi-Agent Orchestration Framework </em>
-</p>
 
 
 <p align="left">
