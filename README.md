@@ -1,4 +1,4 @@
-<div align="center">
+<div align="left">
   <a href="https://swarms.world">
     <img src="https://github.com/kyegomez/swarms/blob/master/images/new_logo.png" style="margin: 15px; max-width: 350px" width="80%" alt="Logo">
   </a>
@@ -8,7 +8,7 @@
 </p>
 
 
-<p align="center">
+<p align="left">
   <!-- Main Navigation Links -->
   <a href="https://swarms.ai">Swarms Website</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
@@ -18,7 +18,7 @@
 </p>
 
 
-<p align="center">
+<p align="left">
   <a href="https://pypi.org/project/swarms/" target="_blank">
     <picture>
       <source srcset="https://img.shields.io/pypi/v/swarms?style=for-the-badge&color=3670A0" media="(prefers-color-scheme: dark)">
