@@ -50,33 +50,6 @@
 Swarms is the most reliable, scalable, and flexible multi-agent orchestration framework available today. We provide a comprehensive suite of production-ready, prebuilt multi-agent architectures, including sequential, concurrent, and hierarchical systems. Additionally, Swarms offers backward compatibility with leading agent frameworks and interoperability with protocols such as MCP, x402, skills, and much more.
 
 
-## Features
-
-Swarms delivers a comprehensive, enterprise-grade multi-agent infrastructure platform designed for production-scale deployments and seamless integration with existing systems. [Learn more about the swarms feature set here](https://docs.swarms.world/en/latest/swarms/features/)
-
-| Category | Features | Benefits |
-|----------|----------|-----------|
-| **Enterprise Architecture** | • Production-Ready Infrastructure<br>• High Availability Systems<br>• Modular Microservices Design<br>• Comprehensive Observability<br>• Backwards Compatibility | • 99.9%+ Uptime Guarantee<br>• Reduced Operational Overhead<br>• Seamless Legacy Integration<br>• Enhanced System Monitoring<br>• Risk-Free Migration Path |
-| **Multi-Agent Orchestration** | • Hierarchical Agent Swarms<br>• Parallel Processing Pipelines<br>• Sequential Workflow Orchestration<br>• Graph-Based Agent Networks<br>• Dynamic Agent Composition<br>• Agent Registry Management | • Complex Business Process Automation<br>• Scalable Task Distribution<br>• Flexible Workflow Adaptation<br>• Optimized Resource Utilization<br>• Centralized Agent Governance<br>• Enterprise-Grade Agent Lifecycle Management |
-| **Enterprise Integration** | • Multi-Model Provider Support<br>• Custom Agent Development Framework<br>• Extensive Enterprise Tool Library<br>• Multiple Memory Systems<br>• Backwards Compatibility with LangChain, AutoGen, CrewAI<br>• Standardized API Interfaces | • Vendor-Agnostic Architecture<br>• Custom Solution Development<br>• Extended Functionality Integration<br>• Enhanced Knowledge Management<br>• Seamless Framework Migration<br>• Reduced Integration Complexity |
-| **Enterprise Scalability** | • Concurrent Multi-Agent Processing<br>• Intelligent Resource Management<br>• Load Balancing & Auto-Scaling<br>• Horizontal Scaling Capabilities<br>• Performance Optimization<br>• Capacity Planning Tools | • High-Throughput Processing<br>• Cost-Effective Resource Utilization<br>• Elastic Scaling Based On Demand<br>• Linear Performance Scaling<br>• Optimized Response Times<br>• Predictable Growth Planning |
-| **Developer Experience** | • Intuitive Enterprise API<br>• Comprehensive Documentation<br>• Active Enterprise Community<br>• CLI & SDK Tools<br>• IDE Integration Support<br>• Code Generation Templates | • Accelerated Development Cycles<br>• Reduced Learning Curve<br>• Expert Community Support<br>• Rapid Deployment Capabilities<br>• Enhanced Developer Productivity<br>• Standardized Development Patterns |
-
-
-## Supported Protocols & Integrations
-
-Swarms seamlessly integrates with industry-standard protocols and open specifications, unlocking powerful capabilities for tool integration, payment processing, distributed agent orchestration, and model interoperability.
-
-| Protocol | Description | Documentation |
-|----------|-------------|---------------|
-| **[MCP (Model Context Protocol)](https://docs.swarms.world/en/latest/swarms/examples/multi_mcp_agent/)** | Standardized protocol for AI agents to interact with external tools and services through MCP servers. Enables dynamic tool discovery and execution. | [MCP Integration Guide](https://docs.swarms.world/en/latest/swarms/examples/multi_mcp_agent/) |
-| **[X402](https://docs.swarms.world/en/latest/examples/x402_payment_integration/)** | Cryptocurrency payment protocol for API endpoints. Enables monetization of agents with pay-per-use models. | [X402 Quickstart](https://docs.swarms.world/en/latest/examples/x402_payment_integration/) |
-| **[AOP (Agent Orchestration Protocol)](https://docs.swarms.world/en/latest/examples/aop_medical/)** | Framework for deploying and managing agents as distributed services. Enables agent discovery, management, and execution through standardized protocols. | [AOP Reference](https://docs.swarms.world/en/latest/swarms/structs/aop/) |
-| **[Swarms Marketplace](https://swarms.world)** | Platform for discovering and sharing production-ready prompts, agents, and tools. Enables automatic prompt loading from the marketplace and publishing your own prompts directly from code. | [Marketplace Tutorial](https://docs.swarms.world/en/latest/swarms/examples/marketplace_prompt_loading/) |
-| **[Open Responses](https://www.openresponses.org/)** | Open-source specification and ecosystem for multi-provider, interoperable LLM interfaces based on the OpenAI Responses API. Provides a unified schema and tooling for calling language models, streaming results, and composing agentic workflows—independent of provider. | [Open Responses Website](https://www.openresponses.org/) |
-| **[Agent Skills](https://docs.swarms.world/en/latest/swarms/agents/agent_skills/)** | Lightweight, markdown-based format for defining modular, reusable agent capabilities introduced by Anthropic. Enables specialization of agents without modifying code by loading skill definitions from simple SKILL.md files. | [Agent Skills Documentation](https://docs.swarms.world/en/latest/swarms/agents/agent_skills/) |
-
-
 ## Install
 
 ### Using pip
@@ -781,6 +754,37 @@ Perfect for deploying large scale multi-agent systems. [Read the complete AOP do
 ## Documentation
 
 Documentation is located here at: [docs.swarms.world](https://docs.swarms.world)
+
+
+
+
+---
+
+## Features
+
+Swarms delivers a comprehensive, enterprise-grade multi-agent infrastructure platform designed for production-scale deployments and seamless integration with existing systems. [Learn more about the swarms feature set here](https://docs.swarms.world/en/latest/swarms/features/)
+
+| Category | Features | Benefits |
+|----------|----------|-----------|
+| **Enterprise Architecture** | • Production-Ready Infrastructure<br>• High Availability Systems<br>• Modular Microservices Design<br>• Comprehensive Observability<br>• Backwards Compatibility | • 99.9%+ Uptime Guarantee<br>• Reduced Operational Overhead<br>• Seamless Legacy Integration<br>• Enhanced System Monitoring<br>• Risk-Free Migration Path |
+| **Multi-Agent Orchestration** | • Hierarchical Agent Swarms<br>• Parallel Processing Pipelines<br>• Sequential Workflow Orchestration<br>• Graph-Based Agent Networks<br>• Dynamic Agent Composition<br>• Agent Registry Management | • Complex Business Process Automation<br>• Scalable Task Distribution<br>• Flexible Workflow Adaptation<br>• Optimized Resource Utilization<br>• Centralized Agent Governance<br>• Enterprise-Grade Agent Lifecycle Management |
+| **Enterprise Integration** | • Multi-Model Provider Support<br>• Custom Agent Development Framework<br>• Extensive Enterprise Tool Library<br>• Multiple Memory Systems<br>• Backwards Compatibility with LangChain, AutoGen, CrewAI<br>• Standardized API Interfaces | • Vendor-Agnostic Architecture<br>• Custom Solution Development<br>• Extended Functionality Integration<br>• Enhanced Knowledge Management<br>• Seamless Framework Migration<br>• Reduced Integration Complexity |
+| **Enterprise Scalability** | • Concurrent Multi-Agent Processing<br>• Intelligent Resource Management<br>• Load Balancing & Auto-Scaling<br>• Horizontal Scaling Capabilities<br>• Performance Optimization<br>• Capacity Planning Tools | • High-Throughput Processing<br>• Cost-Effective Resource Utilization<br>• Elastic Scaling Based On Demand<br>• Linear Performance Scaling<br>• Optimized Response Times<br>• Predictable Growth Planning |
+| **Developer Experience** | • Intuitive Enterprise API<br>• Comprehensive Documentation<br>• Active Enterprise Community<br>• CLI & SDK Tools<br>• IDE Integration Support<br>• Code Generation Templates | • Accelerated Development Cycles<br>• Reduced Learning Curve<br>• Expert Community Support<br>• Rapid Deployment Capabilities<br>• Enhanced Developer Productivity<br>• Standardized Development Patterns |
+
+
+## Supported Protocols & Integrations
+
+Swarms seamlessly integrates with industry-standard protocols and open specifications, unlocking powerful capabilities for tool integration, payment processing, distributed agent orchestration, and model interoperability.
+
+| Protocol | Description | Documentation |
+|----------|-------------|---------------|
+| **[MCP (Model Context Protocol)](https://docs.swarms.world/en/latest/swarms/examples/multi_mcp_agent/)** | Standardized protocol for AI agents to interact with external tools and services through MCP servers. Enables dynamic tool discovery and execution. | [MCP Integration Guide](https://docs.swarms.world/en/latest/swarms/examples/multi_mcp_agent/) |
+| **[X402](https://docs.swarms.world/en/latest/examples/x402_payment_integration/)** | Cryptocurrency payment protocol for API endpoints. Enables monetization of agents with pay-per-use models. | [X402 Quickstart](https://docs.swarms.world/en/latest/examples/x402_payment_integration/) |
+| **[AOP (Agent Orchestration Protocol)](https://docs.swarms.world/en/latest/examples/aop_medical/)** | Framework for deploying and managing agents as distributed services. Enables agent discovery, management, and execution through standardized protocols. | [AOP Reference](https://docs.swarms.world/en/latest/swarms/structs/aop/) |
+| **[Swarms Marketplace](https://swarms.world)** | Platform for discovering and sharing production-ready prompts, agents, and tools. Enables automatic prompt loading from the marketplace and publishing your own prompts directly from code. | [Marketplace Tutorial](https://docs.swarms.world/en/latest/swarms/examples/marketplace_prompt_loading/) |
+| **[Open Responses](https://www.openresponses.org/)** | Open-source specification and ecosystem for multi-provider, interoperable LLM interfaces based on the OpenAI Responses API. Provides a unified schema and tooling for calling language models, streaming results, and composing agentic workflows—independent of provider. | [Open Responses Website](https://www.openresponses.org/) |
+| **[Agent Skills](https://docs.swarms.world/en/latest/swarms/agents/agent_skills/)** | Lightweight, markdown-based format for defining modular, reusable agent capabilities introduced by Anthropic. Enables specialization of agents without modifying code by loading skill definitions from simple SKILL.md files. | [Agent Skills Documentation](https://docs.swarms.world/en/latest/swarms/agents/agent_skills/) |
 
 
 ---
