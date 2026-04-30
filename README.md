@@ -4,7 +4,7 @@
   </a>
 </div>
 <p align="center">
-  <em>The Enterprise-Grade Production-Ready Multi-Agent Orchestration Framework </em>
+  <em>Swarms, The Enterprise-Grade Production-Ready Multi-Agent Orchestration Framework </em>
 </p>
 
 
