@@ -413,6 +413,7 @@ class Agent:
         skills_dir: Optional[str] = None,
         selected_tools: Optional[Union[str, List[str]]] = "all",
         context_compression: bool = True,
+        persistent_memory: bool = True,
         *args,
         **kwargs,
     ):
@@ -516,6 +517,9 @@ class Agent:
             self.system_prompt += (
                 "\n\n" + get_autonomous_agent_prompt()
             )
+
+        # When False the agent does not read or write MEMORY.md across sessions.
+        self.persistent_memory = persistent_memory
 
         # Context compression is available for both max_loops="auto" and
         # integer max_loops runs. Gated purely on the user-facing boolean.
@@ -1023,22 +1027,23 @@ class Agent:
             prompt += SAFETY_PROMPT
 
         # Compute the persistent MEMORY.md path under the workspace dir.
+        # Only resolved when persistent_memory=True (the default). When False
+        # the Conversation receives no path and operates as a pure in-process
+        # store with no on-disk read or write across sessions.
         # Key on agent_name only (not self.id) so memory is stable across
         # process restarts — self.id defaults to a fresh uuid every run,
         # which would otherwise create a new empty MEMORY.md each time.
-        # Conversation will create the folder, seed the header, preload any
-        # prior interactions as a system preamble, and append every future
-        # message automatically.
         memory_md_path = None
-        try:
-            base = get_workspace_dir() or os.path.join(
-                os.getcwd(), "agent_workspace"
-            )
-            memory_md_path = os.path.join(
-                base, "agents", self.agent_name, "MEMORY.md"
-            )
-        except Exception as e:
-            logger.error(f"Failed to resolve MEMORY.md path: {e}")
+        if self.persistent_memory:
+            try:
+                base = get_workspace_dir() or os.path.join(
+                    os.getcwd(), "agent_workspace"
+                )
+                memory_md_path = os.path.join(
+                    base, "agents", self.agent_name, "MEMORY.md"
+                )
+            except Exception as e:
+                logger.error(f"Failed to resolve MEMORY.md path: {e}")
 
         # Initialize the short term memory
         memory = Conversation(
