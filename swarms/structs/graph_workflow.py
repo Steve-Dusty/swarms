@@ -742,9 +742,7 @@ class GraphWorkflow:
         verbose: bool = False,
         backend: str = "networkx",
         checkpoint_dir: Optional[str] = None,
-        on_node_complete: Optional[
-            Callable[[str, Any], None]
-        ] = None,
+        on_node_complete: Optional[Callable[[str, Any], None]] = None,
     ):
         self.id = id
         self.verbose = verbose
@@ -1718,9 +1716,7 @@ class GraphWorkflow:
         self,
         task: Optional[str] = None,
         img: Optional[str] = None,
-        on_node_complete: Optional[
-            Callable[[str, Any], None]
-        ] = None,
+        on_node_complete: Optional[Callable[[str, Any], None]] = None,
         streaming_callback: Optional[
             Callable[[str, str], None]
         ] = None,
@@ -1756,9 +1752,7 @@ class GraphWorkflow:
                 loop's results under the plain ``node_id`` keys.
         """
         # Resolve callbacks: run-level overrides instance-level
-        _on_node_complete = (
-            on_node_complete or self.on_node_complete
-        )
+        _on_node_complete = on_node_complete or self.on_node_complete
         _streaming_callback = streaming_callback
         run_start_time = time.time()
 
@@ -1932,9 +1926,13 @@ class GraphWorkflow:
                                 # streaming_callback if provided.
                                 submit_kwargs = dict(kwargs)
                                 if _streaming_callback is not None:
-                                    _nid = node_id  # capture for closure
-                                    submit_kwargs["streaming_callback"] = (
-                                        lambda token, _nid=_nid: _streaming_callback(_nid, token)
+                                    _nid = (
+                                        node_id  # capture for closure
+                                    )
+                                    submit_kwargs[
+                                        "streaming_callback"
+                                    ] = lambda token, _nid=_nid: _streaming_callback(
+                                        _nid, token
                                     )
 
                                 future = executor.submit(

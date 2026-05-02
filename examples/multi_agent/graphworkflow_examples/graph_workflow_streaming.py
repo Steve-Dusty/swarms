@@ -22,11 +22,11 @@ from swarms.structs.graph_workflow import GraphWorkflow
 
 # ANSI colors for each agent
 COLORS = {
-    "Coordinator": "\033[96m",    # cyan
-    "Market-Analyst": "\033[93m", # yellow
-    "Tech-Analyst": "\033[92m",   # green
-    "Risk-Analyst": "\033[91m",   # red
-    "Synthesizer": "\033[95m",    # magenta
+    "Coordinator": "\033[96m",  # cyan
+    "Market-Analyst": "\033[93m",  # yellow
+    "Tech-Analyst": "\033[92m",  # green
+    "Risk-Analyst": "\033[91m",  # red
+    "Synthesizer": "\033[95m",  # magenta
 }
 RESET = "\033[0m"
 BOLD = "\033[1m"
@@ -73,7 +73,13 @@ def main():
 
     # -- Build workflow --
     workflow = GraphWorkflow(name="Streaming-Demo")
-    for agent in [coordinator, market_analyst, tech_analyst, risk_analyst, synthesizer]:
+    for agent in [
+        coordinator,
+        market_analyst,
+        tech_analyst,
+        risk_analyst,
+        synthesizer,
+    ]:
         workflow.add_node(agent)
 
     workflow.add_edges_from_source(
@@ -94,7 +100,9 @@ def main():
         with print_lock:
             if node_id not in active_agents:
                 active_agents[node_id] = True
-                sys.stdout.write(f"\n{color}{BOLD}[{node_id}]{RESET}{color} ")
+                sys.stdout.write(
+                    f"\n{color}{BOLD}[{node_id}]{RESET}{color} "
+                )
             sys.stdout.write(f"{color}{token}{RESET}")
             sys.stdout.flush()
 
@@ -122,7 +130,9 @@ def main():
     elapsed = time.time() - start
 
     print(f"\n{BOLD}{'=' * 60}")
-    print(f"  Done in {elapsed:.1f}s  |  Agents: {list(result.keys())}")
+    print(
+        f"  Done in {elapsed:.1f}s  |  Agents: {list(result.keys())}"
+    )
     print(f"{'=' * 60}{RESET}")
 
 

@@ -1133,7 +1133,9 @@ def grep_tool(
         if not path or not os.path.isabs(path):
             workspace_dir = agent._get_agent_workspace_dir()
             full_path = (
-                os.path.join(workspace_dir, path) if path else workspace_dir
+                os.path.join(workspace_dir, path)
+                if path
+                else workspace_dir
             )
         else:
             full_path = path
@@ -1171,7 +1173,9 @@ def grep_tool(
 
         # Truncate oversized output
         if len(stdout) > _GREP_MAX_BYTES:
-            stdout = stdout[:_GREP_MAX_BYTES] + "\n... (output truncated)"
+            stdout = (
+                stdout[:_GREP_MAX_BYTES] + "\n... (output truncated)"
+            )
 
         if result.returncode == 0:
             output = stdout.strip() or "(no matches)"
