@@ -103,7 +103,7 @@ For more Docker options and advanced usage, see our [Docker documentation](/scri
 
 ## Environment Configuration
 
-[Learn more about the environment configuration here](https://docs.swarms.world/swarms/install/env/)
+[Learn more about the environment configuration here](https://docs.swarms.world/environment-setup)
 
 ```
 OPENAI_API_KEY=""
