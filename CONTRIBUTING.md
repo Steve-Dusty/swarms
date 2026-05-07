@@ -2,7 +2,7 @@
 
 <div align="center">
   <a href="https://swarms.world">
-    <img src="https://github.com/kyegomez/swarms/blob/master/images/swarmslogobanner.png" style="margin: 15px; max-width: 500px" width="50%" alt="Swarms Logo">
+    <img src="https://github.com/kyegomez/swarms/blob/master/images/new_logo.png" style="margin: 15px; max-width: 500px" width="50%" alt="Swarms Logo">
   </a>
 </div>
 
