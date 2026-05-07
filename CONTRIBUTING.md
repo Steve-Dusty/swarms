@@ -10,38 +10,6 @@
   <em>The Enterprise-Grade Production-Ready Multi-Agent Orchestration Framework</em>
 </p>
 
----
-
-## Table of Contents
-
-- [Project Overview](#project-overview)
-- [Getting Started](#getting-started)
-  - [Installation](#installation)
-  - [Environment Configuration](#environment-configuration)
-  - [Project Structure](#project-structure)
-- [How to Contribute](#how-to-contribute)
-  - [Reporting Issues](#reporting-issues)
-  - [Submitting Pull Requests](#submitting-pull-requests)
-  - [Good First Issues](#good-first-issues)
-- [Coding Standards](#coding-standards)
-  - [Type Annotations](#type-annotations)
-  - [Docstrings and Documentation](#docstrings-and-documentation)
-  - [Testing](#testing)
-  - [Code Style](#code-style)
-- [Areas Needing Contributions](#areas-needing-contributions)
-  - [Writing Tests](#writing-tests)
-  - [Improving Documentation](#improving-documentation)
-  - [Adding New Swarm Architectures](#adding-new-swarm-architectures)
-  - [Enhancing Agent Capabilities](#enhancing-agent-capabilities)
-  - [Removing Defunct Code](#removing-defunct-code)
-- [Development Resources](#development-resources)
-  - [Documentation](#documentation)
-  - [Examples and Tutorials](#examples-and-tutorials)
-  - [API Reference](#api-reference)
-- [Community and Support](#community-and-support)
-- [License](#license)
-
----
 
 ## Project Overview
 
