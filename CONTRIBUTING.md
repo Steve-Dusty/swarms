@@ -1,12 +1,12 @@
 # Contribution Guidelines
 
-<div align="center">
+<div align="left">
   <a href="https://swarms.world">
     <img src="https://github.com/kyegomez/swarms/blob/master/images/new_logo.png" style="margin: 15px; max-width: 500px" width="50%" alt="Swarms Logo">
   </a>
 </div>
 
-<p align="center">
+<p align="left">
   <em>The Enterprise-Grade Production-Ready Multi-Agent Orchestration Framework</em>
 </p>
 
