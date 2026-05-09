@@ -1,5 +1,3 @@
-"""Minimal SequentialWorkflow streaming example."""
-
 from swarms import Agent, SequentialWorkflow
 
 workflow = SequentialWorkflow(
