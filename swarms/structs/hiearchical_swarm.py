@@ -23,10 +23,12 @@ Todo
 import asyncio
 import json
 import os
+import queue as _queue
+import threading
 import time
 import traceback
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Any, Callable, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from loguru import logger
 from pydantic import BaseModel, Field
@@ -1528,12 +1530,18 @@ class HierarchicalSwarm:
                             f"{error_msg}\n[TRACE] Traceback: {traceback.format_exc()}"
                         )
 
-                output = agent.run(
-                    task=f"History: {self.conversation.get_str()} \n\n Task: {task}",
-                    streaming_callback=agent_streaming_callback,
-                    *args,
-                    **kwargs,
-                )
+                # Temporarily enable streaming so call_llm honours the callback
+                original_streaming_on = getattr(agent, "streaming_on", False)
+                agent.streaming_on = True
+                try:
+                    output = agent.run(
+                        task=f"History: {self.conversation.get_str()} \n\n Task: {task}",
+                        streaming_callback=agent_streaming_callback,
+                        *args,
+                        **kwargs,
+                    )
+                finally:
+                    agent.streaming_on = original_streaming_on
 
                 # Call completion callback
                 try:
@@ -1894,3 +1902,165 @@ class HierarchicalSwarm:
             *args,
             **kwargs,
         )
+
+    async def arun_stream(
+        self,
+        task: Optional[str] = None,
+        img: Optional[str] = None,
+        with_events: bool = False,
+        **kwargs,
+    ):
+        """Async generator that streams tokens from worker agents.
+
+        Bridges the existing callback-based streaming in ``run()`` to an
+        async generator using an ``asyncio.Queue``.  The synchronous
+        ``run()`` executes in a background thread; each token callback
+        pushes an item to the queue which this generator yields.
+
+        Args:
+            task: The task to be processed by the swarm.
+            img: Optional image input for the agents.
+            with_events: When False (default), yield ``(agent_name, token)``
+                tuples.  When True, yield structured event dicts:
+                ``{"type": "agent_start", "agent": ...}``,
+                ``{"type": "token", "agent": ..., "token": ...}``,
+                ``{"type": "agent_end", "agent": ...}``.
+
+        Yields:
+            tuple | dict: Per-token streaming items.
+        """
+        q: asyncio.Queue = asyncio.Queue()
+        DONE = object()
+        ERROR = object()
+        loop = asyncio.get_running_loop()
+
+        # Track which agents have started and accumulate their tokens
+        agent_chunks: Dict[str, List[str]] = {}
+
+        def _streaming_callback(
+            agent_name: str, chunk: str, is_final: bool
+        ):
+            loop.call_soon_threadsafe(
+                q.put_nowait, (agent_name, chunk, is_final)
+            )
+
+        async def _run_in_thread():
+            try:
+                await asyncio.to_thread(
+                    self.run,
+                    task=task,
+                    img=img,
+                    streaming_callback=_streaming_callback,
+                    **kwargs,
+                )
+            except Exception as e:
+                loop.call_soon_threadsafe(
+                    q.put_nowait, (ERROR, e, False)
+                )
+            finally:
+                loop.call_soon_threadsafe(
+                    q.put_nowait, (DONE, None, False)
+                )
+
+        runner = asyncio.create_task(_run_in_thread())
+
+        try:
+            while True:
+                item = await q.get()
+                kind, payload, is_final = item
+
+                if kind is DONE:
+                    break
+                if kind is ERROR:
+                    raise payload
+
+                agent_name: str = kind
+                chunk: str = payload
+
+                if agent_name not in agent_chunks:
+                    agent_chunks[agent_name] = []
+                    if with_events:
+                        yield {
+                            "type": "agent_start",
+                            "agent": agent_name,
+                        }
+
+                if is_final:
+                    agent_output = "".join(agent_chunks.pop(agent_name, []))
+                    if with_events:
+                        yield {
+                            "type": "agent_end",
+                            "agent": agent_name,
+                            "output": agent_output,
+                        }
+                else:
+                    if chunk:
+                        agent_chunks[agent_name].append(chunk)
+                        if with_events:
+                            yield {
+                                "type": "token",
+                                "agent": agent_name,
+                                "token": chunk,
+                            }
+                        else:
+                            yield (agent_name, chunk)
+        finally:
+            await runner
+
+    def run_stream(
+        self,
+        task: Optional[str] = None,
+        img: Optional[str] = None,
+        with_events: bool = False,
+        **kwargs,
+    ):
+        """Sync generator version of ``arun_stream``.
+
+        Bridges the async generator to a sync iterator using a thread
+        and a ``queue.Queue``.  Use ``arun_stream`` directly when you
+        already have a running event loop (e.g. inside a FastAPI handler).
+
+        Args:
+            task: The task to be processed by the swarm.
+            img: Optional image input for the agents.
+            with_events: When False (default), yield ``(agent_name, token)``
+                tuples.  When True, yield structured event dicts.
+
+        Yields:
+            tuple | dict: Per-token streaming items.
+        """
+        sync_q: _queue.Queue = _queue.Queue()
+        DONE = object()
+        exc_holder: List[Optional[Exception]] = [None]
+
+        def _runner():
+            async def _consume():
+                async for evt in self.arun_stream(
+                    task=task,
+                    img=img,
+                    with_events=with_events,
+                    **kwargs,
+                ):
+                    sync_q.put(evt)
+
+            try:
+                asyncio.run(_consume())
+            except Exception as e:
+                exc_holder[0] = e
+            finally:
+                sync_q.put(DONE)
+
+        t = threading.Thread(target=_runner, daemon=True)
+        t.start()
+
+        try:
+            while True:
+                item = sync_q.get()
+                if item is DONE:
+                    break
+                yield item
+        finally:
+            t.join(timeout=5)
+
+        if exc_holder[0] is not None:
+            raise exc_holder[0]
