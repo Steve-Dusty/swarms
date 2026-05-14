@@ -1903,6 +1903,78 @@ class HierarchicalSwarm:
             **kwargs,
         )
 
+    # ------------------------------------------------------------------
+    # Streaming helpers
+    # ------------------------------------------------------------------
+
+    async def _stream_agent_in_thread(
+        self,
+        agent: "Agent",
+        task_str: str,
+        img: Optional[str] = None,
+    ) -> tuple:
+        """Run *agent.run()* in a thread, streaming tokens via a queue.
+
+        Returns ``(output, chunks)`` where *output* is the value returned
+        by ``agent.run()`` and *chunks* is the list of streamed token
+        strings.
+
+        Yields are performed by the **caller** who drains the queue
+        stored on ``self._stream_q`` between the call to this coroutine
+        and its completion.
+        """
+        q = self._stream_q
+        ev_loop = asyncio.get_running_loop()
+        chunks: List[str] = []
+        PHASE_DONE = self._PHASE_DONE
+
+        def cb(chunk: str):
+            if chunk is not None and chunk.strip():
+                chunks.append(chunk)
+                ev_loop.call_soon_threadsafe(q.put_nowait, chunk)
+
+        original_streaming_on = getattr(agent, "streaming_on", False)
+        agent.streaming_on = True
+        try:
+            output = await asyncio.to_thread(
+                agent.run,
+                task=task_str,
+                img=img,
+                streaming_callback=cb,
+            )
+        finally:
+            agent.streaming_on = original_streaming_on
+
+        # Signal this phase is done so the consumer stops draining
+        ev_loop.call_soon_threadsafe(q.put_nowait, PHASE_DONE)
+        return output, chunks
+
+    async def _drain_queue_tokens(
+        self,
+        role: str,
+        agent_name: str,
+        loop_idx: int,
+        with_events: bool,
+    ):
+        """Drain ``self._stream_q`` until ``_PHASE_DONE``, yielding events."""
+        q = self._stream_q
+        PHASE_DONE = self._PHASE_DONE
+
+        while True:
+            item = await q.get()
+            if item is PHASE_DONE:
+                break
+            if with_events:
+                yield {
+                    "type": "token",
+                    "role": role,
+                    "agent": agent_name,
+                    "token": item,
+                    "loop": loop_idx,
+                }
+            else:
+                yield (agent_name, item)
+
     async def arun_stream(
         self,
         task: Optional[str] = None,
@@ -1910,102 +1982,393 @@ class HierarchicalSwarm:
         with_events: bool = False,
         **kwargs,
     ):
-        """Async generator that streams tokens from worker agents.
-
-        Bridges the existing callback-based streaming in ``run()`` to an
-        async generator using an ``asyncio.Queue``.  The synchronous
-        ``run()`` executes in a background thread; each token callback
-        pushes an item to the queue which this generator yields.
+        """Async generator that streams tokens from every phase of the
+        hierarchical swarm: director planning, worker execution, and
+        feedback / judge aggregation.
 
         Args:
             task: The task to be processed by the swarm.
             img: Optional image input for the agents.
             with_events: When False (default), yield ``(agent_name, token)``
-                tuples.  When True, yield structured event dicts:
-                ``{"type": "agent_start", "agent": ...}``,
-                ``{"type": "token", "agent": ..., "token": ...}``,
-                ``{"type": "agent_end", "agent": ...}``.
+                tuples.  When True, yield structured event dicts tagged
+                with ``role`` (``director`` / ``worker`` / ``aggregator``)
+                and ``loop`` index.  Event types:
+                ``swarm_start``, ``director_start``, ``token``,
+                ``director_end``, ``worker_start``, ``worker_end``,
+                ``aggregator_start``, ``aggregator_end``, ``swarm_end``.
 
         Yields:
             tuple | dict: Per-token streaming items.
         """
-        q: asyncio.Queue = asyncio.Queue()
-        DONE = object()
-        ERROR = object()
-        loop = asyncio.get_running_loop()
+        # Shared queue used by _stream_agent_in_thread / _drain_queue_tokens
+        self._stream_q: asyncio.Queue = asyncio.Queue()
+        self._PHASE_DONE = object()
 
-        # Track which agents have started and accumulate their tokens
-        agent_chunks: Dict[str, List[str]] = {}
+        if with_events:
+            yield {
+                "type": "swarm_start",
+                "role": "swarm",
+                "loop": 0,
+            }
 
-        def _streaming_callback(
-            agent_name: str, chunk: str, is_final: bool
-        ):
-            loop.call_soon_threadsafe(
-                q.put_nowait, (agent_name, chunk, is_final)
+        current_loop = 0
+        last_output = None
+
+        while current_loop < self.max_loops:
+            # Build loop task
+            if current_loop == 0:
+                loop_task = task
+            else:
+                loop_task = (
+                    f"Previous loop results: {last_output}\n\n"
+                    f"Original task: {task}\n\n"
+                    "Based on the previous results and any feedback, "
+                    "continue with the next iteration of the task. "
+                    "Refine, improve, or complete any remaining aspects "
+                    "of the analysis."
+                )
+
+            # =============================================================
+            # DIRECTOR PHASE
+            # =============================================================
+            director_task_str = (
+                f"History: {self.conversation.get_str()} "
+                f"\n\n Task: {loop_task}"
             )
 
-        async def _run_in_thread():
-            try:
-                await asyncio.to_thread(
-                    self.run,
-                    task=task,
+            # Optional planning sub-step (non-streaming — creates a
+            # throwaway agent with modified tools)
+            if self.planning_enabled:
+                self.director.tools_list_dictionary = None
+                plan_out = await asyncio.to_thread(
+                    self.setup_director_with_planning,
+                    task=director_task_str,
                     img=img,
-                    streaming_callback=_streaming_callback,
-                    **kwargs,
                 )
-            except Exception as e:
-                loop.call_soon_threadsafe(
-                    q.put_nowait, (ERROR, e, False)
+                self.conversation.add(
+                    role=self.director.agent_name, content=plan_out
                 )
-            finally:
-                loop.call_soon_threadsafe(
-                    q.put_nowait, (DONE, None, False)
+                # Refresh context after planning output was added
+                director_task_str = (
+                    f"History: {self.conversation.get_str()} "
+                    f"\n\n Task: {loop_task}"
                 )
 
-        runner = asyncio.create_task(_run_in_thread())
+            if with_events:
+                yield {
+                    "type": "director_start",
+                    "role": "director",
+                    "agent": self.director_name,
+                    "loop": current_loop,
+                }
 
-        try:
-            while True:
-                item = await q.get()
-                kind, payload, is_final = item
+            # Stream director in background, drain tokens here
+            director_coro = self._stream_agent_in_thread(
+                self.director, director_task_str, img=img,
+            )
+            director_task_obj = asyncio.ensure_future(director_coro)
 
-                if kind is DONE:
-                    break
-                if kind is ERROR:
-                    raise payload
+            async for evt in self._drain_queue_tokens(
+                "director", self.director_name, current_loop, with_events
+            ):
+                yield evt
 
-                agent_name: str = kind
-                chunk: str = payload
+            director_output, director_chunks = await director_task_obj
+            self.conversation.add(
+                role="Director", content=director_output
+            )
 
-                if agent_name not in agent_chunks:
-                    agent_chunks[agent_name] = []
-                    if with_events:
+            if with_events:
+                yield {
+                    "type": "director_end",
+                    "role": "director",
+                    "agent": self.director_name,
+                    "output": str(director_output),
+                    "loop": current_loop,
+                }
+
+            # Parse orders from director output
+            plan, orders = self.parse_orders(director_output)
+
+            # =============================================================
+            # WORKER PHASE
+            # =============================================================
+            if self.parallel_execution and len(orders) > 1:
+                # --- Parallel workers with interleaving ---
+                worker_q: asyncio.Queue = asyncio.Queue()
+                W_DONE = object()
+                ev_loop = asyncio.get_running_loop()
+                worker_results: Dict[str, Any] = {}
+                worker_chunks: Dict[str, List[str]] = {}
+
+                if with_events:
+                    for order in orders:
                         yield {
-                            "type": "agent_start",
-                            "agent": agent_name,
+                            "type": "worker_start",
+                            "role": "worker",
+                            "agent": order.agent_name,
+                            "loop": current_loop,
                         }
 
-                if is_final:
-                    agent_output = "".join(agent_chunks.pop(agent_name, []))
+                async def _worker_producer(order):
+                    agent = self.agent_map.get(order.agent_name)
+                    if agent is None:
+                        return
+                    w_task = (
+                        f"History: {self.conversation.get_str()} "
+                        f"\n\n Task: {order.task}"
+                    )
+                    w_chunks: List[str] = []
+
+                    def w_cb(chunk: str):
+                        if chunk is not None and chunk.strip():
+                            w_chunks.append(chunk)
+                            ev_loop.call_soon_threadsafe(
+                                worker_q.put_nowait,
+                                (order.agent_name, chunk),
+                            )
+
+                    orig = getattr(agent, "streaming_on", False)
+                    agent.streaming_on = True
+                    try:
+                        out = await asyncio.to_thread(
+                            agent.run,
+                            task=w_task,
+                            img=img,
+                            streaming_callback=w_cb,
+                        )
+                    finally:
+                        agent.streaming_on = orig
+
+                    worker_results[order.agent_name] = out
+                    worker_chunks[order.agent_name] = w_chunks
+
+                producer_tasks = [
+                    asyncio.create_task(_worker_producer(order))
+                    for order in orders
+                ]
+
+                # Monitor completion
+                async def _signal_when_done():
+                    await asyncio.gather(
+                        *producer_tasks, return_exceptions=True
+                    )
+                    ev_loop.call_soon_threadsafe(
+                        worker_q.put_nowait, (W_DONE, None)
+                    )
+
+                asyncio.create_task(_signal_when_done())
+
+                # Drain interleaved worker tokens
+                while True:
+                    item = await worker_q.get()
+                    name, token = item
+                    if name is W_DONE:
+                        break
                     if with_events:
                         yield {
-                            "type": "agent_end",
-                            "agent": agent_name,
-                            "output": agent_output,
+                            "type": "token",
+                            "role": "worker",
+                            "agent": name,
+                            "token": token,
+                            "loop": current_loop,
                         }
-                else:
-                    if chunk:
-                        agent_chunks[agent_name].append(chunk)
-                        if with_events:
-                            yield {
-                                "type": "token",
-                                "agent": agent_name,
-                                "token": chunk,
-                            }
-                        else:
-                            yield (agent_name, chunk)
-        finally:
-            await runner
+                    else:
+                        yield (name, token)
+                    await asyncio.sleep(0)
+
+                # Write to conversation in order and emit worker_end
+                for order in orders:
+                    out = worker_results.get(order.agent_name)
+                    if out is not None:
+                        self.conversation.add(
+                            role=order.agent_name, content=out
+                        )
+                    if with_events:
+                        yield {
+                            "type": "worker_end",
+                            "role": "worker",
+                            "agent": order.agent_name,
+                            "output": "".join(
+                                worker_chunks.get(order.agent_name, [])
+                            ),
+                            "loop": current_loop,
+                        }
+
+                worker_outputs = [
+                    worker_results.get(o.agent_name) for o in orders
+                ]
+
+            else:
+                # --- Sequential workers ---
+                worker_outputs = []
+                for order in orders:
+                    agent = self.agent_map.get(order.agent_name)
+                    if agent is None:
+                        continue
+                    w_task = (
+                        f"History: {self.conversation.get_str()} "
+                        f"\n\n Task: {order.task}"
+                    )
+
+                    if with_events:
+                        yield {
+                            "type": "worker_start",
+                            "role": "worker",
+                            "agent": order.agent_name,
+                            "loop": current_loop,
+                        }
+
+                    w_coro = self._stream_agent_in_thread(
+                        agent, w_task, img=img,
+                    )
+                    w_task_obj = asyncio.ensure_future(w_coro)
+
+                    async for evt in self._drain_queue_tokens(
+                        "worker",
+                        order.agent_name,
+                        current_loop,
+                        with_events,
+                    ):
+                        yield evt
+
+                    w_output, w_chunks = await w_task_obj
+                    self.conversation.add(
+                        role=order.agent_name, content=w_output
+                    )
+                    worker_outputs.append(w_output)
+
+                    if with_events:
+                        yield {
+                            "type": "worker_end",
+                            "role": "worker",
+                            "agent": order.agent_name,
+                            "output": "".join(w_chunks),
+                            "loop": current_loop,
+                        }
+
+            # =============================================================
+            # AGGREGATION PHASE (feedback director or judge)
+            # =============================================================
+            if self.agent_as_judge:
+                agg_name = "JudgeAgent"
+                if with_events:
+                    yield {
+                        "type": "aggregator_start",
+                        "role": "aggregator",
+                        "agent": agg_name,
+                        "loop": current_loop,
+                    }
+
+                # Judge uses tool calling / structured output — run in
+                # thread with streaming callback
+                judge_task_str = (
+                    f"Conversation history:\n"
+                    f"{self.conversation.get_str()}\n\n"
+                    f"Agent outputs to evaluate:\n{worker_outputs}"
+                )
+
+                schema = BaseTool().base_model_to_dict(JudgeReport)
+                judge = Agent(
+                    agent_name=agg_name,
+                    agent_description="Evaluates and scores the quality of worker agent outputs",
+                    system_prompt=HIERARCHICAL_SWARM_JUDGE_PROMPT,
+                    model_name=self.judge_agent_model_name,
+                    max_loops=1,
+                    base_model=JudgeReport,
+                    tools_list_dictionary=[schema],
+                    output_type="final",
+                )
+
+                j_coro = self._stream_agent_in_thread(
+                    judge, judge_task_str
+                )
+                j_task_obj = asyncio.ensure_future(j_coro)
+
+                async for evt in self._drain_queue_tokens(
+                    "aggregator", agg_name, current_loop, with_events,
+                ):
+                    yield evt
+
+                j_output, j_chunks = await j_task_obj
+                self.conversation.add(role=agg_name, content=j_output)
+                last_output = j_output
+
+                if with_events:
+                    yield {
+                        "type": "aggregator_end",
+                        "role": "aggregator",
+                        "agent": agg_name,
+                        "output": "".join(j_chunks),
+                        "loop": current_loop,
+                    }
+
+            elif self.director_feedback_on:
+                agg_name = "Director"
+                if with_events:
+                    yield {
+                        "type": "aggregator_start",
+                        "role": "aggregator",
+                        "agent": agg_name,
+                        "loop": current_loop,
+                    }
+
+                fb_agent = Agent(
+                    agent_name="Director",
+                    agent_description="Director module that provides feedback to the worker agents",
+                    model_name=self.director_model_name,
+                    max_loops=1,
+                    system_prompt=HIEARCHICAL_SWARM_SYSTEM_PROMPT,
+                )
+                fb_task_str = (
+                    "You are the Director. Carefully review the outputs "
+                    "generated by all the worker agents in the previous "
+                    "step. Provide specific, actionable feedback for "
+                    "each agent, highlighting strengths, weaknesses, "
+                    "and concrete suggestions for improvement. "
+                    f"Worker Agent Responses: History: "
+                    f"{self.conversation.get_str()}"
+                )
+
+                fb_coro = self._stream_agent_in_thread(
+                    fb_agent, fb_task_str
+                )
+                fb_task_obj = asyncio.ensure_future(fb_coro)
+
+                async for evt in self._drain_queue_tokens(
+                    "aggregator", agg_name, current_loop, with_events,
+                ):
+                    yield evt
+
+                fb_output, fb_chunks = await fb_task_obj
+                self.conversation.add(
+                    role=self.director.agent_name, content=fb_output
+                )
+                last_output = fb_output
+
+                if with_events:
+                    yield {
+                        "type": "aggregator_end",
+                        "role": "aggregator",
+                        "agent": agg_name,
+                        "output": "".join(fb_chunks),
+                        "loop": current_loop,
+                    }
+            else:
+                last_output = worker_outputs
+
+            current_loop += 1
+            self.conversation.add(
+                role="System",
+                content=f"--- Loop {current_loop}/{self.max_loops} completed ---",
+            )
+
+        if with_events:
+            yield {
+                "type": "swarm_end",
+                "role": "swarm",
+                "loop": current_loop - 1,
+            }
 
     def run_stream(
         self,
