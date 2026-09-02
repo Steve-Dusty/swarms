@@ -1521,6 +1521,8 @@ class TestAgentUsage:
             "cached_tokens": 0,
             "total_tokens": sum(100 * i + i for i in range(1, 7)),
         }
+
+
 class TestStateFilePathAgreement:
 
     @pytest.fixture(autouse=True)
