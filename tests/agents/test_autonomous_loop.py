@@ -1244,3 +1244,106 @@ class TestGlobTool:
             "pattern",
             "path",
         }
+# #1981 — read_file line numbers and windowing
+# --------------------------------------------------------------------------
+
+
+class TestReadFileWindowing:
+    """
+    A model that cannot ask for part of a file reads all of it, and a model
+    that gets no line numbers cannot say where it looked.
+    """
+
+    def _file(self, tmp_path, lines):
+        target = tmp_path / "sample.py"
+        target.write_text("\n".join(lines) + "\n")
+        return str(target)
+
+    def test_lines_are_numbered_from_one(self, tmp_path):
+        path = self._file(tmp_path, ["alpha", "beta", "gamma"])
+
+        output = read_file_tool(build_agent(), path)
+
+        assert output.splitlines() == [
+            "     1\talpha",
+            "     2\tbeta",
+            "     3\tgamma",
+        ]
+
+    def test_offset_skips_lines_and_keeps_absolute_numbering(
+        self, tmp_path
+    ):
+        path = self._file(
+            tmp_path, [f"line {i}" for i in range(1, 11)]
+        )
+
+        output = read_file_tool(build_agent(), path, offset=6)
+
+        assert output.splitlines()[0] == "     7\tline 7"
+        assert output.splitlines()[-1] == "    10\tline 10"
+
+    def test_limit_bounds_the_window(self, tmp_path):
+        path = self._file(
+            tmp_path, [f"line {i}" for i in range(1, 11)]
+        )
+
+        output = read_file_tool(
+            build_agent(), path, offset=2, limit=3
+        )
+
+        assert [
+            line.split("\t")[1] for line in output.splitlines()
+        ] == [
+            "line 3",
+            "line 4",
+            "line 5",
+        ]
+
+    def test_an_offset_past_the_end_says_how_long_the_file_is(
+        self, tmp_path
+    ):
+        path = self._file(tmp_path, ["only", "two"])
+
+        output = read_file_tool(build_agent(), path, offset=50)
+
+        assert "2 lines" in output
+        assert "Error" in output
+
+    def test_a_negative_offset_is_rejected(self, tmp_path):
+        path = self._file(tmp_path, ["a"])
+
+        assert "Error" in read_file_tool(
+            build_agent(), path, offset=-1
+        )
+
+    def test_a_non_positive_limit_is_rejected(self, tmp_path):
+        path = self._file(tmp_path, ["a"])
+
+        assert "Error" in read_file_tool(build_agent(), path, limit=0)
+
+    def test_a_window_is_still_capped_by_the_token_budget(
+        self, tmp_path
+    ):
+        agent = build_agent(context_length=16000)
+        budget = int(agent.context_length * TOOL_OUTPUT_CONTEXT_SHARE)
+        path = self._file(
+            tmp_path, ["word " * 50 for _ in range(budget)]
+        )
+
+        output = read_file_tool(agent, path, offset=0, limit=budget)
+
+        assert "output truncated" in output
+
+    def test_the_schema_advertises_the_window(self):
+        read_file = next(
+            tool["function"]
+            for tool in get_autonomous_planning_tools()
+            if tool["function"]["name"] == "read_file"
+        )
+
+        assert set(read_file["parameters"]["properties"]) == {
+            "file_path",
+            "offset",
+            "limit",
+        }
+        assert read_file["parameters"]["required"] == ["file_path"]
