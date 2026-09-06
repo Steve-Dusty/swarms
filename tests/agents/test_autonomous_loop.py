@@ -29,6 +29,7 @@ Run:
 
 import json
 import os
+import subprocess
 
 import pytest
 
@@ -1147,10 +1148,6 @@ class TestContextCompression:
         assert len(loop._transcript) == 1
 
 
-if __name__ == "__main__":
-    pytest.main([__file__, "-q", "-p", "no:randomly"])
-
-
 # --------------------------------------------------------------------------
 # #1983 — glob tool
 # --------------------------------------------------------------------------
@@ -1244,6 +1241,8 @@ class TestGlobTool:
             "pattern",
             "path",
         }
+
+
 # #1981 — read_file line numbers and windowing
 # --------------------------------------------------------------------------
 
@@ -1334,6 +1333,45 @@ class TestReadFileWindowing:
 
         assert "output truncated" in output
 
+    def test_a_form_feed_does_not_shift_the_numbering(self, tmp_path):
+        """str.splitlines() breaks on \\f; grep -n does not (review on #2178)."""
+        target = tmp_path / "pagebreak.py"
+        target.write_text(
+            "def a():\n    pass\n\x0c\ndef b():\n    return 1\n"
+        )
+
+        output = read_file_tool(build_agent(), str(target))
+        numbered = {
+            line.split("\t", 1)[1]: int(line.split("\t", 1)[0])
+            for line in output.splitlines()
+            if "\t" in line
+        }
+
+        grep = subprocess.run(
+            ["grep", "-n", "def b", str(target)],
+            capture_output=True,
+            text=True,
+        )
+        grep_line = int(grep.stdout.split(":", 1)[0])
+
+        assert numbered["def b():"] == grep_line == 4
+
+    def test_an_empty_file_says_so(self, tmp_path):
+        target = tmp_path / "empty.txt"
+        target.write_text("")
+
+        assert (
+            read_file_tool(build_agent(), str(target))
+            == "(empty file)"
+        )
+
+    def test_a_trailing_newline_is_not_an_extra_line(self, tmp_path):
+        path = self._file(tmp_path, ["alpha", "beta"])
+
+        output = read_file_tool(build_agent(), path)
+
+        assert len(output.splitlines()) == 2
+
     def test_the_schema_advertises_the_window(self):
         read_file = next(
             tool["function"]
@@ -1347,3 +1385,7 @@ class TestReadFileWindowing:
             "limit",
         }
         assert read_file["parameters"]["required"] == ["file_path"]
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-q", "-p", "no:randomly"])

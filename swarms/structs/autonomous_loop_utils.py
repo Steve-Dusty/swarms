@@ -854,6 +854,11 @@ def read_file_tool(
         Windowing is applied before the token cap from :func:`truncate_tool_output`,
         so asking for a window is what keeps a large file from being cut off
         at the tail; the cap remains the backstop.
+
+        Lines are split on ``\n`` alone rather than with ``str.splitlines``,
+        which also breaks on form feed and other separators ``grep -n`` does
+        not count. An empty file returns ``"(empty file)"`` rather than an
+        empty string, which reads to a model like a failed call.
     """
     try:
         if offset < 0:
@@ -879,7 +884,16 @@ def read_file_tool(
         with open(full_path, "r", encoding="utf-8") as f:
             raw = f.read()
 
-        lines = raw.splitlines()
+        # Only "\n" separates lines, which is what grep -n counts. splitlines()
+        # also breaks on form feed, vertical tab, \x1c-\x1e and \x85, so a file
+        # with a ^L page break would number every later line one higher than
+        # grep does -- the exact citation mismatch this function exists to fix.
+        lines = raw.split("\n")
+        if lines and lines[-1] == "":
+            lines.pop()
+
+        if not lines:
+            return "(empty file)"
 
         if offset and offset >= len(lines):
             return (
