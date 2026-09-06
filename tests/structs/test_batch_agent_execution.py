@@ -139,3 +139,17 @@ def test_every_agent_runs_exactly_once():
     batch_agent_execution(agents, ["t1", "t2", "t3"])
 
     assert sorted(calls) == ["a", "b", "c"]
+
+
+def test_a_plain_callable_is_run_directly():
+    """agents is typed Union[Agent, Callable]; a callable must not need .run."""
+    calls = []
+
+    def plain(task, img=None):
+        calls.append((task, img))
+        return f"ran {task}"
+
+    results = batch_agent_execution([plain], ["do the thing"])
+
+    assert results == ["ran do the thing"]
+    assert calls == [("do the thing", None)]

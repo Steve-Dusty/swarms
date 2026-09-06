@@ -15,8 +15,8 @@ class BatchAgentExecutionError(Exception):
 
 def batch_agent_execution(
     agents: List[Union[Agent, Callable]],
-    tasks: List[str] = None,
-    imgs: List[str] = None,
+    tasks: Optional[List[str]] = None,
+    imgs: Optional[List[str]] = None,
     max_workers: int = max(1, int(os.cpu_count() * 0.9)),
 ):
     """
@@ -42,6 +42,12 @@ def batch_agent_execution(
         ValueError: If the number of agents, tasks or imgs disagree.
 
     Notes:
+        ``agents`` is typed as accepting a plain callable as well as an
+        ``Agent``, so the runner is resolved with ``getattr(agent, "run",
+        agent)`` rather than assuming ``.run`` exists. An ``Agent`` behaves
+        exactly as before; a callable is now called directly instead of
+        raising ``AttributeError``.
+
         Results are placed by index rather than appended on completion, so
         the returned list is aligned with ``agents`` no matter what order
         the threads finish in. Callers pair results with agents positionally
@@ -81,7 +87,9 @@ def batch_agent_execution(
             max_workers=max_workers
         ) as executor:
             future_to_index = {
-                executor.submit(agent.run, task, img): index
+                executor.submit(
+                    getattr(agent, "run", agent), task, img
+                ): index
                 for index, (agent, task, img) in enumerate(
                     zip(agents, tasks, img_list)
                 )
